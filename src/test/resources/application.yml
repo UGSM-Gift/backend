@@ -65,5 +65,5 @@ jasypt:
   iv-generator-classname: org.jasypt.iv.NoIvGenerator
 
 aws:
-  access_key_id: ENC(qf6F0ta1Une4xUazOLEnCO3cvAwYRaRpTklQgxDimAO3W0jF7HiKCmT8sujlIpAP9LNZyKPF+S4=)
-  secret_access_key: ENC(SCUSY09zXdyJ3enmmDSbepJA1XxesnOoAaeryB1mRl0=)
+  access_key_id: ENC(QRvFDGafvFY64H1+elerssq3qvatte1PThBPyP4UbujdREl5CSkgZTo1rOlDbF0VO3F0fcoYnIo=)
+  secret_access_key: ENC(I/2IXlrLrjJKotBwsYLusiH3Xk0lr70RRoKA60CZfos=)
