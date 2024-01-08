@@ -13,5 +13,5 @@ data class UserInfo(
     val mobile: String? = null,
     val birthdate: LocalDate? = null,
     val email: String? = null,
-    val isMobileVerified: Boolean
+    val mobileVerified: Boolean
 )
