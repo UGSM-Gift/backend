@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>oauth</title>
+</head>
+<body>
+    인증중입니다.
+</body>
+<script>
+    let path = window.location.pathname;
+    const searchParams = new URLSearchParams(window.location.search)
+    const platform = path.split('/').pop()
+    const code = searchParams.get("code")
+    const state = searchParams.get("state")
+
+    fetch(`/api/login/oauth2/code/${platform}?code=${code}&state=${state}`)
+    .then(res=>res.json())
+    .then(body=>console.log(body))
+</script>
+</html>

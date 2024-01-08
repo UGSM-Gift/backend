@@ -1,0 +1,14 @@
+jasypt:
+  encryptor:
+  bean: jasyptStringEncryptor
+  algorithm: PBEWithMD5AndDES
+  iv-generator-classname: org.jasypt.iv.NoIvGenerator
+
+
+jwt:
+  secret: ENC(Dnx6poJjIvCsOvlcqX6y5jac3+/pn9YMFHxQMrRk9a35euxjTnHlyQ==)
+
+
+aws:
+  access_key_id: ENC(qf6F0ta1Une4xUazOLEnCO3cvAwYRaRpTklQgxDimAO3W0jF7HiKCmT8sujlIpAP9LNZyKPF+S4=)
+  secret_access_key: ENC(SCUSY09zXdyJ3enmmDSbepJA1XxesnOoAaeryB1mRl0=)
