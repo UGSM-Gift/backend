@@ -10,5 +10,5 @@ jwt:
 
 
 aws:
-  access_key_id: ENC(QRvFDGafvFY64H1+elerssq3qvatte1PThBPyP4UbujdREl5CSkgZTo1rOlDbF0VO3F0fcoYnIo=)
-  secret_access_key: ENC(I/2IXlrLrjJKotBwsYLusiH3Xk0lr70RRoKA60CZfos=)
+  secret_access_key: ENC(QRvFDGafvFY64H1+elerssq3qvatte1PThBPyP4UbujdREl5CSkgZTo1rOlDbF0VO3F0fcoYnIo=)
+  access_key_id: ENC(I/2IXlrLrjJKotBwsYLusiH3Xk0lr70RRoKA60CZfos=)
