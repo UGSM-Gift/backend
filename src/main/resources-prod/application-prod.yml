@@ -63,4 +63,4 @@ logging:
 
 jwt:
   secret: ENC(Dnx6poJjIvCsOvlcqX6y5jac3+/pn9YMFHxQMrRk9a35euxjTnHlyQ==)
-  redirect-host-on-success: www.ugsm.co.kr
+  redirect-host-on-success: localhost:3000
