@@ -28,13 +28,20 @@ spring:
             client-name: kakao
             authorization-grant-type: authorization_code
             client-authentication-method: client_secret_post
-            redirect-uri: http://localhost:3000/oauth/callback/kakao
+            redirect-uri: https://www.ugsm.co.kr/api/login/oauth2/code/kakao
           naver:
             client-id: ENC(wf3iBVjGh9Vy7RuChW4C7B3Gqu1QCtLpcgaPQsN0Vrw=)
             client-secret: ENC(olVFZpWfxQQ7JrLYszgFpi2j952Lltuo)
             client-name: naver
             authorization-grant-type: authorization_code
-            redirect-uri: http://localhost:3000/oauth/callback/naver
+            redirect-uri: https://www.ugsm.co.kr/api/login/oauth2/code/naver
+          google:
+            client-id: ENC(srj+CpCg5Z/duAAIOtBjAqvDvlG7WsyVrhI2lPvwGOZgjX8Rg5f7nuWdF1twJgV0uC3l9AV/RPGwpeneS641sxPtIgxH3JkKy4Qd8m5Gd3BcHYpxotHATg==)
+            client-secret: ENC(7ORyxbYHwGfKmwnGa+uMV6oWelv0jwVU8EoNXJp4zUYWbqIIP6Oi/L62s86cqqO4)
+            redirect-uri: https://www.ugsm.co.kr/api/login/oauth2/code/google
+            scope:
+              - email
+              - profile
         provider:
           kakao:
             authorization-uri: https://kauth.kakao.com/oauth/authorize
