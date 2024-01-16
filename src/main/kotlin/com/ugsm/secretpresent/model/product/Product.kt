@@ -36,5 +36,7 @@ class Product(
 
     @Column var overallRate: Int,
 
+    @Column var freeShipping: Boolean,
+
     @Column var isSoldOut: Boolean = false,
 ) : BaseTimeEntity()
