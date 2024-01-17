@@ -18,8 +18,6 @@ class Product(
 
     @Column var brandName: String,
 
-    @Column var category: String,
-
     @Column var buyingUrl: String,
 
     @Enumerated(EnumType.STRING) @Column var marketplace: Marketplace,
@@ -28,7 +26,7 @@ class Product(
     @JsonManagedReference
     var categories: MutableList<ProductCategory>,
 
-    @Column var marketplaceProductId: String,
+    @Column var marketplaceProductId: Long,
 
     @Column var reviewCount: Int,
 
