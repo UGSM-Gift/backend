@@ -67,3 +67,7 @@ jasypt:
 aws:
   secret_access_key: ENC(QRvFDGafvFY64H1+elerssq3qvatte1PThBPyP4UbujdREl5CSkgZTo1rOlDbF0VO3F0fcoYnIo=)
   access_key_id: ENC(I/2IXlrLrjJKotBwsYLusiH3Xk0lr70RRoKA60CZfos=)
+
+coolsms:
+  access_key: ENC(9KgY1CFoD3euNIef/SM6Cd3/3lkokQRYQ1oSamoanZ8=)
+  access_secret: ENC(Oz1vAW86gPVquEngwoPsXvWpxIX5WnHfNNO3zliq+4Apya+ZF7wbWVkJJCRcZyko)

@@ -9,8 +9,8 @@ import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 
 class CoolSMSAuthenticator(
-    private val apiKey: String,
-    private val apiSecretKey: String
+    private val apiKey: String?,
+    private val apiSecretKey: String?
 ) {
 
 
@@ -20,7 +20,7 @@ class CoolSMSAuthenticator(
 
     @Throws
     fun generateAuthInfo(): String {
-        if (apiKey == "" || apiSecretKey == "") {
+        if (apiKey.isNullOrEmpty() || apiSecretKey.isNullOrEmpty()) {
             throw IllegalArgumentException("유효한 key값을 넣으셔야 합니다.")
         }
 
@@ -28,7 +28,7 @@ class CoolSMSAuthenticator(
         val date = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toString().split(Regex("\\[")).toTypedArray()[0]
 
         val encryptionInstance = Mac.getInstance(ENCRYPTION_ALGORITHM)
-        val secretKey = SecretKeySpec(apiSecretKey.toByteArray(StandardCharsets.UTF_8), ENCRYPTION_ALGORITHM)
+        val secretKey = SecretKeySpec(apiSecretKey?.toByteArray(StandardCharsets.UTF_8), ENCRYPTION_ALGORITHM)
 
         encryptionInstance.init(secretKey)
         val signature = String(

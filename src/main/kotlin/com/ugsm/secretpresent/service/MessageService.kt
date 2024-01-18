@@ -8,18 +8,19 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
 @Service
 class MessageService {
-    companion object{
-        private const val BASE_URL = "https://api.coolsms.co.kr/messages/v4/send"
-        private const val API_KEY = "NCSYDLETHXHOK8ZI"
-        private const val API_SECRET = "VGUNT1ZEKADYYSMN2SRO06LK4VRGSMOW"
-    }
+    @Value("\${coolsms.access_key}")
+    private var baseUrl = "https://api.coolsms.co.kr/messages/v4/send"
+    private var apiKey:String?= null
+    @Value("\${coolsms.access_secret}")
+    private var apiSecret: String?= null
 
     val client: OkHttpClient = OkHttpClient.Builder().addInterceptor { chain ->
-        val authInfo = CoolSMSAuthenticator(API_KEY, API_SECRET).generateAuthInfo()
+        val authInfo = CoolSMSAuthenticator(apiKey, apiSecret).generateAuthInfo()
         val request: Request = chain.request().newBuilder().addHeader("Authorization", authInfo).build()
         chain.proceed(request)
     }.build()
@@ -28,7 +29,7 @@ class MessageService {
         val objectMapper = ObjectMapper()
 
         val req = Request.Builder()
-            .url(BASE_URL)
+            .url(baseUrl)
             .post(
                 objectMapper
                     .writeValueAsString(SendMessageRequest(message))

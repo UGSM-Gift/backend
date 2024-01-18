@@ -64,3 +64,7 @@ logging:
 jwt:
   secret: ENC(Dnx6poJjIvCsOvlcqX6y5jac3+/pn9YMFHxQMrRk9a35euxjTnHlyQ==)
   redirect-host-on-success: www.ugsm.co.kr
+
+coolsms:
+  access_key: ENC(9KgY1CFoD3euNIef/SM6Cd3/3lkokQRYQ1oSamoanZ8=)
+  access_secret: ENC(Oz1vAW86gPVquEngwoPsXvWpxIX5WnHfNNO3zliq+4Apya+ZF7wbWVkJJCRcZyko)
