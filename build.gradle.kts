@@ -72,6 +72,9 @@ dependencies {
 
 
 	implementation ("com.github.ulisesbocchio:jasypt-spring-boot:3.0.4")
+
+	implementation("com.fasterxml.jackson.datatype:jackson-datatype-hibernate5-jakarta:2.16.0")
+
 }
 
 tasks.withType<KotlinCompile> {

@@ -9,7 +9,7 @@ class NaverShoppingCategory(
     @Id
     var id: Int,
     @Column
-    var name: String,
+    var name: String?= null,
     @ManyToOne
     @JoinColumn(name="parent_category_id")
     @JsonManagedReference
@@ -17,5 +17,5 @@ class NaverShoppingCategory(
 
     @OneToMany(mappedBy = "parentCategory")
     @JsonBackReference
-    var childCategories: MutableList<NaverShoppingCategory>
+    var childCategories: MutableList<NaverShoppingCategory>?= null
 )

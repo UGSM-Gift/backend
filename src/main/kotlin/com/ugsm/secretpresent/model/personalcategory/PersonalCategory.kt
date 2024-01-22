@@ -3,6 +3,7 @@ package com.ugsm.secretpresent.model.personalcategory
 import com.fasterxml.jackson.annotation.JsonBackReference
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import com.ugsm.secretpresent.enums.PersonalCategoryType
+import com.ugsm.secretpresent.model.BaseTimeEntity
 import jakarta.persistence.*
 
 @Entity
@@ -32,4 +33,4 @@ class PersonalCategory(
 
     @Column
     var viewOrder: Int,
-)
+): BaseTimeEntity()

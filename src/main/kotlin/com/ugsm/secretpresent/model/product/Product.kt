@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference
 import com.ugsm.secretpresent.enums.Marketplace
 import com.ugsm.secretpresent.model.BaseTimeEntity
 import jakarta.persistence.*
-//import kotlinx.serialization.descriptors.SerialKind
 
 @Entity
 class Product(
@@ -22,9 +21,9 @@ class Product(
 
     @Enumerated(EnumType.STRING) @Column var marketplace: Marketplace,
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
     @JsonManagedReference
-    var categories: MutableList<ProductCategory>,
+    var productCategories: MutableList<ProductCategory>,
 
     @Column var marketplaceProductId: Long,
 

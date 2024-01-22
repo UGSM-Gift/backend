@@ -15,5 +15,5 @@ class ProductCategory(
 
     @ManyToOne
     @JoinColumn(name="shopping_category_id")
-    var category: NaverShoppingCategory
+    var shoppingCategory: NaverShoppingCategory
 )

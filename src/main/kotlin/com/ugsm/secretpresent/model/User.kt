@@ -42,7 +42,7 @@ class User(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
-) {
+):BaseTimeEntity() {
     companion object {
         fun toUserInfo(user: User): UserInfo {
             val userId = user.id ?: throw EntityNotFoundException("user id is not provided")
