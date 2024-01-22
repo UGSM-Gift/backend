@@ -13,7 +13,7 @@ class ProductService(
 ) {
     fun getListByCategoryId(id: Int, page: Int, numInPage: Int): Slice<Product> {
         val pageRequest = PageRequest.of(page, numInPage)
-        return repository.findSliceByCategoriesShoppingCategoryId(id, pageRequest)
+        return repository.findSliceByProductCategoriesShoppingCategoryId(id, pageRequest)
     }
 }
 

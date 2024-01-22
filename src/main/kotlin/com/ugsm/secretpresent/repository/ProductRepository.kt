@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface ProductRepository:JpaRepository<Product, Int> {
-    fun findSliceByCategoriesShoppingCategoryId(id: Int, pageable: Pageable):Slice<Product>
+    fun findSliceByProductCategoriesShoppingCategoryId(id: Int, pageable: Pageable):Slice<Product>
 }
