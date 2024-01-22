@@ -13,8 +13,8 @@ import org.springframework.stereotype.Service
 
 @Service
 class MessageService {
-    @Value("\${coolsms.access_key}")
     private var baseUrl = "https://api.coolsms.co.kr/messages/v4/send"
+    @Value("\${coolsms.access_key}")
     private var apiKey:String?= null
     @Value("\${coolsms.access_secret}")
     private var apiSecret: String?= null
