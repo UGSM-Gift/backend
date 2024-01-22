@@ -23,7 +23,7 @@ class Product(
 
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
     @JsonManagedReference
-    var categories: MutableList<ProductCategory>,
+    var productCategories: MutableList<ProductCategory>,
 
     @Column var marketplaceProductId: Long,
 

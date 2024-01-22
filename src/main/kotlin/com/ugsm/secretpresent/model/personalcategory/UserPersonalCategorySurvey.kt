@@ -1,5 +1,6 @@
 package com.ugsm.secretpresent.model.personalcategory
 
+import com.ugsm.secretpresent.model.BaseTimeEntity
 import com.ugsm.secretpresent.model.User
 import jakarta.persistence.*
 
@@ -13,4 +14,4 @@ class UserPersonalCategorySurvey(
     @JoinColumn(name = "user_id")
     var user: User,
 
-)
+): BaseTimeEntity()
