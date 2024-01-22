@@ -21,8 +21,9 @@ class VerificationCodeController(
     private var messageService: MessageService,
 ) {
     @PostMapping("/verification-code")
-    fun createMessageCode(@AuthenticationPrincipal userId: Long,phoneNumber: String): ResponseEntity<CustomResponse<Nothing?>>{
-        val code = verificationMessageService.createCode(phoneNumber, userId)
+    fun createMessageCode(@AuthenticationPrincipal userInfo: UserInfo,
+                          @RequestParam phoneNumber: String): ResponseEntity<CustomResponse<Nothing?>>{
+        val code = verificationMessageService.createCode(phoneNumber, userInfo.id)
         phoneNumber.replace("-", "")
         val message = Message(
             from = "01089628547",
