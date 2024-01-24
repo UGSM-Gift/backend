@@ -1,5 +1,6 @@
 package com.ugsm.secretpresent.advice
 
+import com.ugsm.secretpresent.Exception.BadRequestException
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -26,6 +27,16 @@ class GlobalExceptionHandler {
             "status" to HttpStatus.BAD_REQUEST.value(),
             "data" to null,
             "message" to "Invalid Input Format"
+        )
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body)
+    }
+
+    @ExceptionHandler(BadRequestException::class)
+    fun handleBadRequestException(e: BadRequestException): ResponseEntity<*>{
+        val body = mutableMapOf(
+            "status" to HttpStatus.BAD_REQUEST.value(),
+            "data" to null,
+            "message" to e.message
         )
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body)
     }

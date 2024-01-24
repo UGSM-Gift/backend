@@ -22,10 +22,13 @@ class GiftList(
     @Column
     var packageImgName: String,
 
-    @OneToMany
-    var categories: List<GiftListCategory>,
+    @OneToMany(mappedBy="giftList", cascade = [CascadeType.ALL], orphanRemoval = true)
+    var categories: List<GiftListCategory> = emptyList(),
+
+    @OneToMany(mappedBy="giftList")
+    var productLetters: List<GiftListProductLetter> = emptyList(),
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Int
+    var id: Int? = null
 ):BaseTimeEntity()

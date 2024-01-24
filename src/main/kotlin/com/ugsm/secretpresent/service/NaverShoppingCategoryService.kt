@@ -17,7 +17,7 @@ class NaverShoppingCategoryService(
     fun getAll(): List<NaverShoppingCategoryDto> {
         val categories = support.getAll()
         val categoriesDto = categories.map { category ->
-            val children = category.childCategories?.map{
+            val children = category.childCategories.map{
                 NaverShoppingCategoryDto(
                     id=it.id,
                     name=it.name,

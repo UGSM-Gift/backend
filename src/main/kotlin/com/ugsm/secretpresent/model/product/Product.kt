@@ -9,13 +9,13 @@ import jakarta.persistence.*
 class Product(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) var id: Long,
 
-    @Column var name: String,
+    @Column var name: String = "",
 
-    @Column var price: Int,
+    @Column var price: Int = 0,
 
-    @Column var thumbnailImgUrl: String,
+    @Column var thumbnailImgUrl: String? = null,
 
-    @Column var brandName: String,
+    @Column var brandName: String? = null,
 
     @Column var buyingUrl: String,
 

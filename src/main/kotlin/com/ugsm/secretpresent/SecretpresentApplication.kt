@@ -9,7 +9,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing
 @EnableEncryptableProperties
 @EnableJpaAuditing
 class SecretpresentApplication{
-    fun main(args: Array<String>) {
-        runApplication<SecretpresentApplication>(*args)
-    }
+
+}
+
+fun main(args: Array<String>) {
+    runApplication<SecretpresentApplication>(*args)
 }

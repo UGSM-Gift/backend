@@ -7,14 +7,14 @@ import jakarta.persistence.*
 @Entity
 class GiftListCategoryProduct(
     @ManyToOne
-    @JoinColumn(name="gift_category_id")
-    var giftList: GiftList,
+    @JoinColumn(name = "gift_list_category_id")
+    var giftListCategory: GiftListCategory?=null,
 
     @ManyToOne
-    @JoinColumn(name="product_id")
-    var product:Product,
+    @JoinColumn(name = "product_id")
+    var product: Product,
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Int
-): BaseTimeEntity()
+    var id: Int? = null
+) : BaseTimeEntity()

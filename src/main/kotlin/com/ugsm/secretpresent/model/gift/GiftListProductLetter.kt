@@ -6,7 +6,7 @@ import com.ugsm.secretpresent.model.product.Product
 import jakarta.persistence.*
 
 @Entity
-class GiftProductLetter(
+class GiftListProductLetter(
     @ManyToOne
     @JoinColumn(name="giver_id")
     var giftList: GiftList,
@@ -14,6 +14,9 @@ class GiftProductLetter(
     @ManyToOne
     @JoinColumn(name="gift_category_product_id")
     var product:Product,
+
+    @Column
+    var message: String,
 
     @Enumerated(EnumType.STRING)
     @Column
