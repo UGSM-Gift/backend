@@ -1,5 +1,6 @@
 package com.ugsm.secretpresent.controller
 
+import com.ugsm.secretpresent.Exception.BadRequestException
 import com.ugsm.secretpresent.dto.ChangedUserInfo
 import com.ugsm.secretpresent.dto.NicknameValidationDto
 import com.ugsm.secretpresent.dto.UserAccountDeletionReasonDto
@@ -83,6 +84,9 @@ class UserController(
         @AuthenticationPrincipal userInfo: UserInfo,
         @RequestBody dto: UserAccountDeletionReasonDto
     ): ResponseEntity<CustomResponse<Nothing?>> {
+
+        val user = userService.findById(userInfo.id).get()
+        if(user.deleted) throw BadRequestException("User has been already signed out")
 
         userService.deleteAccount(userInfo.id, dto)
 
