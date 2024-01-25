@@ -11,7 +11,7 @@ import java.time.LocalDate
 @Table(name = "`user`")
 class User(
     @Column
-    var nickname: String?,
+    var nickname: String= "",
     @Column
     var oauth2Id: String?,
     @Column
@@ -63,7 +63,7 @@ class User(
 
         fun fromOAuthUserInfo(oAuthUserInfo: OAuthUserInfo): User {
             return User(
-                nickname = oAuthUserInfo.nickname,
+                nickname = oAuthUserInfo.nickname ?: "",
                 oauth2Id = oAuthUserInfo.oAuthId,
                 oauth2Type = oAuthUserInfo.oAuthType,
                 email = oAuthUserInfo.email,

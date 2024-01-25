@@ -4,24 +4,18 @@ import com.ugsm.secretpresent.dto.ChangedUserInfo
 import com.ugsm.secretpresent.dto.NicknameValidationDto
 import com.ugsm.secretpresent.dto.UserAccountDeletionReasonDto
 import com.ugsm.secretpresent.dto.UserInfo
-import com.ugsm.secretpresent.enums.Gender
 import com.ugsm.secretpresent.lib.PhoneNoUtils
 import com.ugsm.secretpresent.model.User
 import com.ugsm.secretpresent.response.CustomResponse
 import com.ugsm.secretpresent.service.AwsS3Service
 import com.ugsm.secretpresent.service.UserService
 import jakarta.persistence.EntityNotFoundException
-import jakarta.validation.constraints.Email
 import kotlinx.coroutines.runBlocking
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.multipart.MultipartFile
-import java.time.LocalDate
 import kotlin.jvm.optionals.getOrElse
 
 @RestController
@@ -38,53 +32,46 @@ class UserController(
 
         val user = userService.findById(userInfo.id).getOrElse { throw EntityNotFoundException("User Not Found") }
 
-        val userInfo = User.toUserInfo(user)
+        val info = User.toUserInfo(user)
 
-        return ResponseEntity.ok(CustomResponse(HttpStatus.OK.value(), userInfo, ""))
+        return ResponseEntity.ok(CustomResponse(HttpStatus.OK.value(), info, ""))
     }
 
     @PutMapping("/me")
     fun updatePersonalInfo(
         @AuthenticationPrincipal userInfo: UserInfo,
-        @RequestParam profileImgFile: MultipartFile?,
-        @RequestParam nickname: String?,
-        @RequestParam gender: Gender?,
-        @RequestParam name: String?,
-        @RequestParam @Email @Validated email: String?,
-        @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") birthdate: LocalDate?,
-        @RequestParam mobile: String?,
+        @RequestBody changedUserInfo: ChangedUserInfo
     ): ResponseEntity<CustomResponse<UserInfo?>> = runBlocking {
 
-        val phoneNumber:String? = mobile?.let { PhoneNoUtils.remainNumberOnly(it) }
-        val fileName: String? = profileImgFile?.let{ awsS3Service.upload(profileImgFile)}
+        changedUserInfo.apply { mobile = PhoneNoUtils.remainNumberOnly(mobile) }
+            .also{it ->
+                val mobile = it.mobile
+                if (mobile != null && !PhoneNoUtils.validateNumberOnlyFormat(mobile)) {
+                return@runBlocking ResponseEntity
+                    .badRequest()
+                    .body(CustomResponse(HttpStatus.BAD_REQUEST.value(), null, "Not valid phone number"))
+            }}
 
-        if (phoneNumber != null && !PhoneNoUtils.validateNumberOnlyFormat(phoneNumber)){
+
+
+        if (changedUserInfo.nickname != null && userService.findByNickname(changedUserInfo.nickname) != null) {
             return@runBlocking ResponseEntity
                 .badRequest()
-                .body(CustomResponse(HttpStatus.BAD_REQUEST.value(), null, "Not valid phone number"))
+                .body(
+                    CustomResponse(
+                        HttpStatus.BAD_REQUEST.value(),
+                        null,
+                        "Nickname given has been already registered"
+                    )
+                )
         }
 
-        if (nickname != null && userService.findByNickname(nickname) != null){
-            return@runBlocking ResponseEntity
-                .badRequest()
-                .body(CustomResponse(HttpStatus.BAD_REQUEST.value(), null, "Nickname given has been already registered"))
-        }
-
-        if (((name != null) && (name == nickname)) || ((name != null) && name == userInfo.nickname)){
+        if (((changedUserInfo.name != null) && (changedUserInfo.name == changedUserInfo.nickname)) || ((changedUserInfo.name != null) && changedUserInfo.name == userInfo.nickname)) {
             return@runBlocking ResponseEntity
                 .badRequest()
                 .body(CustomResponse(HttpStatus.BAD_REQUEST.value(), null, "Name given is as same as nickname"))
         }
 
-        val changedUserInfo = ChangedUserInfo(
-            name = name,
-            nickname = nickname,
-            mobile = mobile,
-            gender = gender,
-            email = email,
-            profileImageUrl = fileName,
-            birthdate = birthdate
-        )
         val updatedUserInfo = userService.updatePersonalInfo(userInfo.id, changedUserInfo)
 
         return@runBlocking ResponseEntity
@@ -117,13 +104,13 @@ class UserController(
     }
 
     @GetMapping("/check-nickname/{nickname}")
-    fun checkValidNickname(@AuthenticationPrincipal userInfo: UserInfo,
-                           @PathVariable nickname: String
+    fun checkValidNickname(
+        @AuthenticationPrincipal userInfo: UserInfo,
+        @PathVariable nickname: String
     ): ResponseEntity<CustomResponse<NicknameValidationDto>> {
 
         val validationResult = userService.checkNicknameValid(userInfo.id, nickname)
 
-        return ResponseEntity.
-                ok(CustomResponse(HttpStatus.OK.value(), validationResult, ""))
+        return ResponseEntity.ok(CustomResponse(HttpStatus.OK.value(), validationResult, ""))
     }
 }

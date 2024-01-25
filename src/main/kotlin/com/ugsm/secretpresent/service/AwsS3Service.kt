@@ -3,6 +3,7 @@ package com.ugsm.secretpresent.service
 import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.s3.model.PutObjectRequest
 import aws.smithy.kotlin.runtime.content.ByteStream
+import com.ugsm.secretpresent.dto.ImageUploadResponseDto
 import kotlinx.coroutines.runBlocking
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -16,10 +17,10 @@ class AwsS3Service(
 ) {
 
     companion object {
-        private const val PROFILE_IMAGE_URL = "https://cloudfront.ugsm.co.kr/user-profile"
+        private const val BASE_URL = "https://cloudfront.ugsm.co.kr"
     }
 
-    fun upload(file: MultipartFile): String = runBlocking {
+    fun upload(file: MultipartFile, userId: Long, folder:String): ImageUploadResponseDto = runBlocking {
         if(file.contentType == null || file.contentType!!.split("/")[0].lowercase() != "image"){
             throw IllegalArgumentException("Not supported file type")
         }
@@ -27,15 +28,19 @@ class AwsS3Service(
         val fileName = UUID.randomUUID().toString() + "-" + file.originalFilename
 
         val byteStream = ByteStream.fromBytes(file.bytes)
-
+        val s3Key = "user/${userId}/${folder}/${fileName}"
         val req = PutObjectRequest.invoke{
             contentType=file.contentType
             contentLength=byteStream.contentLength
             bucket = "ugsm"
-            key="user-profile/${fileName}"
+            key=s3Key
             body= byteStream
         }
         s3Client.putObject(req)
-        return@runBlocking "${PROFILE_IMAGE_URL}/${fileName}"
+
+        return@runBlocking ImageUploadResponseDto(
+            s3Key = s3Key,
+            imageUrl = "${BASE_URL}/${s3Key}"
+        )
     }
 }
