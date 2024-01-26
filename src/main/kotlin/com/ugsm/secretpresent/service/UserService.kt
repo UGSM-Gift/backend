@@ -2,6 +2,7 @@ package com.ugsm.secretpresent.service
 
 import com.ugsm.secretpresent.dto.*
 import com.ugsm.secretpresent.enums.OAuth2Type
+import com.ugsm.secretpresent.enums.S3ImageUploadType
 import com.ugsm.secretpresent.model.User
 import com.ugsm.secretpresent.model.UserAccountDeletionReason
 import com.ugsm.secretpresent.repository.AccountDeletionReasonRepository
@@ -36,12 +37,14 @@ class UserService(
 ) {
     fun updatePersonalInfo(userId: Long, changedUserInfo: ChangedUserInfo): UserInfo {
         val user = userRepository.findById(userId).getOrElse { throw EntityNotFoundException("User Not Found") }
+        val uploadedImageUrl = "${S3ImageUploadType.PROFILE.getUrl(userId)}/${changedUserInfo.profileImageName}"
+
         user.apply {
             name = changedUserInfo.name ?: name
             gender = changedUserInfo.gender ?: gender
             email = changedUserInfo.email ?: email
             nickname = changedUserInfo.nickname ?: nickname
-            profileImgUrl = changedUserInfo.profileImageUrl ?: profileImgUrl
+            profileImgUrl = if (!changedUserInfo.profileImageName.isNullOrEmpty()) uploadedImageUrl else profileImgUrl
             mobile = changedUserInfo.mobile ?: mobile
             birthdate = changedUserInfo.birthdate ?: birthdate
         }

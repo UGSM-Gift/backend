@@ -9,7 +9,7 @@ import java.time.LocalDate
 data class ChangedUserInfo(
     val name: String? = null,
     val nickname: String? = null,
-    val profileImageUrl: String? = null,
+    val profileImageName: String? = null,
     var mobile: String? = null,
     @DateTimeFormat(pattern = "yyyy-MM-dd") val birthdate: LocalDate? = null,
     val gender: Gender? = null,
