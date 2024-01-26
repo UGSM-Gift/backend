@@ -26,7 +26,7 @@ class AwsS3Service(
             throw IllegalArgumentException("Not supported file type")
         }
 
-        val fileName = UUID.randomUUID().toString() + "-" + file.originalFilename
+        val fileName = UUID.randomUUID().toString()
 
         val byteStream = ByteStream.fromBytes(file.bytes)
 
