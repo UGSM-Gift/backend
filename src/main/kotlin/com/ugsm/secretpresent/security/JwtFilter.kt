@@ -3,7 +3,6 @@ package com.ugsm.secretpresent.security
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.ugsm.secretpresent.model.User
 import com.ugsm.secretpresent.repository.UserRepository
-import jakarta.persistence.EntityNotFoundException
 import jakarta.servlet.FilterChain
 import jakarta.servlet.ServletException
 import jakarta.servlet.http.HttpServletRequest
@@ -72,7 +71,8 @@ class JwtFilter(
         // UserId Token에서 꺼내기
         val userId = jwtProvider.getUserId(token)
 
-        val user = userRepository.findByIdAndDeletedFalse(userId) ?: throw EntityNotFoundException("User is not existed")
+        val user = userRepository.findByIdAndDeletedFalse(userId) ?: return jwtExceptionHandler(response, 400, "User Not Found")
+
 
         val userInfo = User.toUserInfo(user)
 
