@@ -18,7 +18,7 @@ class AwsS3Service(
 ) {
 
     companion object {
-        private const val BASE_URL = "https://cloudfront.ugsm.co.kr"
+        const val BASE_URL = "https://cloudfront.ugsm.co.kr"
     }
 
     fun upload(file: MultipartFile, userId: Long, type: S3ImageUploadType): ImageUploadResponseDto = runBlocking {
@@ -30,9 +30,7 @@ class AwsS3Service(
 
         val byteStream = ByteStream.fromBytes(file.bytes)
 
-        val s3Key = when (type) {
-            S3ImageUploadType.PROFILE, S3ImageUploadType.GIFT_PACKAGING -> "user/${userId}/${type.dir}/${fileName}"
-        }
+        val s3Key = "${type.getFullDir(userId)}/${fileName}"
 
         val req = PutObjectRequest.invoke{
             contentType=file.contentType
