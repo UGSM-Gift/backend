@@ -29,7 +29,7 @@ class ImageController(
     ): ResponseEntity<CustomResponse<ImageUploadResponseDto>> {
         return ResponseEntity.ok(
             CustomResponse(
-                HttpStatus.OK.value(), s3Service.upload(image, userInfo.id, type.dir), ""
+                HttpStatus.OK.value(), s3Service.upload(image, userInfo.id, type), ""
             )
         )
     }

@@ -4,6 +4,7 @@ import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.s3.model.PutObjectRequest
 import aws.smithy.kotlin.runtime.content.ByteStream
 import com.ugsm.secretpresent.dto.ImageUploadResponseDto
+import com.ugsm.secretpresent.enums.S3ImageUploadType
 import kotlinx.coroutines.runBlocking
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -20,7 +21,7 @@ class AwsS3Service(
         private const val BASE_URL = "https://cloudfront.ugsm.co.kr"
     }
 
-    fun upload(file: MultipartFile, userId: Long, folder:String): ImageUploadResponseDto = runBlocking {
+    fun upload(file: MultipartFile, userId: Long, type: S3ImageUploadType): ImageUploadResponseDto = runBlocking {
         if(file.contentType == null || file.contentType!!.split("/")[0].lowercase() != "image"){
             throw IllegalArgumentException("Not supported file type")
         }
@@ -28,7 +29,11 @@ class AwsS3Service(
         val fileName = UUID.randomUUID().toString() + "-" + file.originalFilename
 
         val byteStream = ByteStream.fromBytes(file.bytes)
-        val s3Key = "user/${userId}/${folder}/${fileName}"
+
+        val s3Key = when (type) {
+            S3ImageUploadType.PROFILE, S3ImageUploadType.GIFT_PACKAGING -> "user/${userId}/${type.dir}/${fileName}"
+        }
+
         val req = PutObjectRequest.invoke{
             contentType=file.contentType
             contentLength=byteStream.contentLength
@@ -39,7 +44,7 @@ class AwsS3Service(
         s3Client.putObject(req)
 
         return@runBlocking ImageUploadResponseDto(
-            s3Key = s3Key,
+            fileName = fileName,
             imageUrl = "${BASE_URL}/${s3Key}"
         )
     }
