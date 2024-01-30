@@ -43,15 +43,23 @@ class JwtFilter(
             return
         }
 
-        val authorization = request.getHeader(HttpHeaders.AUTHORIZATION)
+        val token:String?
 
-        if (authorization == null || !authorization.startsWith("Bearer ")) {
-            jwtExceptionHandler(response, 401, "Token given is not a valid access token")
-            return
+        if(path.startsWith("/api/notification")){
+            token = request.getParameter("accessToken") ?: return jwtExceptionHandler(response, 401, "Token given is not a valid access token")
+        } else {
+            val authorization = request.getHeader(HttpHeaders.AUTHORIZATION)
+
+            if (authorization == null || !authorization.startsWith("Bearer ")) {
+                jwtExceptionHandler(response, 401, "Token given is not a valid access token")
+                return
+            }
+
+            // Token 꺼내기
+            token = authorization.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1]
         }
 
-        // Token 꺼내기
-        val token = authorization.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1]
+
 
         if (path.startsWith("/api/auth/token")) {
             if (jwtProvider.isExpired(token)) {
