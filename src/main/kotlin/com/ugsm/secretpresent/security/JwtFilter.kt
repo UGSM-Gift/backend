@@ -38,7 +38,13 @@ class JwtFilter(
         val path = request.servletPath
 
         // 로그인일 경우 건너뛰기
-        if (path == "/" || path.startsWith("/token") ||  path.startsWith("/oauth")|| path.startsWith("/login") || path.startsWith("/api/login") || path.startsWith("/api/oauth2")) {
+        if (path == "/" ||
+            path.startsWith("/token") ||
+            path.startsWith("/oauth")||
+            path.startsWith("/login") ||
+            path.startsWith("/api/login") ||
+            path.startsWith("/api/oauth2") ||
+            path.startsWith("/api/check")) {
             filterChain.doFilter(request, response)
             return
         }
