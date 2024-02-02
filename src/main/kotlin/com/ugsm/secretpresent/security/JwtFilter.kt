@@ -38,20 +38,34 @@ class JwtFilter(
         val path = request.servletPath
 
         // 로그인일 경우 건너뛰기
-        if (path == "/" || path.startsWith("/token") ||  path.startsWith("/oauth")|| path.startsWith("/login") || path.startsWith("/api/login") || path.startsWith("/api/oauth2")) {
+        if (path == "/" ||
+            path.startsWith("/token") ||
+            path.startsWith("/oauth")||
+            path.startsWith("/login") ||
+            path.startsWith("/api/login") ||
+            path.startsWith("/api/oauth2") ||
+            path.startsWith("/api/check")) {
             filterChain.doFilter(request, response)
             return
         }
 
-        val authorization = request.getHeader(HttpHeaders.AUTHORIZATION)
+        val token:String?
 
-        if (authorization == null || !authorization.startsWith("Bearer ")) {
-            jwtExceptionHandler(response, 401, "Token given is not a valid access token")
-            return
+        if(path.startsWith("/api/notification")){
+            token = request.getParameter("accessToken") ?: return jwtExceptionHandler(response, 401, "Token given is not a valid access token")
+        } else {
+            val authorization = request.getHeader(HttpHeaders.AUTHORIZATION)
+
+            if (authorization == null || !authorization.startsWith("Bearer ")) {
+                jwtExceptionHandler(response, 401, "Token given is not a valid access token")
+                return
+            }
+
+            // Token 꺼내기
+            token = authorization.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1]
         }
 
-        // Token 꺼내기
-        val token = authorization.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1]
+
 
         if (path.startsWith("/api/auth/token")) {
             if (jwtProvider.isExpired(token)) {
