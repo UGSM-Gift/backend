@@ -1,6 +1,7 @@
 package com.ugsm.secretpresent.security
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.ugsm.secretpresent.lib.PhoneNoUtils
 import com.ugsm.secretpresent.model.User
 import com.ugsm.secretpresent.repository.UserRepository
 import jakarta.servlet.FilterChain
@@ -12,6 +13,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.AuthenticationException
+import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
@@ -91,8 +93,14 @@ class JwtFilter(
         val userInfo = User.toUserInfo(user)
 
         // 권한 부여
+
+        val authorities = when(PhoneNoUtils.remainNumberOnly(userInfo.mobile)) {
+            "01089628547" -> listOf("ADMIN")
+            else -> listOf("USER")
+        }.map{role->SimpleGrantedAuthority(role)}
+
         val authenticationToken =
-            UsernamePasswordAuthenticationToken(userInfo, null, listOf(SimpleGrantedAuthority("USER")))
+            UsernamePasswordAuthenticationToken(userInfo, null, authorities)
 
         // Detail을 넣어줌
         authenticationToken.details = WebAuthenticationDetailsSource().buildDetails(request)

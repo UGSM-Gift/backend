@@ -16,3 +16,14 @@ aws:
 coolsms:
   access_key: ENC(9KgY1CFoD3euNIef/SM6Cd3/3lkokQRYQ1oSamoanZ8=)
   access_secret: ENC(Oz1vAW86gPVquEngwoPsXvWpxIX5WnHfNNO3zliq+4Apya+ZF7wbWVkJJCRcZyko)
+
+management:
+  endpoint:
+    env:
+      show-values: WHEN_AUTHORIZED
+      roles: ADMIN
+
+  endpoints:
+    web:
+      exposure:
+        include: "health,info,metrics,env"
