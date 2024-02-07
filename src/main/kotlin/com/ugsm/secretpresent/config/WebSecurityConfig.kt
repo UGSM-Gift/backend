@@ -48,9 +48,10 @@ class WebSecurityConfig(
             .cors { it.configurationSource(corsConfigurationSource()) }
 //            .httpBasic { basic -> basic.disable() }
             .authorizeHttpRequests { authorize ->
-                authorize
 //                    .requestMatchers("/api/verification-message").permitAll()
 ////                    .requestMatchers("/api/**").authenticated()
+                authorize
+//                    .requestMatchers("/actuator/**").hasAuthority("ADMIN")
                     .anyRequest().permitAll()
             }
             .oauth2Login { oauth2Configurer ->

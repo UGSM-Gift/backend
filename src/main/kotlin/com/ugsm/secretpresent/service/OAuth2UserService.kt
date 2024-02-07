@@ -36,8 +36,6 @@ class OAuth2UserService(
 
 
         // Role generate
-        val authorities = AuthorityUtils.createAuthorityList("ROLE_ADMIN")
-
         val oAuthType = OAuth2Type.valueOf(userRequest.clientRegistration.registrationId.uppercase())
         val oAuthUserInfo = when (oAuthType) {
             OAuth2Type.NAVER -> {
@@ -108,6 +106,12 @@ class OAuth2UserService(
             accessToken = accessToken,
             refreshToken = refreshToken
         )
+
+        val authorities = when(PhoneNoUtils.remainNumberOnly(userInfo.mobile)) {
+            "01089628547" -> AuthorityUtils.createAuthorityList("ADMIN")
+            else -> AuthorityUtils.createAuthorityList("USER")
+        }
+
 
         return CustomUserPrincipal(userInfo, oAuth2User.attributes, authorities, userNameAttributeName)
     }
