@@ -1,14 +1,12 @@
 package com.ugsm.secretpresent.service
 
-import com.ugsm.secretpresent.dto.CreateGiftListDto
-import com.ugsm.secretpresent.dto.GiftListCategoryWithSelectedProducts
-import com.ugsm.secretpresent.dto.GiftListDetailDto
-import com.ugsm.secretpresent.dto.ProductInfo
+import com.ugsm.secretpresent.dto.*
 import com.ugsm.secretpresent.model.gift.GiftList
 import com.ugsm.secretpresent.model.gift.GiftListCategory
 import com.ugsm.secretpresent.model.gift.GiftListCategoryProduct
 import com.ugsm.secretpresent.repository.*
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 
 @Service
@@ -65,7 +63,11 @@ class GiftListService(
         giftListRepository.save(giftList)
     }
 
-    fun getUserGiftList(userId: Long) = giftListRepositorySupport.getAllByUserIdNotExpired(userId)
+    fun getUserGiftList(userId: Long, page: Int): List<GiftListDto> {
+        val numInPage = 10
+        val pageRequest = PageRequest.of(page, numInPage)
+        return giftListRepositorySupport.getAllByUserIdNotExpired(userId, pageRequest)
+    }
     fun get(giftListId: Int): GiftListDetailDto {
         val giftList = giftListRepository.findById(giftListId).get()
         val anniversary = giftList.userAnniversary
