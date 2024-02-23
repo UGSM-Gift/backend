@@ -2,7 +2,7 @@ package com.ugsm.secretpresent.controller
 
 import com.ugsm.secretpresent.dto.CreateGiftListDto
 import com.ugsm.secretpresent.dto.GiftListDetailDto
-import com.ugsm.secretpresent.dto.NotExpiredGiftListDto
+import com.ugsm.secretpresent.dto.GiftListDto
 import com.ugsm.secretpresent.dto.UserInfo
 import com.ugsm.secretpresent.response.CustomResponse
 import com.ugsm.secretpresent.service.GiftListService
@@ -30,9 +30,10 @@ class GiftListController(
 
     @GetMapping("/user/me/gift-list")
     fun getMyList(
-        @AuthenticationPrincipal user: UserInfo
-    ): List<NotExpiredGiftListDto> {
-        return giftListService.getUserGiftList(user.id)
+        @AuthenticationPrincipal user: UserInfo,
+        @RequestParam p: Int = 1,
+    ): List<GiftListDto> {
+        return giftListService.getUserGiftList(user.id, p)
     }
 
     @GetMapping("/gift-list/{giftListId}")
