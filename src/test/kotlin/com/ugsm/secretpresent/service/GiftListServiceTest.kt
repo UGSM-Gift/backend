@@ -1,8 +1,9 @@
 package com.ugsm.secretpresent.service
 
+import com.ugsm.secretpresent.dto.GiftListDto
 import com.ugsm.secretpresent.repository.*
 import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertIterableEquals
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -10,7 +11,7 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
-import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.PageRequest
 
 class GiftListServiceTest {
 
@@ -59,7 +60,13 @@ class GiftListServiceTest {
     @Test
     fun testGetUserGiftList() {
         val userId = 1L
-        Mockito.`when`(giftListRepositorySupport.getAllByUserIdNotExpired(userId)).thenReturn(null)
+        val page = 1
+        val numInPage = 10
+        val pageable = PageRequest.of(page, numInPage)
+        Mockito.`when`(giftListRepositorySupport.getAllByUserIdNotExpired(userId, pageable)).thenReturn(listOf())
+
+        val expected:List<GiftListDto> = listOf()
+        assertIterableEquals(giftListRepositorySupport.getAllByUserIdNotExpired(userId,pageable), expected)
     }
 
 
