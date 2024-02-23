@@ -1,5 +1,6 @@
 package com.ugsm.secretpresent.service
 
+import com.ugsm.secretpresent.dto.LeafCategoryDto
 import com.ugsm.secretpresent.dto.NaverShoppingCategoryDto
 import com.ugsm.secretpresent.model.NaverShoppingCategory
 import com.ugsm.secretpresent.repository.NaverShoppingCategoryRepository
@@ -33,6 +34,8 @@ class NaverShoppingCategoryService(
         }
         return categoriesDto
     }
+
+    fun getAllLeaves():List<LeafCategoryDto> = support.getAllLeaves()
 
     fun test(): List<NaverShoppingCategory> {
         val items = support.getAll()

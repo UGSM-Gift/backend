@@ -1,16 +1,22 @@
 package com.ugsm.secretpresent.service
 
+import com.ugsm.secretpresent.Exception.UnauthorizedException
 import com.ugsm.secretpresent.repository.EmitterRepository
+import com.ugsm.secretpresent.repository.NotificationRepository
+import jakarta.persistence.EntityNotFoundException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
 import java.io.IOException
+import kotlin.jvm.optionals.getOrElse
 
 
 @Service
 class NotificationService(
     @Autowired
-    val emitterRepository: EmitterRepository
+    val emitterRepository: EmitterRepository,
+    @Autowired
+    val notificationRepository: NotificationRepository
 ) {
     companion object {
         // 기본 타임아웃 설정
@@ -30,15 +36,25 @@ class NotificationService(
         return emitter
     }
 
-    /**
-     * 서버의 이벤트를 클라이언트에게 보내는 메서드
-     * 다른 서비스 로직에서 이 메서드를 사용해 데이터를 Object event에 넣고 전송하면 된다.
-     *
-     * @param userId - 메세지를 전송할 사용자의 아이디.
-     * @param event  - 전송할 이벤트 객체.
-     */
-    fun notify(userId: Long, event: Any) {
-        sendToClient(userId, event)
+    private fun notifyLatestUnread(userId: Long) {
+        val notification = notificationRepository.findFirstByUserIdAndReadFalseOrderByIdDesc(userId)
+            ?: throw EntityNotFoundException("The latest unread notification has not been found")
+
+        sendToClient(userId, notification.content)
+    }
+
+    private fun markAsRead(userId: Long, notificationId: Long){
+        val notification = notificationRepository.findById(notificationId).getOrElse {
+            throw EntityNotFoundException("Notification Not Found")
+        }
+
+        if(notification.user.id?.equals(notificationId) == false){
+            throw UnauthorizedException("Notification is not belonging to the user.")
+        }
+
+        notification.read = true
+
+        notificationRepository.save(notification)
     }
 
     /**
