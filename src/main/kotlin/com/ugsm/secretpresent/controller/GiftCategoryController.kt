@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/api/category")
 
-class CategoryController(
+class GiftCategoryController(
     @Autowired
     var naverShoppingCategoryService: NaverShoppingCategoryService,
 ) {
