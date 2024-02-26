@@ -15,7 +15,7 @@ class JwtProvider(
     @Value("\${jwt.secret}")
     private val secretKey: String,
 ) {
-    private val accessTokenValidTime: Long = Duration.ofMinutes(30000).toMillis() // 만료시간 30분
+    private val accessTokenValidTime: Long = Duration.ofMinutes(30000000).toMillis() // 만료시간 30분
     private val refreshTokenValidTime: Long = Duration.ofMinutes(10).toMillis() // 만료시간 2주
 
     // 회원 정보 조회

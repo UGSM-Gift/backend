@@ -7,8 +7,10 @@ import com.ugsm.secretpresent.model.personalcategory.SurveyPersonalCategory
 import com.ugsm.secretpresent.model.personalcategory.SurveyPersonalCategoryQuestionAnswer
 import com.ugsm.secretpresent.model.personalcategory.UserSurvey
 import com.ugsm.secretpresent.repository.*
+import com.ugsm.secretpresent.response.CustomResponse
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -43,7 +45,7 @@ class SurveyController(
 ) {
 
     @PostMapping("")
-    fun createSurvey(@AuthenticationPrincipal userInfo: UserInfo, @RequestBody dto: CreateSurveyDto) {
+    fun createSurvey(@AuthenticationPrincipal userInfo: UserInfo, @RequestBody dto: CreateSurveyDto): ResponseEntity<CustomResponse<Int?>> {
         val user = userRepository.findById(userInfo.id).get()
         val anniversary = anniversaryRepository.findById(dto.anniversaryId).getOrElse{throw EntityNotFoundException("존재하지 않는 기념일 정보")}
         if(anniversary.user.id != userInfo.id) throw UnauthorizedException()
@@ -59,10 +61,11 @@ class SurveyController(
                 survey = survey,
                 selectedPersonalCategory = category,
                 otherName = answeredCategory.otherName,
+                categoryName = category.name
             )
             surveyPersonalCategoryRepository.save(surveyCategory)
 
-            answeredCategory.questionsWithAnswers?.forEach { question ->
+            answeredCategory.questionsWithAnswers?.map { question ->
                 val categoryQuestion = personalCategoryQuestionRepository.findById(question.id).get()
                 if(!question.otherAnswer.isNullOrEmpty()) {
                     val questionAnswer = SurveyPersonalCategoryQuestionAnswer(
@@ -85,10 +88,13 @@ class SurveyController(
                     }
                     questionAnswerRepository.saveAll(answers)
                 }
-
-
-
             }
         }
+
+        return ResponseEntity.ok(
+            CustomResponse(
+                200, survey.id, ""
+            )
+        )
     }
 }

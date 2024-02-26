@@ -20,6 +20,10 @@ class SurveyPersonalCategory(
     @OneToMany(mappedBy = "category")
     var answeredQuestions: List<SurveyPersonalCategoryQuestionAnswer> = emptyList(),
 
+    @Column
+    var categoryName: String,
+
+    @Column
     var otherName: String? = null,
 
 
