@@ -7,8 +7,8 @@ import com.ugsm.secretpresent.model.User
 import com.ugsm.secretpresent.model.UserAccountDeletionReason
 import com.ugsm.secretpresent.repository.AccountDeletionReasonRepository
 import com.ugsm.secretpresent.repository.UserAccountDeletionReasonRepository
-import com.ugsm.secretpresent.repository.UserPersonalCategorySurveyRepository
 import com.ugsm.secretpresent.repository.UserRepository
+import com.ugsm.secretpresent.repository.UserSurveyRepository
 import com.ugsm.secretpresent.security.JwtProvider
 import io.jsonwebtoken.ExpiredJwtException
 import jakarta.persistence.EntityNotFoundException
@@ -24,7 +24,7 @@ class UserService(
     val userRepository: UserRepository,
 
     @Autowired
-    val userPersonalCategorySurveyRepository: UserPersonalCategorySurveyRepository,
+    val userSurveyRepository: UserSurveyRepository,
 
     @Autowired
     val userAccountDeletionReasonRepository: UserAccountDeletionReasonRepository,
@@ -58,7 +58,7 @@ class UserService(
 
     fun findByNickname(nickname: String) = userRepository.findByNickname(nickname)
 
-    fun findSurveyByUserId(userId: Long) = userPersonalCategorySurveyRepository.findByUserId(userId)
+    fun findSurveyByUserId(userId: Long) = userSurveyRepository.findByUserId(userId)
     fun checkNicknameValid(userId: Long, nickname: String): NicknameValidationDto {
         var isValid = true
         var reason: String? = null

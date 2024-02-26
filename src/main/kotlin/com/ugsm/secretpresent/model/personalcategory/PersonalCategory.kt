@@ -1,7 +1,5 @@
 package com.ugsm.secretpresent.model.personalcategory
 
-import com.fasterxml.jackson.annotation.JsonBackReference
-import com.fasterxml.jackson.annotation.JsonManagedReference
 import com.ugsm.secretpresent.enums.PersonalCategoryType
 import com.ugsm.secretpresent.model.BaseTimeEntity
 import jakarta.persistence.*
@@ -19,17 +17,17 @@ class PersonalCategory(
     @Enumerated(EnumType.STRING)
     var type: PersonalCategoryType,
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_id")
-    @JsonBackReference
-    var parentPersonalCategory: PersonalCategory? = null,
+    @OneToMany(mappedBy = "category")
+    var questions: List<PersonalCategoryQuestion>,
 
-    @OneToMany(mappedBy = "parentPersonalCategory", cascade = [CascadeType.ALL])
-    @JsonManagedReference
-    var childPersonalCategories: MutableList<PersonalCategory>,
-
-    @Column
-    var question: String,
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "parent_id")
+//    @JsonBackReference
+//    var parentPersonalCategory: PersonalCategory? = null,
+//
+//    @OneToMany(mappedBy = "parentPersonalCategory", cascade = [CascadeType.ALL])
+//    @JsonManagedReference
+//    var childPersonalCategories: MutableList<PersonalCategory>,
 
     @Column
     var viewOrder: Int,
