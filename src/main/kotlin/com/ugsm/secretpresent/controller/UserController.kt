@@ -86,7 +86,7 @@ class UserController(
     ): ResponseEntity<CustomResponse<Nothing?>> {
 
         val user = userService.findById(userInfo.id).get()
-        if(user.deleted) throw BadRequestException("User has been already signed out")
+        if(user.deleted) throw BadRequestException(message = "User has been already signed out")
 
         userService.deleteAccount(userInfo.id, dto)
 
