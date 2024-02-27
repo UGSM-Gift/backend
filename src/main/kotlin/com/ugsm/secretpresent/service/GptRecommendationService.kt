@@ -8,13 +8,16 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import java.util.concurrent.TimeUnit
 
 @Service
 class GptRecommendationService(
-    @Autowired
-    val naverShoppingCategoryRepository: NaverShoppingCategoryRepository
+    @Autowired val naverShoppingCategoryRepository: NaverShoppingCategoryRepository
 ) {
-    val client: OkHttpClient = OkHttpClient.Builder().build()
+    val client: OkHttpClient = OkHttpClient
+                                .Builder()
+                                .readTimeout(20, TimeUnit.SECONDS)
+                                .build()
 
     companion object {
         const val BASE_URL = "http://test.ugsm.co.kr:8000"
@@ -22,17 +25,14 @@ class GptRecommendationService(
 
     fun getRecommendedCategories(surveyId: Int): List<RecommendedCategoryDto>? {
         val objectMapper = ObjectMapper()
-        val req = Request.Builder()
-            .url("${BASE_URL}/gpt/recommendation/${surveyId}")
-            .get()
-            .build()
+        val req = Request.Builder().url("${BASE_URL}/gpt/recommendation/${surveyId}").get().build()
         val res = client.newCall(req).execute()
         if (res.code != 200) {
             throw IllegalArgumentException("메세지 전송에 실패했습니다.")
         }
-        val categoryIds = objectMapper.readValue(res.body.string(), object:TypeReference<List<Int>>() {})
+        val categoryIds = objectMapper.readValue(res.body.string(), object : TypeReference<List<Int>>() {})
 
         val categories = naverShoppingCategoryRepository.findAllById(categoryIds)
-        return categories.map{RecommendedCategoryDto(it.id, it.name)}
+        return categories.map { RecommendedCategoryDto(it.id, it.name) }
     }
 }
