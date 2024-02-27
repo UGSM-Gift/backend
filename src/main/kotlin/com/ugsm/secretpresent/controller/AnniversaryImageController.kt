@@ -1,6 +1,7 @@
 package com.ugsm.secretpresent.controller
 
 import com.ugsm.secretpresent.dto.AnniversaryImageDto
+import com.ugsm.secretpresent.enums.GlobalResCode
 import com.ugsm.secretpresent.response.CustomResponse
 import com.ugsm.secretpresent.service.AnniversaryImageService
 import org.springframework.beans.factory.annotation.Autowired
@@ -21,7 +22,7 @@ class AnniversaryImageController(
     fun getAll(): ResponseEntity<CustomResponse<List<AnniversaryImageDto>>> {
         return ResponseEntity.ok(
             CustomResponse(
-                HttpStatus.OK.value(),
+                GlobalResCode.OK.code,
                 anniversaryImageService.findAll(),
                 ""
             )

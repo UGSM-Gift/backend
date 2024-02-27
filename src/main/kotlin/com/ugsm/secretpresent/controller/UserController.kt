@@ -5,6 +5,7 @@ import com.ugsm.secretpresent.dto.ChangedUserInfo
 import com.ugsm.secretpresent.dto.NicknameValidationDto
 import com.ugsm.secretpresent.dto.UserAccountDeletionReasonDto
 import com.ugsm.secretpresent.dto.UserInfo
+import com.ugsm.secretpresent.enums.GlobalResCode
 import com.ugsm.secretpresent.lib.PhoneNoUtils
 import com.ugsm.secretpresent.model.User
 import com.ugsm.secretpresent.response.CustomResponse
@@ -35,7 +36,7 @@ class UserController(
 
         val info = User.toUserInfo(user)
 
-        return ResponseEntity.ok(CustomResponse(HttpStatus.OK.value(), info, ""))
+        return ResponseEntity.ok(CustomResponse(GlobalResCode.OK.code, info, ""))
     }
 
     @PutMapping("/me")
@@ -45,13 +46,14 @@ class UserController(
     ): ResponseEntity<CustomResponse<UserInfo?>> = runBlocking {
 
         changedUserInfo.apply { mobile = PhoneNoUtils.remainNumberOnly(mobile) }
-            .also{it ->
+            .also { it ->
                 val mobile = it.mobile
                 if (mobile != null && !PhoneNoUtils.validateNumberOnlyFormat(mobile)) {
-                return@runBlocking ResponseEntity
-                    .badRequest()
-                    .body(CustomResponse(HttpStatus.BAD_REQUEST.value(), null, "Not valid phone number"))
-            }}
+                    return@runBlocking ResponseEntity
+                        .badRequest()
+                        .body(CustomResponse(101, null, "Not valid phone number"))
+                }
+            }
 
 
 
@@ -60,7 +62,7 @@ class UserController(
                 .badRequest()
                 .body(
                     CustomResponse(
-                        HttpStatus.BAD_REQUEST.value(),
+                        102,
                         null,
                         "Nickname given has been already registered"
                     )
@@ -70,13 +72,13 @@ class UserController(
         if (((changedUserInfo.name != null) && (changedUserInfo.name == changedUserInfo.nickname)) || ((changedUserInfo.name != null) && changedUserInfo.name == userInfo.nickname)) {
             return@runBlocking ResponseEntity
                 .badRequest()
-                .body(CustomResponse(HttpStatus.BAD_REQUEST.value(), null, "Name given is as same as nickname"))
+                .body(CustomResponse(103, null, "Name given is as same as nickname"))
         }
 
         val updatedUserInfo = userService.updatePersonalInfo(userInfo.id, changedUserInfo)
 
         return@runBlocking ResponseEntity
-            .ok(CustomResponse(HttpStatus.OK.value(), updatedUserInfo, "User information updated"))
+            .ok(CustomResponse(GlobalResCode.OK.code, updatedUserInfo, "User information updated"))
     }
 
     @DeleteMapping("/me")
@@ -86,12 +88,12 @@ class UserController(
     ): ResponseEntity<CustomResponse<Nothing?>> {
 
         val user = userService.findById(userInfo.id).get()
-        if(user.deleted) throw BadRequestException(message = "User has been already signed out")
+        if (user.deleted) throw BadRequestException(101, message = "User has been already signed out")
 
         userService.deleteAccount(userInfo.id, dto)
 
         return ResponseEntity
-            .ok(CustomResponse(HttpStatus.OK.value(), null, "User account is deleted successfully"))
+            .ok(CustomResponse(GlobalResCode.OK.code, null, "User account is deleted successfully"))
     }
 
     @PostMapping("/me/logout")
@@ -100,7 +102,7 @@ class UserController(
 
         return ResponseEntity.ok(
             CustomResponse(
-                HttpStatus.OK.value(),
+                GlobalResCode.OK.code,
                 null,
                 "Logout Successful"
             )
@@ -115,6 +117,6 @@ class UserController(
 
         val validationResult = userService.checkNicknameValid(userInfo.id, nickname)
 
-        return ResponseEntity.ok(CustomResponse(HttpStatus.OK.value(), validationResult, ""))
+        return ResponseEntity.ok(CustomResponse(GlobalResCode.OK.code, validationResult, ""))
     }
 }

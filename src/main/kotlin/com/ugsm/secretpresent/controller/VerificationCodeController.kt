@@ -2,6 +2,7 @@ package com.ugsm.secretpresent.controller
 
 import com.ugsm.secretpresent.dto.Message
 import com.ugsm.secretpresent.dto.UserInfo
+import com.ugsm.secretpresent.enums.GlobalResCode
 import com.ugsm.secretpresent.response.CustomResponse
 import com.ugsm.secretpresent.service.MessageService
 import com.ugsm.secretpresent.service.VerificationMessageService
@@ -33,7 +34,7 @@ class VerificationCodeController(
 
         messageService.sendOne(message)
 
-        return ResponseEntity.ok(CustomResponse(HttpStatus.OK.value(), null, "send msg successfully"))
+        return ResponseEntity.ok(CustomResponse(GlobalResCode.OK.code, null, "send msg successfully"))
     }
 
     @PutMapping("/verification-code/{code}")
@@ -47,6 +48,6 @@ class VerificationCodeController(
         }
         verificationMessageService.confirmCode(code, receiverPhoneNumber, userInfo.id)
         return ResponseEntity
-                .ok(CustomResponse(HttpStatus.OK.value(), null, "verification success"))
+                .ok(CustomResponse(GlobalResCode.OK.code, null, "verification success"))
     }
 }

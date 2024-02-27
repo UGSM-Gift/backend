@@ -17,9 +17,6 @@ class SurveyPersonalCategory(
     @JoinColumn(name = "selected_personal_category_id")
     var selectedPersonalCategory: PersonalCategory,
 
-    @OneToMany(mappedBy = "category")
-    var answeredQuestions: List<SurveyPersonalCategoryQuestionAnswer> = emptyList(),
-
     @Column
     var categoryName: String,
 

@@ -1,6 +1,7 @@
 package com.ugsm.secretpresent.controller
 
 import com.ugsm.secretpresent.dto.TokensDto
+import com.ugsm.secretpresent.enums.GlobalResCode
 import com.ugsm.secretpresent.response.CustomResponse
 import com.ugsm.secretpresent.service.UserService
 import org.springframework.beans.factory.annotation.Autowired
@@ -27,7 +28,7 @@ class AuthController(
 
         return ResponseEntity.ok(
             CustomResponse(
-                HttpStatus.OK.value(),
+                GlobalResCode.OK.code,
                 tokens,
                 "A new access token is created successfully."
             )

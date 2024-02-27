@@ -21,13 +21,17 @@ class UserAnniversaryService(
     val anniversaryImageRepository: AnniversaryImageRepository
 ) {
 
-    fun findByYearMonth(userId: Long, yearMonth: YearMonth): List<UserAnniversaryDto> {
-
-        val startDate = yearMonth.atDay(1)
-        val endDate = yearMonth.atEndOfMonth()
+    fun findByYearMonth(userId: Long, yearMonth: YearMonth?): List<UserAnniversaryDto> {
 
 
-        val userAnniversaries = userAnniversaryRepository.findByUserIdAndDateBetween(userId, startDate, endDate)
+
+        val userAnniversaries = if(yearMonth != null){
+            val startDate = yearMonth.atDay(1)
+            val endDate = yearMonth.atEndOfMonth()
+            userAnniversaryRepository.findByUserIdAndDateBetween(userId, startDate, endDate)
+        } else {
+            userAnniversaryRepository.findByUserId(userId)
+        }
 
         return userAnniversaries.map { UserAnniversaryDto(
             it.id, it.name, it.date, it.image.imageUrl
