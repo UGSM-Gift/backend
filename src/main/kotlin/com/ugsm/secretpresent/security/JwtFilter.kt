@@ -10,10 +10,9 @@ import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpHeaders
-import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException
+import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.AuthenticationException
-import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
@@ -107,7 +106,7 @@ class JwtFilter(
     }
 
     fun jwtExceptionHandler(response: HttpServletResponse, errorCode: Int, errorMsg: String) {
-        response.status = errorCode
+        response.status = HttpStatus.BAD_REQUEST.value()
         response.contentType = "application/json"
         response.characterEncoding = "UTF-8"
         val json = ObjectMapper().writeValueAsString(mutableMapOf("code" to errorCode, "data" to null, "message" to errorMsg))

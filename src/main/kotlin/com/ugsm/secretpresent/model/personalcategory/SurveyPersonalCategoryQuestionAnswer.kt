@@ -9,8 +9,8 @@ class SurveyPersonalCategoryQuestionAnswer(
     val id: Long? = null,
 
     @ManyToOne
-    @JoinColumn(name = "survey_category_id")
-    val category: SurveyPersonalCategory,
+    @JoinColumn(name="personal_category_id")
+    val personalCategory: PersonalCategory,
 
     @ManyToOne
     @JoinColumn(name = "question_id")
