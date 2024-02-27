@@ -16,7 +16,7 @@ data class PersonalCategoryWithQuestionsAndAnswers(
 )
 
 data class PersonalCategoryQuestionWithAnswers(
-    val id: Int,
+    val questionId: Int,
     val answerId: Int?,
     val otherAnswer: String?
 )
