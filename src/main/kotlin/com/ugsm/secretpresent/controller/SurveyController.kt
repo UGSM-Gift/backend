@@ -58,7 +58,7 @@ class SurveyController(
         )
         userSurveyRepository.save(survey)
 
-        dto.answeredCategories.map{answeredCategory->
+        dto.answeredCategories.map {answeredCategory->
             val category = personalCategoryRepository.findById(answeredCategory.id).get()
             val surveyCategory = SurveyPersonalCategory(
                 survey = survey,
@@ -71,7 +71,7 @@ class SurveyController(
         }
 
         dto.questionsWithAnswers.map { question ->
-            val categoryQuestion = personalCategoryQuestionRepository.findById(question.id).get()
+            val categoryQuestion = personalCategoryQuestionRepository.findById(question.questionId).get()
             val personalCategory = categoryQuestion.category
             if(!question.otherAnswer.isNullOrEmpty()) {
                 val questionAnswer = SurveyPersonalCategoryQuestionAnswer(
