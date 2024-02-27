@@ -138,6 +138,7 @@ class WebSecurityConfig(
         configuration.allowedOrigins = listOf(
             "http://localhost:3000",
             "https://www.ugsm.co.kr:3000",
+            "https://www.ugsm.co.kr",
             "http://localhost:15179",
             "http://localhost:15180"
         )
