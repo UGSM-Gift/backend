@@ -20,6 +20,9 @@ class PersonalCategory(
     @OneToMany(mappedBy = "category")
     var questions: List<PersonalCategoryQuestion>,
 
+    @Column
+    var hasOtherName: Boolean,
+
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "parent_id")
 //    @JsonBackReference

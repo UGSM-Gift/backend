@@ -17,6 +17,9 @@ class PersonalCategoryQuestion(
     @ManyToOne
     val category: PersonalCategory,
 
+    @Column
+    val hasMultipleChoices: Boolean,
+
     @OneToMany(mappedBy = "question")
     val choices: List<PersonalCategoryQuestionChoice>
 ) :BaseTimeEntity()

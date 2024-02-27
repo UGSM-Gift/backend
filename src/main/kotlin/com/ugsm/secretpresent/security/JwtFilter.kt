@@ -54,13 +54,12 @@ class JwtFilter(
         val token:String?
 
         if(path.startsWith("/api/notification")){
-            token = request.getParameter("accessToken") ?: return jwtExceptionHandler(response, 401, "Token given is not a valid access token")
+            token = request.getParameter("accessToken") ?: return jwtExceptionHandler(response, 40001, "Token given is not a valid access token")
         } else {
             val authorization = request.getHeader(HttpHeaders.AUTHORIZATION)
 
             if (authorization == null || !authorization.startsWith("Bearer ")) {
-                jwtExceptionHandler(response, 401, "Token given is not a valid access token")
-                return
+                return jwtExceptionHandler(response, 40002, "Token given is not a valid access token")
             }
 
             // Token 꺼내기
@@ -71,8 +70,7 @@ class JwtFilter(
 
         if (path.startsWith("/api/auth/token")) {
             if (jwtProvider.isExpired(token)) {
-                filterChain.doFilter(request, response)
-                return
+                return filterChain.doFilter(request, response)
             } else {
                 throw Exception("아직 만료되지 않은 토큰")
             }
@@ -81,13 +79,13 @@ class JwtFilter(
         // Token Expired 되었는지 여부
 
         if (!jwtProvider.isAccessToken(token)) {
-            throw AuthenticationCredentialsNotFoundException("Token given is not a valid access token")
+            return jwtExceptionHandler(response, 40003, "Token given is not a valid access token")
         }
 
         // UserId Token에서 꺼내기
         val userId = jwtProvider.getUserId(token)
 
-        val user = userRepository.findByIdAndDeletedFalse(userId) ?: return jwtExceptionHandler(response, 400, "User Not Found")
+        val user = userRepository.findByIdAndDeletedFalse(userId) ?: return jwtExceptionHandler(response, 40004, "User Not Found")
 
 
         val userInfo = User.toUserInfo(user)
@@ -112,7 +110,7 @@ class JwtFilter(
         response.status = errorCode
         response.contentType = "application/json"
         response.characterEncoding = "UTF-8"
-        val json = ObjectMapper().writeValueAsString(mutableMapOf("status" to errorCode, "message" to errorMsg))
+        val json = ObjectMapper().writeValueAsString(mutableMapOf("code" to errorCode, "data" to null, "message" to errorMsg))
         response.writer.write(json)
     }
 }
