@@ -36,7 +36,7 @@ class ProductService(
 
     fun createDibs(userId: Long, productId: Long) {
         if(userDibsProductRepository.findByUserIdAndProductId(userId, productId) != null){
-            throw BadRequestException("User has already had dibs on this product")
+            throw BadRequestException(message = "User has already had dibs on this product")
         }
 
         val user = userRepository.findById(userId).get()

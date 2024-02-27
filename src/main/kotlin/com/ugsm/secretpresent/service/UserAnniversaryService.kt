@@ -49,7 +49,7 @@ class UserAnniversaryService(
         val anniversary = userAnniversaryRepository.findById(anniversaryId).get()
 
         if (anniversary.user.id != userId) {
-            throw UnauthorizedException("You are not allowed to do this action.")
+            throw UnauthorizedException(message = "You are not allowed to do this action.")
         }
 
         userAnniversaryRepository.delete(anniversary)
