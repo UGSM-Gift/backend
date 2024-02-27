@@ -19,7 +19,7 @@ class PersonalCategoryService(
     fun getType(type:PersonalCategoryType): List<PersonalCategoryDto> {
         return personalCategoryRepository
             .findByTypeOrderByViewOrderAsc(type)
-            .map{PersonalCategoryDto(it.id, it.name)}
+            .map{PersonalCategoryDto(it.id, it.name, it.hasOtherName)}
     }
 
     fun getCategoryQuestionsWithChoices(categoryIds: List<Int>): List<PersonalCategoryWithQuestionsDto> {
@@ -27,9 +27,9 @@ class PersonalCategoryService(
             .map {category->
                 val questionsDto = category.questions.map{
                     val choicesDto = it.choices.map{choice -> PersonalCategoryQuestionChoiceDto(choice.id, choice.content)}
-                    PersonalCategoryQuestionWithChoicesDto(it.id, it.content, choicesDto)
+                    PersonalCategoryQuestionWithChoicesDto(it.id, it.content, it.hasMultipleChoices,choicesDto)
                 }
-                val categoryDto = PersonalCategoryDto(category.id, category.name)
+                val categoryDto = PersonalCategoryDto(category.id, category.name, category.hasOtherName)
                 PersonalCategoryWithQuestionsDto(categoryDto, questionsDto)
             }
     }
