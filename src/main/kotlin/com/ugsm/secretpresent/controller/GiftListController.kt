@@ -4,6 +4,7 @@ import com.ugsm.secretpresent.dto.CreateGiftListDto
 import com.ugsm.secretpresent.dto.GiftListDetailDto
 import com.ugsm.secretpresent.dto.GiftListDto
 import com.ugsm.secretpresent.dto.UserInfo
+import com.ugsm.secretpresent.enums.GlobalResCode
 import com.ugsm.secretpresent.response.CustomResponse
 import com.ugsm.secretpresent.service.GiftListService
 import org.springframework.beans.factory.annotation.Autowired
@@ -40,7 +41,7 @@ class GiftListController(
     fun getById(@PathVariable giftListId: Int): ResponseEntity<CustomResponse<GiftListDetailDto>> {
         return ResponseEntity.ok(
             CustomResponse(
-                HttpStatus.OK.value(),
+                GlobalResCode.OK.code,
                 giftListService.get(giftListId),
                 ""
             )

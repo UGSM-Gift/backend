@@ -2,6 +2,7 @@ package com.ugsm.secretpresent.controller
 
 import com.ugsm.secretpresent.dto.ImageUploadResponseDto
 import com.ugsm.secretpresent.dto.UserInfo
+import com.ugsm.secretpresent.enums.GlobalResCode
 import com.ugsm.secretpresent.enums.S3ImageUploadType
 import com.ugsm.secretpresent.response.CustomResponse
 import com.ugsm.secretpresent.service.AwsS3Service
@@ -29,7 +30,7 @@ class ImageController(
     ): ResponseEntity<CustomResponse<ImageUploadResponseDto>> {
         return ResponseEntity.ok(
             CustomResponse(
-                HttpStatus.OK.value(), s3Service.upload(image, userInfo.id, type), ""
+                GlobalResCode.OK.code, s3Service.upload(image, userInfo.id, type), ""
             )
         )
     }

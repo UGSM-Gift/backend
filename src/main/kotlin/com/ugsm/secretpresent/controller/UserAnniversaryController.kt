@@ -3,6 +3,7 @@ package com.ugsm.secretpresent.controller
 import com.ugsm.secretpresent.dto.CreateUserAnniversaryDto
 import com.ugsm.secretpresent.dto.UserAnniversaryDto
 import com.ugsm.secretpresent.dto.UserInfo
+import com.ugsm.secretpresent.enums.GlobalResCode
 import com.ugsm.secretpresent.response.CustomResponse
 import com.ugsm.secretpresent.service.UserAnniversaryService
 import jakarta.validation.Valid
@@ -30,7 +31,7 @@ class UserAnniversaryController(
 
         return ResponseEntity.ok(
             CustomResponse(
-                HttpStatus.OK.value(),
+                GlobalResCode.OK.code,
                 anniversariesDto,
                 ""
             )
@@ -45,7 +46,7 @@ class UserAnniversaryController(
         userAnniversaryService.create(userInfo.id, dto)
         return ResponseEntity.ok(
             CustomResponse(
-                HttpStatus.OK.value(),
+                GlobalResCode.OK.code,
                 null,
                 ""
             )
@@ -59,7 +60,7 @@ class UserAnniversaryController(
         userAnniversaryService.delete(userInfo.id, anniversaryId)
         return ResponseEntity.ok(
             CustomResponse(
-                HttpStatus.OK.value(),
+                GlobalResCode.OK.code,
                 null,
                 ""
             )
