@@ -1,7 +1,7 @@
 package com.ugsm.secretpresent.response
 
 data class CustomResponse<T>(
-    val status: Int,
+    val code: Int,
     val data: T,
     val message:String,
 )

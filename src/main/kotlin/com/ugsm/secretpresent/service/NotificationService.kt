@@ -49,7 +49,7 @@ class NotificationService(
         }
 
         if(notification.user.id?.equals(notificationId) == false){
-            throw UnauthorizedException("Notification is not belonging to the user.")
+            throw UnauthorizedException(message = "Notification is not belonging to the user.")
         }
 
         notification.read = true

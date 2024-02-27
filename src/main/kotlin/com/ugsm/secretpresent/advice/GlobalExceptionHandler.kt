@@ -1,6 +1,8 @@
 package com.ugsm.secretpresent.advice
 
 import com.ugsm.secretpresent.Exception.BadRequestException
+import com.ugsm.secretpresent.Exception.UnauthorizedException
+import com.ugsm.secretpresent.response.CustomResponse
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -13,10 +15,10 @@ import org.springframework.web.method.annotation.HandlerMethodValidationExceptio
 class GlobalExceptionHandler {
     @ExceptionHandler(EntityNotFoundException::class)
     fun handleEntityNotFoundException(e: EntityNotFoundException): ResponseEntity<*> {
-        val body = mutableMapOf(
-            "status" to HttpStatus.NOT_FOUND.value(),
-            "data" to null,
-            "message" to e.message
+        val body = CustomResponse(
+            40400,
+            null,
+            e.message ?: ""
         )
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body)
     }
@@ -24,7 +26,7 @@ class GlobalExceptionHandler {
     @ExceptionHandler(HandlerMethodValidationException::class)
     fun handleValidationException(e: HandlerMethodValidationException): ResponseEntity<*>{
         val body = mutableMapOf(
-            "status" to HttpStatus.BAD_REQUEST.value(),
+            "code" to 50100,
             "data" to null,
             "message" to "Invalid Input Format"
         )
@@ -33,11 +35,22 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(BadRequestException::class)
     fun handleBadRequestException(e: BadRequestException): ResponseEntity<*>{
-        val body = mutableMapOf(
-            "status" to HttpStatus.BAD_REQUEST.value(),
-            "data" to null,
-            "message" to e.message
+        val body = CustomResponse(
+            e.code,
+            null,
+            e.message ?: ""
         )
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body)
+    }
+
+
+    @ExceptionHandler(UnauthorizedException::class)
+    fun handleUnauthorizedException(e: UnauthorizedException): ResponseEntity<*> {
+        val body = CustomResponse(
+            e.code,
+            null,
+            e.message ?: ""
+        )
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body)
     }
 }
