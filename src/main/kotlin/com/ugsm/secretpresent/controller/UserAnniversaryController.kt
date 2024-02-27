@@ -25,7 +25,7 @@ class UserAnniversaryController(
     @GetMapping("/me/anniversary")
     fun getMineByYearMonth(
         @AuthenticationPrincipal userInfo: UserInfo,
-        @RequestParam yearMonth: YearMonth,
+        @RequestParam yearMonth: YearMonth?,
     ): ResponseEntity<CustomResponse<List<UserAnniversaryDto>>> {
         val anniversariesDto = userAnniversaryService.findByYearMonth(userInfo.id,yearMonth)
 
