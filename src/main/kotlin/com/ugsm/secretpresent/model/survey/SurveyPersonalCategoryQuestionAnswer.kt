@@ -1,5 +1,8 @@
-package com.ugsm.secretpresent.model.personalcategory
+package com.ugsm.secretpresent.model.survey
 
+import com.ugsm.secretpresent.model.personalcategory.PersonalCategory
+import com.ugsm.secretpresent.model.personalcategory.PersonalCategoryQuestion
+import com.ugsm.secretpresent.model.personalcategory.PersonalCategoryQuestionChoice
 import jakarta.persistence.*
 
 @Entity

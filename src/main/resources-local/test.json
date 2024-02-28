@@ -1,0 +1,23 @@
+{
+  "id": 1,
+  "content": "독서하면서 주로 마시는 음료가 있나요?",
+  "hasMultipleChoices": true,
+  "choices": [
+    {
+      "id": 1,
+      "content": "커피"
+    },
+    {
+      "id": 2,
+      "content": "차류"
+    },
+    {
+      "id": 3,
+      "content": "음료"
+    },
+    {
+      "id": 4,
+      "content": "없음"
+    }
+  ]
+}

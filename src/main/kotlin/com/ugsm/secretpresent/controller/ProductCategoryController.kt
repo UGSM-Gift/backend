@@ -1,6 +1,6 @@
 package com.ugsm.secretpresent.controller
 
-import com.ugsm.secretpresent.dto.ProductCategoryDto
+import com.ugsm.secretpresent.dto.NaverShoppingCategoryDto
 import com.ugsm.secretpresent.service.NaverShoppingCategoryService
 import com.ugsm.secretpresent.service.ProductService
 import org.springframework.beans.factory.annotation.Autowired
@@ -19,8 +19,8 @@ class ProductCategoryController(
 ) {
 
     @GetMapping("")
-    fun getAll(): List<ProductCategoryDto> {
-        return naverShoppingCategoryService.test()
+    fun getAll(): List<NaverShoppingCategoryDto> {
+        return naverShoppingCategoryService.getAllCategories()
 
 
     }

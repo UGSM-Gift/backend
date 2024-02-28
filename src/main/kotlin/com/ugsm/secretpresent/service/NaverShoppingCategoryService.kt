@@ -36,24 +36,16 @@ class NaverShoppingCategoryService(
 
     fun getAllLeaves():List<LeafCategoryDto> = support.getAllLeaves()
 
-    fun test(): List<Unit> {
-        val excludedIds = listOf(
-            10030807, 10011397, 10030841, 10016442, 10016443, 10016548, 10016445,
-            10016447, 10016448, 10016546, 10016449
-        )
-        val result = repository.findByActiveTrueAndParentCategoryIsNullAndIdNotIn(excludedIds)
-
-        return result.map {
-            val children = if(it.childCategories.isEmpty()){
-                emptyList<NaverShoppingCategoryDto>()
-            } else {
-                var dtoChildren: List<NaverShoppingCategoryDto> = emptyList()
-                it.childCategories.forEach {child ->
-                    if(child.childCategories.isEmpty()){
-                        dtoChildren = dtoChildren + NaverShoppingCategoryDto(child.id, child.name, children = null)
-                    }
+    fun getAllCategories(): List<NaverShoppingCategoryDto> {
+        val result = support.getAllCategories()
+        val parentCategories = result.map {NaverShoppingCategoryDto(it.id, it.name, null)}.toSet()
+        return parentCategories.map {parent->
+            val children = result.filter{it.id == parent.id && it.childId != null}
+                .map{
+                    val childId = it.childId as Int
+                    NaverShoppingCategoryDto(childId,it.childName, null)
                 }
-            }
+            NaverShoppingCategoryDto(parent.id,parent.name, children)
         }
     }
 }

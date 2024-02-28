@@ -5,12 +5,12 @@ import com.ugsm.secretpresent.dto.CreateSurveyDto
 import com.ugsm.secretpresent.dto.RecommendedCategoryDto
 import com.ugsm.secretpresent.dto.UserInfo
 import com.ugsm.secretpresent.enums.GlobalResCode
-import com.ugsm.secretpresent.model.personalcategory.SurveyPersonalCategory
-import com.ugsm.secretpresent.model.personalcategory.SurveyPersonalCategoryQuestionAnswer
-import com.ugsm.secretpresent.model.personalcategory.UserSurvey
+import com.ugsm.secretpresent.model.survey.SurveyPersonalCategory
+import com.ugsm.secretpresent.model.survey.SurveyPersonalCategoryQuestionAnswer
+import com.ugsm.secretpresent.model.survey.UserSurvey
 import com.ugsm.secretpresent.repository.*
 import com.ugsm.secretpresent.response.CustomResponse
-import com.ugsm.secretpresent.service.GptRecommendationService
+import com.ugsm.secretpresent.service.SurveyProductCategoryService
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
@@ -34,7 +34,7 @@ class SurveyController(
     val personalCategoryRepository: PersonalCategoryRepository,
 
     @Autowired
-    val gptRecommendationService: GptRecommendationService,
+    val surveyProductCategoryService: SurveyProductCategoryService,
 
     @Autowired
     val personalCategoryQuestionRepository: PersonalCategoryQuestionRepository,
@@ -48,17 +48,21 @@ class SurveyController(
 ) {
 
     @PostMapping("")
-    fun createSurvey(@AuthenticationPrincipal userInfo: UserInfo, @RequestBody dto: CreateSurveyDto): ResponseEntity<CustomResponse<Int?>> {
+    fun createSurvey(
+        @AuthenticationPrincipal userInfo: UserInfo,
+        @RequestBody dto: CreateSurveyDto
+    ): ResponseEntity<CustomResponse<Int?>> {
         val user = userRepository.findById(userInfo.id).get()
-        val anniversary = anniversaryRepository.findById(dto.anniversaryId).getOrElse{throw EntityNotFoundException("존재하지 않는 기념일 정보")}
-        if(anniversary.user.id != userInfo.id) throw UnauthorizedException()
+        val anniversary = anniversaryRepository.findById(dto.anniversaryId)
+            .getOrElse { throw EntityNotFoundException("존재하지 않는 기념일 정보") }
+        if (anniversary.user.id != userInfo.id) throw UnauthorizedException()
         val survey = UserSurvey(
             user = user,
             anniversary = anniversary
         )
         userSurveyRepository.save(survey)
 
-        dto.answeredCategories.map {answeredCategory->
+        dto.answeredCategories.map { answeredCategory ->
             val category = personalCategoryRepository.findById(answeredCategory.id).get()
             val surveyCategory = SurveyPersonalCategory(
                 survey = survey,
@@ -73,7 +77,7 @@ class SurveyController(
         dto.questionsWithAnswers.map { question ->
             val categoryQuestion = personalCategoryQuestionRepository.findById(question.questionId).get()
             val personalCategory = categoryQuestion.category
-            if(!question.otherAnswer.isNullOrEmpty()) {
+            if (!question.otherAnswer.isNullOrEmpty()) {
                 val questionAnswer = SurveyPersonalCategoryQuestionAnswer(
                     question = categoryQuestion,
                     personalCategory = personalCategory,
@@ -82,7 +86,7 @@ class SurveyController(
                 )
                 questionAnswerRepository.save(questionAnswer)
             }
-            if (question.answerId != null){
+            if (question.answerId != null) {
                 val choice = personalCategoryQuestionChoiceRepository.findById(question.answerId).get()
                 val questionAnswer = SurveyPersonalCategoryQuestionAnswer(
                     question = categoryQuestion,
@@ -103,12 +107,33 @@ class SurveyController(
 
     @GetMapping("/{surveyId}/product-category/recommended")
     fun getRecommendedProductCategories(@PathVariable surveyId: Int): ResponseEntity<CustomResponse<List<RecommendedCategoryDto>?>> {
-        val result = gptRecommendationService.getRecommendedCategories(surveyId)
+        val prevResult = surveyProductCategoryService.getBySurveyId(surveyId)
+
+        val result = prevResult.ifEmpty {
+            surveyProductCategoryService.getRecommendedCategories(surveyId)
+        }
 
         return ResponseEntity.ok(
             CustomResponse(
-                code=GlobalResCode.OK.code,
-                data=result,
+                code = GlobalResCode.OK.code,
+                data = result,
+                message = ""
+            )
+        )
+    }
+
+    @PostMapping("/{surveyId}/product-category")
+    fun createSurveyProductCategories(
+        @PathVariable surveyId: Int,
+        @RequestBody productCategoryIds: List<Int>
+    ): ResponseEntity<CustomResponse<List<RecommendedCategoryDto>?>> {
+
+        surveyProductCategoryService.create(productCategoryIds, surveyId)
+
+        return ResponseEntity.ok(
+            CustomResponse(
+                code = GlobalResCode.OK.code,
+                data = null,
                 message = ""
             )
         )

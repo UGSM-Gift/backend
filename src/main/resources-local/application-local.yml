@@ -17,6 +17,7 @@ spring:
         show_sql: true
         format_sql: true
         use_sql_comments: true
+    show-sql: true
   security:
     oauth2:
       client:
@@ -60,6 +61,7 @@ logging:
         type:
           descriptor:
             sql: trace
+        SQL: debug
 
 jwt:
   secret: ENC(Dnx6poJjIvCsOvlcqX6y5jac3+/pn9YMFHxQMrRk9a35euxjTnHlyQ==)
