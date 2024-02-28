@@ -1,6 +1,7 @@
-package com.ugsm.secretpresent.model.personalcategory
+package com.ugsm.secretpresent.model.survey
 
 import com.ugsm.secretpresent.model.BaseTimeEntity
+import com.ugsm.secretpresent.model.personalcategory.PersonalCategory
 import jakarta.persistence.*
 
 @Entity

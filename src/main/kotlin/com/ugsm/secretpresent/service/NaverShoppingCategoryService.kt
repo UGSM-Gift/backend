@@ -2,7 +2,6 @@ package com.ugsm.secretpresent.service
 
 import com.ugsm.secretpresent.dto.LeafCategoryDto
 import com.ugsm.secretpresent.dto.NaverShoppingCategoryDto
-import com.ugsm.secretpresent.model.NaverShoppingCategory
 import com.ugsm.secretpresent.repository.NaverShoppingCategoryRepository
 import com.ugsm.secretpresent.repository.NaverShoppingCategoryRepositorySupport
 import org.springframework.beans.factory.annotation.Autowired
@@ -37,9 +36,16 @@ class NaverShoppingCategoryService(
 
     fun getAllLeaves():List<LeafCategoryDto> = support.getAllLeaves()
 
-    fun test(): List<NaverShoppingCategory> {
-        val items = support.getAll()
-
-        return items
+    fun getAllCategories(): List<NaverShoppingCategoryDto> {
+        val result = support.getAllCategories()
+        val parentCategories = result.map {NaverShoppingCategoryDto(it.id, it.name, null)}.toSet()
+        return parentCategories.map {parent->
+            val children = result.filter{it.id == parent.id && it.childId != null}
+                .map{
+                    val childId = it.childId as Int
+                    NaverShoppingCategoryDto(childId,it.childName, null)
+                }
+            NaverShoppingCategoryDto(parent.id,parent.name, children)
+        }
     }
 }

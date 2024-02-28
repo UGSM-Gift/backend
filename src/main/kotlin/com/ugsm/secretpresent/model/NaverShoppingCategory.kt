@@ -15,6 +15,9 @@ class NaverShoppingCategory(
     @JsonManagedReference
     var parentCategory: NaverShoppingCategory?= null,
 
+    @Column
+    var isActive: Boolean,
+
     @OneToMany(mappedBy = "parentCategory")
     @JsonBackReference
     var childCategories: List<NaverShoppingCategory> = emptyList()
