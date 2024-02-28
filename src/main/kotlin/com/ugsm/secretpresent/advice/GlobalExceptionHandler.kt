@@ -2,6 +2,7 @@ package com.ugsm.secretpresent.advice
 
 import com.ugsm.secretpresent.Exception.BadRequestException
 import com.ugsm.secretpresent.Exception.UnauthorizedException
+import com.ugsm.secretpresent.enums.GlobalResCode
 import com.ugsm.secretpresent.response.CustomResponse
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.http.HttpStatus
@@ -50,6 +51,16 @@ class GlobalExceptionHandler {
             e.code,
             null,
             e.message ?: ""
+        )
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body)
+    }
+
+    @ExceptionHandler(Exception::class)
+    fun otherException(e: Exception): ResponseEntity<*> {
+        val body = CustomResponse(
+            GlobalResCode.BAD_REQUEST.code,
+            null,
+            e.message ?: "Unknown Exception"
         )
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body)
     }

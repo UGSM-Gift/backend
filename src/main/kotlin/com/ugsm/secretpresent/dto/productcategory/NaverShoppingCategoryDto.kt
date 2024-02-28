@@ -1,4 +1,4 @@
-package com.ugsm.secretpresent.dto
+package com.ugsm.secretpresent.dto.productcategory
 
 data class NaverShoppingCategoryDto(
     val id: Int,

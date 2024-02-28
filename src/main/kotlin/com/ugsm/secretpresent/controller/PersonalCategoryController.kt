@@ -1,7 +1,7 @@
 package com.ugsm.secretpresent.controller
 
-import com.ugsm.secretpresent.dto.PersonalCategoryDto
-import com.ugsm.secretpresent.dto.PersonalCategoryWithQuestionsDto
+import com.ugsm.secretpresent.dto.personalcategory.PersonalCategoryDto
+import com.ugsm.secretpresent.dto.personalcategory.PersonalCategoryWithQuestionsDto
 import com.ugsm.secretpresent.enums.PersonalCategoryType
 import com.ugsm.secretpresent.response.CustomResponse
 import com.ugsm.secretpresent.service.PersonalCategoryService

@@ -1,14 +1,13 @@
 package com.ugsm.secretpresent.controller
 
-import com.ugsm.secretpresent.dto.CreateGiftListDto
-import com.ugsm.secretpresent.dto.GiftListDetailDto
-import com.ugsm.secretpresent.dto.GiftListDto
-import com.ugsm.secretpresent.dto.UserInfo
+import com.ugsm.secretpresent.dto.giftlist.CreateGiftListDto
+import com.ugsm.secretpresent.dto.giftlist.GiftListDetailDto
+import com.ugsm.secretpresent.dto.giftlist.GiftListDto
+import com.ugsm.secretpresent.dto.user.UserInfo
 import com.ugsm.secretpresent.enums.GlobalResCode
 import com.ugsm.secretpresent.response.CustomResponse
 import com.ugsm.secretpresent.service.GiftListService
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*

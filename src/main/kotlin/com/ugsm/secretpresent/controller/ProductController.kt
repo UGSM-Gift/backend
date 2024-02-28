@@ -1,6 +1,6 @@
 package com.ugsm.secretpresent.controller
 
-import com.ugsm.secretpresent.dto.UserInfo
+import com.ugsm.secretpresent.dto.user.UserInfo
 import com.ugsm.secretpresent.model.product.Product
 import com.ugsm.secretpresent.response.CustomResponse
 import com.ugsm.secretpresent.service.ProductService
@@ -20,11 +20,12 @@ class ProductController(
     fun getByCategoryIds(
         @PathVariable id: Int,
         @RequestParam page: Int = 1,
-        @RequestParam numInPage: Int = 10
-    ): ResponseEntity<CustomResponse<MutableList<Product>>> {
+        @RequestParam numInPage: Int = 10,
+        @RequestParam priceBelow: Int?,
+    ): ResponseEntity<CustomResponse<List<Product>>> {
         return ResponseEntity.ok(
             CustomResponse(
-                200, productService.getListByCategoryId(id, page, numInPage).content, ""
+                200, productService.getListByCategoryId(id, page, numInPage, priceBelow).content, ""
             )
         )
     }

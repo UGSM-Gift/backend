@@ -1,10 +1,9 @@
 package com.ugsm.secretpresent.repository
 
-import com.querydsl.core.group.GroupBy
 import com.querydsl.core.types.Projections
 import com.querydsl.jpa.impl.JPAQueryFactory
-import com.ugsm.secretpresent.dto.LeafCategoryDto
-import com.ugsm.secretpresent.dto.ProductCategoryDto
+import com.ugsm.secretpresent.dto.productcategory.LeafCategoryDto
+import com.ugsm.secretpresent.dto.productcategory.ProductCategoryDto
 import com.ugsm.secretpresent.model.NaverShoppingCategory
 import com.ugsm.secretpresent.model.QNaverShoppingCategory
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport

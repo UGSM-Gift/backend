@@ -1,4 +1,4 @@
-package com.ugsm.secretpresent.dto
+package com.ugsm.secretpresent.dto.user
 
 data class NicknameValidationDto(
     val nickname: String,

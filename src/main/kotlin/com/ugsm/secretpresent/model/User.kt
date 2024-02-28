@@ -1,7 +1,7 @@
 package com.ugsm.secretpresent.model
 
-import com.ugsm.secretpresent.dto.OAuthUserInfo
-import com.ugsm.secretpresent.dto.UserInfo
+import com.ugsm.secretpresent.dto.user.OAuthUserInfo
+import com.ugsm.secretpresent.dto.user.UserInfo
 import com.ugsm.secretpresent.enums.Gender
 import com.ugsm.secretpresent.enums.OAuth2Type
 import jakarta.persistence.*

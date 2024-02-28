@@ -1,4 +1,4 @@
-package com.ugsm.secretpresent.dto
+package com.ugsm.secretpresent.dto.productcategory
 
 class LeafCategoryDto{
     var id:Int = 0

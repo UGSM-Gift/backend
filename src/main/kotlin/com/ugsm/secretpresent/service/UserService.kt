@@ -1,6 +1,10 @@
 package com.ugsm.secretpresent.service
 
+import com.ugsm.secretpresent.Exception.BadRequestException
 import com.ugsm.secretpresent.dto.*
+import com.ugsm.secretpresent.dto.user.ChangedUserInfo
+import com.ugsm.secretpresent.dto.user.NicknameValidationDto
+import com.ugsm.secretpresent.dto.user.UserInfo
 import com.ugsm.secretpresent.enums.OAuth2Type
 import com.ugsm.secretpresent.enums.S3ImageUploadType
 import com.ugsm.secretpresent.model.User
@@ -16,6 +20,7 @@ import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.security.InvalidParameterException
+import java.time.LocalDate
 import kotlin.jvm.optionals.getOrElse
 
 @Service
@@ -33,11 +38,16 @@ class UserService(
     val accountDeletionReasonRepository: AccountDeletionReasonRepository,
 
     @Autowired
+    val userAnniversaryService: UserAnniversaryService,
+
+    @Autowired
     private val jwtProvider: JwtProvider,
 ) {
     fun updatePersonalInfo(userId: Long, changedUserInfo: ChangedUserInfo): UserInfo {
         val user = userRepository.findById(userId).getOrElse { throw EntityNotFoundException("User Not Found") }
         val uploadedImageUrl = "${S3ImageUploadType.PROFILE.getUrl(userId)}/${changedUserInfo.profileImageName}"
+
+        val prevBirthdate = user.birthdate
 
         user.apply {
             name = changedUserInfo.name ?: name
@@ -50,6 +60,16 @@ class UserService(
         }
 
         userRepository.save(user)
+        val newBirthdate = user.birthdate
+        if(prevBirthdate == null && newBirthdate != null){
+            val now = LocalDate.now()
+            val anniversaryDate = newBirthdate.withYear(now.year)
+            userAnniversaryService.create(
+                userId,
+                CreateUserAnniversaryDto("생일", anniversaryDate, OAuth2UserService.BIRTHDAY_ANNIVERSARY_IMG_ID)
+            )
+        }
+
 
         return User.toUserInfo(user)
     }

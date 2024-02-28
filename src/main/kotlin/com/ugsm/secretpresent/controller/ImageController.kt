@@ -1,13 +1,12 @@
 package com.ugsm.secretpresent.controller
 
 import com.ugsm.secretpresent.dto.ImageUploadResponseDto
-import com.ugsm.secretpresent.dto.UserInfo
+import com.ugsm.secretpresent.dto.user.UserInfo
 import com.ugsm.secretpresent.enums.GlobalResCode
 import com.ugsm.secretpresent.enums.S3ImageUploadType
 import com.ugsm.secretpresent.response.CustomResponse
 import com.ugsm.secretpresent.service.AwsS3Service
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.stereotype.Controller
