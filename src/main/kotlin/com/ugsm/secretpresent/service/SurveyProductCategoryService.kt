@@ -25,7 +25,7 @@ class SurveyProductCategoryService(
 ) {
     val client: OkHttpClient = OkHttpClient
         .Builder()
-        .readTimeout(20, TimeUnit.SECONDS)
+        .readTimeout(60, TimeUnit.SECONDS)
         .build()
 
     companion object {
