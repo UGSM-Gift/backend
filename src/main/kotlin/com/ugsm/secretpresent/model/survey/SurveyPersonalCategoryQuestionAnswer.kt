@@ -1,5 +1,6 @@
 package com.ugsm.secretpresent.model.survey
 
+import com.ugsm.secretpresent.model.BaseTimeEntity
 import com.ugsm.secretpresent.model.personalcategory.PersonalCategory
 import com.ugsm.secretpresent.model.personalcategory.PersonalCategoryQuestion
 import com.ugsm.secretpresent.model.personalcategory.PersonalCategoryQuestionChoice
@@ -10,6 +11,10 @@ class SurveyPersonalCategoryQuestionAnswer(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
+
+    @ManyToOne
+    @JoinColumn(name="survey_id")
+    val survey: UserSurvey,
 
     @ManyToOne
     @JoinColumn(name="personal_category_id")
@@ -25,4 +30,4 @@ class SurveyPersonalCategoryQuestionAnswer(
 
     @Column
     val answerContent: String,
-)
+):BaseTimeEntity()

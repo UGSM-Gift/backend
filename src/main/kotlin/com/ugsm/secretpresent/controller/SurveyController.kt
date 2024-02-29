@@ -1,8 +1,8 @@
 package com.ugsm.secretpresent.controller
 
 import com.ugsm.secretpresent.Exception.UnauthorizedException
-import com.ugsm.secretpresent.dto.survey.CreateSurveyDto
 import com.ugsm.secretpresent.dto.productcategory.RecommendedCategoryDto
+import com.ugsm.secretpresent.dto.survey.CreateSurveyDto
 import com.ugsm.secretpresent.dto.user.UserInfo
 import com.ugsm.secretpresent.enums.GlobalResCode
 import com.ugsm.secretpresent.model.survey.SurveyPersonalCategory
@@ -83,6 +83,7 @@ class SurveyController(
                     personalCategory = personalCategory,
                     answer = null,
                     answerContent = question.otherAnswer,
+                    survey = survey
                 )
                 questionAnswerRepository.save(questionAnswer)
             }
@@ -93,6 +94,7 @@ class SurveyController(
                     personalCategory = personalCategory,
                     answer = choice,
                     answerContent = choice.content,
+                    survey = survey
                 )
                 questionAnswerRepository.save(questionAnswer)
             }
