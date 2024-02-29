@@ -1,7 +1,9 @@
 package com.ugsm.secretpresent.service
 
-import com.ugsm.secretpresent.dto.OAuthUserInfo
-import com.ugsm.secretpresent.dto.UserInfoWithToken
+import com.ugsm.secretpresent.Exception.BadRequestException
+import com.ugsm.secretpresent.dto.CreateUserAnniversaryDto
+import com.ugsm.secretpresent.dto.user.OAuthUserInfo
+import com.ugsm.secretpresent.dto.user.UserInfoWithToken
 import com.ugsm.secretpresent.enums.Gender
 import com.ugsm.secretpresent.enums.OAuth2Type
 import com.ugsm.secretpresent.lib.PhoneNoUtils
@@ -27,9 +29,16 @@ class OAuth2UserService(
     val userRepository: UserRepository,
 
     @Autowired
+    val userAnniversaryService: UserAnniversaryService,
+
+    @Autowired
     val jwtProvider: JwtProvider,
 
     ) : DefaultOAuth2UserService() {
+    companion object{
+        const val BIRTHDAY_ANNIVERSARY_IMG_ID = 4
+    }
+
     @Throws(OAuth2AuthenticationException::class)
     override fun loadUser(userRequest: OAuth2UserRequest): OAuth2User {
         val oAuth2User = super.loadUser(userRequest)
@@ -84,6 +93,16 @@ class OAuth2UserService(
         var registeredUser = userRepository.findByOauth2IdAndOauth2TypeAndDeletedFalse(oAuthUserInfo.oAuthId, oAuthType)
         if (registeredUser == null) {
             userRepository.save(newUser)
+            val userId = newUser.id ?: throw BadRequestException()
+            val birthdate = newUser.birthdate
+            if (birthdate != null) {
+                val now = LocalDate.now()
+                val anniversaryDate = birthdate.withYear(now.year)
+                userAnniversaryService.create(
+                    userId,
+                    CreateUserAnniversaryDto("생일", anniversaryDate, BIRTHDAY_ANNIVERSARY_IMG_ID)
+                )
+            }
             registeredUser = newUser
         }
 

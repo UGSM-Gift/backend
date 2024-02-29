@@ -1,6 +1,6 @@
 package com.ugsm.secretpresent.service
 
-import com.ugsm.secretpresent.dto.GiftListDto
+import com.ugsm.secretpresent.dto.giftlist.GiftListDto
 import com.ugsm.secretpresent.repository.*
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertIterableEquals

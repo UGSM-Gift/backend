@@ -23,9 +23,13 @@ class ProductService(
     @Autowired
     val productRepository: ProductRepository
 ) {
-    fun getListByCategoryId(id: Int, page: Int, numInPage: Int): Slice<Product> {
-        val pageRequest = PageRequest.of(page, numInPage)
-        return repository.findSliceByProductCategoriesShoppingCategoryId(id, pageRequest)
+    fun getListByCategoryId(id: Int, page: Int, numInPage: Int, priceBelow: Int?): Slice<Product> {
+        val pageRequest = PageRequest.of(page - 1, numInPage)
+        return if(priceBelow == null) {
+            repository.findSliceByProductCategoriesShoppingCategoryId(id,pageRequest)
+        } else {
+            repository.findSliceByProductCategoriesShoppingCategoryIdAndPriceLessThan(id, pageRequest, priceBelow)
+        }
     }
 
     fun deleteDibs(userId: Long, productId: Long) {

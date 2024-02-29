@@ -1,4 +1,4 @@
-package com.ugsm.secretpresent.dto
+package com.ugsm.secretpresent.dto.survey
 
 import com.ugsm.secretpresent.enums.PersonalCategoryType
 

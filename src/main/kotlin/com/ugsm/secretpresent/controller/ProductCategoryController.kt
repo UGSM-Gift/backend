@@ -1,6 +1,6 @@
 package com.ugsm.secretpresent.controller
 
-import com.ugsm.secretpresent.dto.NaverShoppingCategoryDto
+import com.ugsm.secretpresent.dto.productcategory.NaverShoppingCategoryDto
 import com.ugsm.secretpresent.enums.GlobalResCode
 import com.ugsm.secretpresent.response.CustomResponse
 import com.ugsm.secretpresent.service.NaverShoppingCategoryService

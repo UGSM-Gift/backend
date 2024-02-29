@@ -2,7 +2,7 @@ package com.ugsm.secretpresent.repository
 
 import com.querydsl.core.types.Projections
 import com.querydsl.jpa.impl.JPAQueryFactory
-import com.ugsm.secretpresent.dto.GiftListDto
+import com.ugsm.secretpresent.dto.giftlist.GiftListDto
 import com.ugsm.secretpresent.enums.GiftConfirmedStatus
 import com.ugsm.secretpresent.model.gift.GiftList
 import com.ugsm.secretpresent.model.gift.QGiftList
@@ -10,7 +10,6 @@ import com.ugsm.secretpresent.model.gift.QGiftListProductLetter
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.springframework.stereotype.Repository
-import java.time.LocalDateTime
 
 @Repository
 class GiftListRepositorySupport(

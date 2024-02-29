@@ -1,7 +1,7 @@
 package com.ugsm.secretpresent.service
 
-import com.ugsm.secretpresent.dto.LeafCategoryDto
-import com.ugsm.secretpresent.dto.NaverShoppingCategoryDto
+import com.ugsm.secretpresent.dto.productcategory.LeafCategoryDto
+import com.ugsm.secretpresent.dto.productcategory.NaverShoppingCategoryDto
 import com.ugsm.secretpresent.repository.NaverShoppingCategoryRepository
 import com.ugsm.secretpresent.repository.NaverShoppingCategoryRepositorySupport
 import org.springframework.beans.factory.annotation.Autowired
@@ -21,6 +21,7 @@ class NaverShoppingCategoryService(
                 NaverShoppingCategoryDto(
                     id=it.id,
                     name=it.name,
+                    parentId = it.parentCategory?.id,
                     children = null
                 )
             }
@@ -28,6 +29,7 @@ class NaverShoppingCategoryService(
             NaverShoppingCategoryDto(
                 id=category.id,
                 name=category.name,
+                parentId = category.parentCategory?.id,
                 children = children
             )
         }
@@ -38,14 +40,14 @@ class NaverShoppingCategoryService(
 
     fun getAllCategories(): List<NaverShoppingCategoryDto> {
         val result = support.getAllCategories()
-        val parentCategories = result.map {NaverShoppingCategoryDto(it.id, it.name, null)}.toSet()
+        val parentCategories = result.map { NaverShoppingCategoryDto(it.id, it.name, null, null) }.toSet()
         return parentCategories.map {parent->
             val children = result.filter{it.id == parent.id && it.childId != null}
                 .map{
                     val childId = it.childId as Int
-                    NaverShoppingCategoryDto(childId,it.childName, null)
+                    NaverShoppingCategoryDto(childId,it.childName, it.id, null)
                 }
-            NaverShoppingCategoryDto(parent.id,parent.name, children)
+            NaverShoppingCategoryDto(parent.id,parent.name,null, children)
         }
     }
 }

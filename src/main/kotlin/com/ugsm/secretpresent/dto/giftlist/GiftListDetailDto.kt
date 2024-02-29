@@ -1,4 +1,4 @@
-package com.ugsm.secretpresent.dto
+package com.ugsm.secretpresent.dto.giftlist
 
 import com.ugsm.secretpresent.enums.GiftCategoryReceiptType
 import java.time.LocalDateTime

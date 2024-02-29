@@ -1,4 +1,4 @@
-package com.ugsm.secretpresent.dto
+package com.ugsm.secretpresent.dto.giftlist
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.ugsm.secretpresent.enums.GiftCategoryReceiptType

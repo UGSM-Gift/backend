@@ -1,4 +1,4 @@
-package com.ugsm.secretpresent.dto
+package com.ugsm.secretpresent.dto.personalcategory
 
 data class PersonalCategoryDto(
     val id: Int,

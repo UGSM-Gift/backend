@@ -1,9 +1,9 @@
 package com.ugsm.secretpresent.controller
 
 import com.ugsm.secretpresent.Exception.UnauthorizedException
-import com.ugsm.secretpresent.dto.CreateSurveyDto
-import com.ugsm.secretpresent.dto.RecommendedCategoryDto
-import com.ugsm.secretpresent.dto.UserInfo
+import com.ugsm.secretpresent.dto.survey.CreateSurveyDto
+import com.ugsm.secretpresent.dto.productcategory.RecommendedCategoryDto
+import com.ugsm.secretpresent.dto.user.UserInfo
 import com.ugsm.secretpresent.enums.GlobalResCode
 import com.ugsm.secretpresent.model.survey.SurveyPersonalCategory
 import com.ugsm.secretpresent.model.survey.SurveyPersonalCategoryQuestionAnswer

@@ -1,6 +1,6 @@
 package com.ugsm.secretpresent.service
 
-import com.ugsm.secretpresent.dto.*
+import com.ugsm.secretpresent.dto.giftlist.*
 import com.ugsm.secretpresent.model.gift.GiftList
 import com.ugsm.secretpresent.model.gift.GiftListCategory
 import com.ugsm.secretpresent.model.gift.GiftListCategoryProduct

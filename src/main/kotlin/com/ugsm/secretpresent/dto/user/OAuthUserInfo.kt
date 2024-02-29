@@ -1,4 +1,4 @@
-package com.ugsm.secretpresent.dto
+package com.ugsm.secretpresent.dto.user
 
 import com.ugsm.secretpresent.enums.Gender
 import com.ugsm.secretpresent.enums.OAuth2Type

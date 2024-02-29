@@ -3,7 +3,7 @@ package com.ugsm.secretpresent.service
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.ugsm.secretpresent.Exception.CustomException
-import com.ugsm.secretpresent.dto.RecommendedCategoryDto
+import com.ugsm.secretpresent.dto.productcategory.RecommendedCategoryDto
 import com.ugsm.secretpresent.model.survey.SurveyGPTProductCategory
 import com.ugsm.secretpresent.model.survey.SurveyProductCategory
 import com.ugsm.secretpresent.repository.NaverShoppingCategoryRepository

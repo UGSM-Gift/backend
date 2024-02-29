@@ -1,4 +1,4 @@
-package com.ugsm.secretpresent.dto
+package com.ugsm.secretpresent.dto.productcategory
 
 class ProductCategoryDto{
     var id: Int = 0

@@ -1,10 +1,10 @@
 package com.ugsm.secretpresent.controller
 
 import com.ugsm.secretpresent.Exception.BadRequestException
-import com.ugsm.secretpresent.dto.ChangedUserInfo
-import com.ugsm.secretpresent.dto.NicknameValidationDto
+import com.ugsm.secretpresent.dto.user.ChangedUserInfo
+import com.ugsm.secretpresent.dto.user.NicknameValidationDto
 import com.ugsm.secretpresent.dto.UserAccountDeletionReasonDto
-import com.ugsm.secretpresent.dto.UserInfo
+import com.ugsm.secretpresent.dto.user.UserInfo
 import com.ugsm.secretpresent.enums.GlobalResCode
 import com.ugsm.secretpresent.lib.PhoneNoUtils
 import com.ugsm.secretpresent.model.User
@@ -14,7 +14,6 @@ import com.ugsm.secretpresent.service.UserService
 import jakarta.persistence.EntityNotFoundException
 import kotlinx.coroutines.runBlocking
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
