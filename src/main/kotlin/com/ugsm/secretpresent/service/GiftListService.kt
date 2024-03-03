@@ -5,6 +5,7 @@ import com.ugsm.secretpresent.dto.GiftListProductDto
 import com.ugsm.secretpresent.dto.GiftProductCategoryNotReceivedDto
 import com.ugsm.secretpresent.dto.giftlist.*
 import com.ugsm.secretpresent.enums.GiftCategoryReceiptType
+import com.ugsm.secretpresent.enums.GiftConfirmedStatus
 import com.ugsm.secretpresent.model.gift.GiftList
 import com.ugsm.secretpresent.model.gift.GiftListProduct
 import com.ugsm.secretpresent.model.gift.GiftListProductCategory
@@ -13,6 +14,7 @@ import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 import java.time.LocalTime
 
 @Service
@@ -28,7 +30,7 @@ class GiftListService(
     @Autowired
     val naverShoppingCategoryRepository: NaverShoppingCategoryRepository,
     @Autowired
-    val giftListRepositorySupport: GiftListRepositorySupport,
+    val giftListLetterRepository: GiftListLetterRepository,
     @Autowired
     val giftListProductRepository: GiftListProductRepository,
     @Autowired
@@ -82,8 +84,24 @@ class GiftListService(
 
     fun getUserGiftList(userId: Long, page: Int): List<GiftListDto> {
         val numInPage = 10
-        val pageRequest = PageRequest.of(page, numInPage)
-        return giftListRepositorySupport.getAllByUserIdNotExpired(userId, pageRequest)
+        val pageRequest = PageRequest.of(page - 1, numInPage)
+        val now = LocalDateTime.now()
+        val giftList = giftListRepository.findSliceByTakerId(userId, pageRequest)
+        return giftList.map {
+            val selectedProducts = giftListProductRepository.findByGiftListId(it.id!!)
+            val receivedProducts =
+                giftListLetterRepository.findByGiftListIdAndConfirmedStatusNot(it.id, GiftConfirmedStatus.DENIED)
+            GiftListDto(
+                it.id,
+                it.createdAt,
+                it.expiredAt,
+                it.imgName,
+                it.userAnniversary.name,
+                selectedProducts.count(),
+                receivedProducts.count()
+            )
+        }
+
     }
 
     fun get(giftListId: Int): GiftListDetailDto {
@@ -118,7 +136,10 @@ class GiftListService(
     fun getAllGiftsNotReceived(giftListId: Int): GiftProductCategoryNotReceivedDto {
         val giftListProductCategories = giftListProductCategoryRepository.findByGiftListId(giftListId).map {
             val products =
-                giftListProductRepositorySupport.getByGiftListIdAndProductCategoryIdNotGiven(giftListId, it.shoppingCategory.id)
+                giftListProductRepositorySupport.getByGiftListIdAndProductCategoryIdNotGiven(
+                    giftListId,
+                    it.shoppingCategory.id
+                )
                     .map { et ->
                         GiftListProductDto(et.id, et.product.id, et.product.name, et.product.price)
                     }

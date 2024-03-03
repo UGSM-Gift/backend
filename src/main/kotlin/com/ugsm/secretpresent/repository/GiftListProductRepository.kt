@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository
 interface GiftListProductRepository:JpaRepository<GiftListProduct, Int> {
     fun findByGiftListIdAndProductCategoryId(giftListId: Int, productCategoryId: Int): List<GiftListProduct>
     fun findByGiftListIdAndProductId(giftListId: Int, productId: Long): GiftListProduct?
+    fun findByGiftListId(giftListId: Int): List<GiftListProduct>
 }
