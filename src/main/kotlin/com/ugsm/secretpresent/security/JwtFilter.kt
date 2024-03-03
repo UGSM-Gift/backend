@@ -27,7 +27,10 @@ class JwtFilter(
     private val jwtProvider: JwtProvider,
 
     @Autowired
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+
+    @Autowired
+    private val objectMapper: ObjectMapper,
 ) : OncePerRequestFilter() {
 
     @Throws(ServletException::class, IOException::class, AuthenticationException::class)
@@ -52,7 +55,7 @@ class JwtFilter(
 
         val token:String?
 
-        if(path.startsWith("/api/notification")){
+        if(path.startsWith("/api/notification/connect")){
             token = request.getParameter("accessToken") ?: return jwtExceptionHandler(response, 40001, "Token given is not a valid access token")
         } else {
             val authorization = request.getHeader(HttpHeaders.AUTHORIZATION)
@@ -109,7 +112,7 @@ class JwtFilter(
         response.status = HttpStatus.BAD_REQUEST.value()
         response.contentType = "application/json"
         response.characterEncoding = "UTF-8"
-        val json = ObjectMapper().writeValueAsString(mutableMapOf("code" to errorCode, "data" to null, "message" to errorMsg))
+        val json = objectMapper.writeValueAsString(mutableMapOf("code" to errorCode, "data" to null, "message" to errorMsg))
         response.writer.write(json)
     }
 }

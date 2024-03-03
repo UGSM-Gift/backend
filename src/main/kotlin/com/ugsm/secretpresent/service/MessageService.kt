@@ -8,11 +8,15 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
 @Service
-class MessageService {
+class MessageService(
+    @Autowired
+    val objectMapper: ObjectMapper
+) {
     private var baseUrl = "https://api.coolsms.co.kr/messages/v4/send"
     @Value("\${coolsms.access_key}")
     private var apiKey:String?= null
@@ -26,8 +30,6 @@ class MessageService {
     }.build()
 
     fun sendOne(message:Message){
-        val objectMapper = ObjectMapper()
-
         val req = Request.Builder()
             .url(baseUrl)
             .post(

@@ -6,7 +6,7 @@ import com.ugsm.secretpresent.dto.giftlist.GiftListDto
 import com.ugsm.secretpresent.enums.GiftConfirmedStatus
 import com.ugsm.secretpresent.model.gift.GiftList
 import com.ugsm.secretpresent.model.gift.QGiftList
-import com.ugsm.secretpresent.model.gift.QGiftListProductLetter
+import com.ugsm.secretpresent.model.gift.QGiftListLetter
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.springframework.stereotype.Repository
@@ -16,7 +16,7 @@ class GiftListRepositorySupport(
     private val queryFactory: JPAQueryFactory,
 ) : QuerydslRepositorySupport(GiftList::class.java) {
     fun getAllByUserIdNotExpired(userId: Long, pageable: Pageable): List<GiftListDto> {
-        val giftListProductLetter = QGiftListProductLetter.giftListProductLetter
+        val giftListProductLetter = QGiftListLetter.giftListLetter
         val giftList = QGiftList.giftList
         return queryFactory
             .from(giftList)

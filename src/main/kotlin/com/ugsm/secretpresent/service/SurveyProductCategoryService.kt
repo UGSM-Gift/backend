@@ -21,7 +21,8 @@ class SurveyProductCategoryService(
     @Autowired val naverShoppingCategoryRepository: NaverShoppingCategoryRepository,
     @Autowired val surveyGPTProductCategoryRepository: SurveyGPTProductCategoryRepository,
     @Autowired val surveyRepository: UserSurveyRepository,
-    @Autowired val surveyProductCategoryRepository: SurveyProductCategoryRepository
+    @Autowired val surveyProductCategoryRepository: SurveyProductCategoryRepository,
+    @Autowired val objectMapper: ObjectMapper
 ) {
     val client: OkHttpClient = OkHttpClient
         .Builder()
@@ -33,7 +34,6 @@ class SurveyProductCategoryService(
     }
 
     fun getRecommendedCategories(surveyId: Int): List<RecommendedCategoryDto>? {
-        val objectMapper = ObjectMapper()
         val req = Request.Builder().url("${BASE_URL}/gpt/recommendation/${surveyId}").get().build()
         val res = client.newCall(req).execute()
         if (res.code != 200) {

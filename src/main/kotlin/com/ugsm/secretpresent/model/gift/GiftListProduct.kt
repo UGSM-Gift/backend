@@ -1,14 +1,19 @@
 package com.ugsm.secretpresent.model.gift
 
 import com.ugsm.secretpresent.model.BaseTimeEntity
+import com.ugsm.secretpresent.model.NaverShoppingCategory
 import com.ugsm.secretpresent.model.product.Product
 import jakarta.persistence.*
 
 @Entity
-class GiftListCategoryProduct(
+class GiftListProduct(
     @ManyToOne
-    @JoinColumn(name = "gift_list_category_id")
-    var giftListCategory: GiftListCategory?=null,
+    @JoinColumn(name="gift_list_id")
+    var giftList: GiftList,
+
+    @ManyToOne
+    @JoinColumn(name = "product_category_id")
+    var productCategory: NaverShoppingCategory?=null,
 
     @ManyToOne
     @JoinColumn(name = "product_id")

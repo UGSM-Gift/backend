@@ -1,8 +1,6 @@
 package com.ugsm.secretpresent.config
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.ugsm.secretpresent.model.CustomUserPrincipal
 import com.ugsm.secretpresent.security.JwtFilter
 import com.ugsm.secretpresent.service.OAuth2UserService
@@ -34,6 +32,8 @@ class WebSecurityConfig(
     val oAuth2UserService: OAuth2UserService,
     @Autowired
     val jwtFilter: JwtFilter,
+    @Autowired
+    val mapper: ObjectMapper,
 
     @Value("\${jwt.secret}")
     private val secretKey: String,
@@ -74,10 +74,7 @@ class WebSecurityConfig(
     fun failureHandler(): AuthenticationFailureHandler {
         return AuthenticationFailureHandler { _, response, exception ->
 
-            val mapper = ObjectMapper()
-            mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
 
-            mapper.registerModules(JavaTimeModule())
             response.apply{
                 contentType = MediaType.APPLICATION_JSON_VALUE
                 characterEncoding = StandardCharsets.UTF_8.name()

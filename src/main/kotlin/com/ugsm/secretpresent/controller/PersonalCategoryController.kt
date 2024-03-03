@@ -2,6 +2,7 @@ package com.ugsm.secretpresent.controller
 
 import com.ugsm.secretpresent.dto.personalcategory.PersonalCategoryDto
 import com.ugsm.secretpresent.dto.personalcategory.PersonalCategoryWithQuestionsDto
+import com.ugsm.secretpresent.enums.GlobalResCode
 import com.ugsm.secretpresent.enums.PersonalCategoryType
 import com.ugsm.secretpresent.response.CustomResponse
 import com.ugsm.secretpresent.service.PersonalCategoryService
@@ -25,7 +26,7 @@ class PersonalCategoryController(
     fun getByType(@PathVariable categoryType: PersonalCategoryType): ResponseEntity<CustomResponse<List<PersonalCategoryDto>>> {
         return ResponseEntity.ok(
             CustomResponse(
-                code = 200,
+                code = GlobalResCode.OK.code,
                 data = personalCategoryService.getType(categoryType),
                 message = ""
             )
@@ -36,7 +37,7 @@ class PersonalCategoryController(
     fun getQuestionWithChoices(@PathVariable categoryIds: List<Int>): ResponseEntity<CustomResponse<List<PersonalCategoryWithQuestionsDto>>> {
         return ResponseEntity.ok(
             CustomResponse(
-                code = 200,
+                code = GlobalResCode.OK.code,
                 data = personalCategoryService.getCategoryQuestionsWithChoices(categoryIds),
                 message = "",
             )

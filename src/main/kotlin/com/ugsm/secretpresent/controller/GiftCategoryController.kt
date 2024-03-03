@@ -2,6 +2,7 @@ package com.ugsm.secretpresent.controller
 
 import com.ugsm.secretpresent.dto.productcategory.LeafCategoryDto
 import com.ugsm.secretpresent.dto.productcategory.NaverShoppingCategoryDto
+import com.ugsm.secretpresent.enums.GlobalResCode
 import com.ugsm.secretpresent.response.CustomResponse
 import com.ugsm.secretpresent.service.NaverShoppingCategoryService
 import org.springframework.beans.factory.annotation.Autowired
@@ -21,7 +22,7 @@ class GiftCategoryController(
     @GetMapping("/naver")
     fun getNaverShoppingCategories(): ResponseEntity<CustomResponse<List<NaverShoppingCategoryDto>>> {
         return ResponseEntity.ok(CustomResponse(
-            200, naverShoppingCategoryService.getAll(), ""
+            GlobalResCode.OK.code, naverShoppingCategoryService.getAll(), ""
         ))
     }
 
@@ -30,7 +31,7 @@ class GiftCategoryController(
         val result = naverShoppingCategoryService.getAllLeaves()
 
         return ResponseEntity.ok(CustomResponse(
-            200, result, result.count().toString()
+            GlobalResCode.OK.code, result, result.count().toString()
         ))
     }
 }

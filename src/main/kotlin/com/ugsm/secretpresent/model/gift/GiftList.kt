@@ -17,16 +17,19 @@ class GiftList(
     var taker: User,
 
     @Column
+    var availableAt: LocalDateTime,
+
+    @Column
     var expiredAt: LocalDateTime,
 
     @Column
-    var packageImgName: String,
+    var imgName: String,
 
     @OneToMany(mappedBy="giftList", cascade = [CascadeType.ALL], orphanRemoval = true)
-    var categories: List<GiftListCategory> = emptyList(),
+    var categories: List<GiftListProductCategory> = emptyList(),
 
     @OneToMany(mappedBy="giftList")
-    var productLetters: List<GiftListProductLetter> = emptyList(),
+    var productLetters: List<GiftListLetter> = emptyList(),
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
