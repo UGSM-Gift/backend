@@ -10,7 +10,6 @@ import com.ugsm.secretpresent.lib.StringToS3UploadTypeConverter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.format.FormatterRegistry
-import java.text.SimpleDateFormat
 
 @Configuration
 class WebConfig {
@@ -24,7 +23,6 @@ class WebConfig {
     fun objectMapper(): ObjectMapper {
         val mapper = ObjectMapper()
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-        mapper.setDateFormat(SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
         mapper.registerModules(JavaTimeModule())
         mapper.registerKotlinModule()
         return mapper

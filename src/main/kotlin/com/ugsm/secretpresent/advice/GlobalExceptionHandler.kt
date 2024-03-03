@@ -71,7 +71,7 @@ class GlobalExceptionHandler {
         val body = CustomResponse(
             GlobalResCode.BAD_REQUEST.code,
             null,
-            e.message ?: "Unknown Exception"
+            e.stackTraceToString() ?: "Unknown Exception"
         )
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body)
     }

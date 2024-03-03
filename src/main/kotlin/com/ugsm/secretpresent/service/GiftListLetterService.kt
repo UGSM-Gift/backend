@@ -104,7 +104,7 @@ class GiftListLetterService(
     }
 
     @Transactional
-    fun create(giverId: Long, giftListId: Int, letterInfo: CreateLetterDto) {
+    fun create(giverId: Long, giftListId: Int, letterInfo: CreateLetterDto): Int? {
         val giftList = giftListRepository.findById(giftListId).get()
         val giver = userRepository.findById(giverId).get()
         if(giftList.taker.id == giverId) throw CustomException(101, "자기 자신에게 선물을 줄 수 없습니다.")
@@ -136,5 +136,7 @@ class GiftListLetterService(
         )
 
         giftListLetterRepository.save(letter)
+
+        return letter.id
     }
 }

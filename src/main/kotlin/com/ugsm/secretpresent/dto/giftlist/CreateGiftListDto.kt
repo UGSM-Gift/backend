@@ -4,7 +4,7 @@ import com.ugsm.secretpresent.enums.GiftCategoryReceiptType
 import java.time.LocalDate
 
 data class CreateGiftListDto(
-    val imgName: String,
+    val imageFileName: String,
 //    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     val availableAt: LocalDate,
     val expiredAt: LocalDate,

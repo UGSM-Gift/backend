@@ -82,13 +82,13 @@ class GiftListController(
     @PostMapping("/gift-list/{id}/letter")
     fun createLetter(@AuthenticationPrincipal userInfo: UserInfo,
                      @PathVariable id:Int,
-                     @RequestBody letterInfo: CreateLetterDto): ResponseEntity<CustomResponse<Nothing?>> {
+                     @RequestBody letterInfo: CreateLetterDto): ResponseEntity<CustomResponse<Int?>> {
 
-        giftListLetterService.create(userInfo.id, id,letterInfo)
+        val letterId = giftListLetterService.create(userInfo.id, id,letterInfo)
         return ResponseEntity.ok(
             CustomResponse(
                 GlobalResCode.OK.code,
-                null,
+                letterId,
                 ""
             )
         )
