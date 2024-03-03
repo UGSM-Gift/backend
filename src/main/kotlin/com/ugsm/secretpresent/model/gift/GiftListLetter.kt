@@ -18,6 +18,9 @@ class GiftListLetter(
     @Column
     var  productCategoryName: String,
 
+    @Column
+    var imageUrl: String,
+
     @ManyToOne
     @JoinColumn(name="gift_list_product_id")
     var giftListProduct:GiftListProduct,

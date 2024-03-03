@@ -7,6 +7,7 @@ import com.ugsm.secretpresent.dto.GiftListGivenProductDto
 import com.ugsm.secretpresent.dto.GiftListLetterDetailsDto
 import com.ugsm.secretpresent.dto.GiftListLetterDto
 import com.ugsm.secretpresent.enums.GiftConfirmedStatus
+import com.ugsm.secretpresent.enums.S3ImageUploadType
 import com.ugsm.secretpresent.model.gift.GiftListLetter
 import com.ugsm.secretpresent.repository.*
 import jakarta.persistence.EntityNotFoundException
@@ -114,6 +115,11 @@ class GiftListLetterService(
         val giftListProduct = giftListProductRepository.findByGiftListIdAndProductId(giftListId, product.id)
             ?: throw EntityNotFoundException()
 
+        val alreadyGiftedProduct = giftListLetterRepository.findByGiftListIdAndProductIdAndConfirmedStatusNot(giftListId, product.id, GiftConfirmedStatus.DENIED)
+        if(alreadyGiftedProduct != null) throw CustomException(102, "해당 상품은 이미 다른 사람이 준 내역이 있습니다.")
+
+        val uploadedImageUrl = "${S3ImageUploadType.GIFT_LIST_LETTER.getUrl(giverId)}/${letterInfo.imageFileName}"
+
         val letter = GiftListLetter(
             giftList=giftList,
             giftListProductCategory=giftListProductCategory,
@@ -125,7 +131,8 @@ class GiftListLetterService(
             productName = product.name,
             productPrice = product.price,
             productCategoryName = giftListProductCategory.shoppingCategory.name,
-            receiver = giftList.taker
+            receiver = giftList.taker,
+            imageUrl = uploadedImageUrl
         )
 
         giftListLetterRepository.save(letter)

@@ -82,7 +82,15 @@ class GiftListController(
     @PostMapping("/gift-list/{id}/letter")
     fun createLetter(@AuthenticationPrincipal userInfo: UserInfo,
                      @PathVariable id:Int,
-                     @RequestBody letterInfo: CreateLetterDto) {
+                     @RequestBody letterInfo: CreateLetterDto): ResponseEntity<CustomResponse<Nothing?>> {
+
         giftListLetterService.create(userInfo.id, id,letterInfo)
+        return ResponseEntity.ok(
+            CustomResponse(
+                GlobalResCode.OK.code,
+                null,
+                ""
+            )
+        )
     }
 }

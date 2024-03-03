@@ -1,6 +1,7 @@
 package com.ugsm.secretpresent.advice
 
 import com.ugsm.secretpresent.Exception.BadRequestException
+import com.ugsm.secretpresent.Exception.CustomException
 import com.ugsm.secretpresent.Exception.UnauthorizedException
 import com.ugsm.secretpresent.enums.GlobalResCode
 import com.ugsm.secretpresent.response.CustomResponse
@@ -55,6 +56,16 @@ class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body)
     }
 
+    @ExceptionHandler(CustomException::class)
+    fun customException(e: CustomException): ResponseEntity<*> {
+        val body = CustomResponse(
+            e.code,
+            null,
+            e.message ?: "Unknown Exception"
+        )
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body)
+    }
+
     @ExceptionHandler(Exception::class)
     fun otherException(e: Exception): ResponseEntity<*> {
         val body = CustomResponse(
@@ -62,6 +73,6 @@ class GlobalExceptionHandler {
             null,
             e.message ?: "Unknown Exception"
         )
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body)
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body)
     }
 }

@@ -10,7 +10,7 @@ import java.util.*
 class StringToS3UploadTypeConverter : Converter<String, S3ImageUploadType> {
     override fun convert(source: String): S3ImageUploadType? {
         return try {
-            S3ImageUploadType.valueOf(source.uppercase(Locale.getDefault()))
+            S3ImageUploadType.valueOf(source.replace('-', '_').uppercase(Locale.getDefault()))
         } catch (e: IllegalArgumentException) {
             null
         }

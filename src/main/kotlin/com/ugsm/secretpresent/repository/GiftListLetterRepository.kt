@@ -25,4 +25,5 @@ interface GiftListLetterRepository : JpaRepository<GiftListLetter, Int> {
     ): List<GiftListLetter>
 
     fun findByGiftListIdAndConfirmedStatusNot(id: Int?, confirmed: GiftConfirmedStatus): List<GiftListLetter>
+    fun findByGiftListIdAndProductIdAndConfirmedStatusNot(giftListId: Int, id: Long, confirmedStatus: GiftConfirmedStatus): GiftListLetter?
 }
