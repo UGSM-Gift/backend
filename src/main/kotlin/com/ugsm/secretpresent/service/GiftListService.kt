@@ -1,8 +1,8 @@
 package com.ugsm.secretpresent.service
 
+import com.ugsm.secretpresent.dto.GiftListInfoDto
 import com.ugsm.secretpresent.dto.GiftListProductCategoryDto
 import com.ugsm.secretpresent.dto.GiftListProductDto
-import com.ugsm.secretpresent.dto.GiftProductCategoryNotReceivedDto
 import com.ugsm.secretpresent.dto.giftlist.*
 import com.ugsm.secretpresent.enums.GiftCategoryReceiptType
 import com.ugsm.secretpresent.enums.GiftConfirmedStatus
@@ -133,7 +133,7 @@ class GiftListService(
         }
     }
 
-    fun getAllGiftsNotReceived(giftListId: Int): GiftProductCategoryNotReceivedDto {
+    fun getInfoWithAllGiftsNotReceived(giftListId: Int): GiftListInfoDto {
         val giftListProductCategories = giftListProductCategoryRepository.findByGiftListId(giftListId).map {
             val products =
                 giftListProductRepositorySupport.getByGiftListIdAndProductCategoryIdNotGiven(
@@ -151,13 +151,20 @@ class GiftListService(
                 products
             )
         }.filter { it.products.isNotEmpty() }
-
+        val giftList = giftListRepository.findById(giftListId).get()
         val categoriesHavingMultipleGifts =
             giftListProductCategories.filter { it.receiptType == GiftCategoryReceiptType.MULTIPLE }
         val categoriesHavingSingleGifts =
             giftListProductCategories.filter { it.receiptType == GiftCategoryReceiptType.SINGLE }
 
-        return GiftProductCategoryNotReceivedDto(
+        return GiftListInfoDto(
+            giftListId,
+            giftList.taker.id!!,
+            giftList.taker.nickname,
+            giftList.userAnniversary.name,
+            giftList.userAnniversary.image.imageUrl,
+            giftList.availableAt.toLocalDate(),
+            giftList.expiredAt.toLocalDate(),
             categoriesHavingMultipleGifts,
             categoriesHavingSingleGifts
         )
