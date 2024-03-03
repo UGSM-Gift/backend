@@ -7,10 +7,10 @@ import java.time.LocalDateTime
 @Entity
 class Notification(
     @Column
-    var content: String,
+    var redirectUrl: String?,
 
     @Column
-    var read: Boolean,
+    var content: String,
 
     @ManyToOne
     @JoinColumn(name="user_id")
@@ -19,6 +19,11 @@ class Notification(
     @Column
     var reservedAt: LocalDateTime,
 
+    @Column
+    var read: Boolean = false,
+
     @Id
-    val id: Long,
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long? = null,
+
 ):BaseTimeEntity()

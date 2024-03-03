@@ -1,13 +1,19 @@
 package com.ugsm.secretpresent.service
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.ugsm.secretpresent.Exception.UnauthorizedException
+import com.ugsm.secretpresent.dto.NotificationDto
+import com.ugsm.secretpresent.enums.GlobalResCode
 import com.ugsm.secretpresent.repository.EmitterRepository
 import com.ugsm.secretpresent.repository.NotificationRepository
+import com.ugsm.secretpresent.response.CustomResponse
 import jakarta.persistence.EntityNotFoundException
+import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
 import java.io.IOException
+import java.time.LocalDateTime
 import kotlin.jvm.optionals.getOrElse
 
 
@@ -16,7 +22,9 @@ class NotificationService(
     @Autowired
     val emitterRepository: EmitterRepository,
     @Autowired
-    val notificationRepository: NotificationRepository
+    val notificationRepository: NotificationRepository,
+    @Autowired
+    val objectMapper: ObjectMapper
 ) {
     companion object {
         // 기본 타임아웃 설정
@@ -31,30 +39,31 @@ class NotificationService(
      */
     fun subscribe(userId: Long): SseEmitter {
         val emitter = createEmitter(userId)
+        sendOldestUnreadNotificationToUser(userId)
 
-        sendToClient(userId, "EventStream Created. [userId=$userId]")
         return emitter
     }
 
-    private fun notifyLatestUnread(userId: Long) {
-        val notification = notificationRepository.findFirstByUserIdAndReadFalseOrderByIdDesc(userId)
-            ?: throw EntityNotFoundException("The latest unread notification has not been found")
-
-        sendToClient(userId, notification.content)
+    fun sendNotification(userId: Long, dto: NotificationDto?) {
+        val message = if (dto == null) "알림 없음" else ""
+        val code = if (dto == null) 101 else GlobalResCode.OK.code
+        val jsonString = objectMapper.writeValueAsString(
+            CustomResponse(code, dto, message)
+        )
+        sendToClient(userId, jsonString)
     }
 
-    private fun markAsRead(userId: Long, notificationId: Long){
+    @Transactional
+    fun markAsRead(userId: Long, notificationId: Long) {
         val notification = notificationRepository.findById(notificationId).getOrElse {
             throw EntityNotFoundException("Notification Not Found")
         }
 
-        if(notification.user.id?.equals(notificationId) == false){
+        if (notification.user.id?.equals(userId) == false) {
             throw UnauthorizedException(message = "Notification is not belonging to the user.")
         }
 
         notification.read = true
-
-        notificationRepository.save(notification)
     }
 
     /**
@@ -95,5 +104,40 @@ class NotificationService(
         emitter.onTimeout { emitterRepository.deleteById(id) }
 
         return emitter
+    }
+
+    fun sendNotificationToAllEmitter() {
+        val emitters = emitterRepository.getAllIds()
+        emitters.forEach { sendOldestUnreadNotificationToUser(it) }
+    }
+
+    fun sendOldestUnreadNotificationToUser(userId: Long) {
+        val now = LocalDateTime.now()
+
+        val notification =
+            notificationRepository.findFirstByUserIdAndReadFalseAndReservedAtLessThanOrderByIdAsc(userId, now)
+        val dto = notification?.let {
+            NotificationDto(
+                it.id,
+                it.content,
+                it.redirectUrl,
+                it.read,
+                it.reservedAt
+            )
+        }
+        sendNotification(userId, dto)
+    }
+
+    fun getAllSent(userId: Long): List<NotificationDto> {
+        val now = LocalDateTime.now()
+        return notificationRepository.findByUserIdAndReservedAtLessThanOrderByIdAsc(userId, now).map {
+            NotificationDto(
+                it.id,
+                it.content,
+                it.redirectUrl,
+                it.read,
+                it.reservedAt
+            )
+        }
     }
 }

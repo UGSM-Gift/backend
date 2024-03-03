@@ -1,6 +1,7 @@
 package com.ugsm.secretpresent.controller
 
 import com.ugsm.secretpresent.dto.user.UserInfo
+import com.ugsm.secretpresent.enums.GlobalResCode
 import com.ugsm.secretpresent.model.product.Product
 import com.ugsm.secretpresent.response.CustomResponse
 import com.ugsm.secretpresent.service.ProductService
@@ -25,7 +26,7 @@ class ProductController(
     ): ResponseEntity<CustomResponse<List<Product>>> {
         return ResponseEntity.ok(
             CustomResponse(
-                200, productService.getListByCategoryId(id, page, numInPage, priceBelow).content, ""
+                GlobalResCode.OK.code, productService.getListByCategoryId(id, page, numInPage, priceBelow).content, ""
             )
         )
     }
@@ -34,7 +35,7 @@ class ProductController(
     fun makeProductDibs(@AuthenticationPrincipal userInfo: UserInfo, @PathVariable productId:Long): ResponseEntity<CustomResponse<Unit>> {
         return ResponseEntity.ok(
             CustomResponse(
-                200, productService.createDibs(userInfo.id, productId), ""
+                GlobalResCode.OK.code, productService.createDibs(userInfo.id, productId), ""
             )
         )
     }
@@ -43,16 +44,18 @@ class ProductController(
     fun deleteProductDibs(@AuthenticationPrincipal userInfo: UserInfo, @PathVariable productId:Long): ResponseEntity<CustomResponse<Unit>> {
         return ResponseEntity.ok(
             CustomResponse(
-                200, productService.deleteDibs(userInfo.id, productId), ""
+                GlobalResCode.OK.code, productService.deleteDibs(userInfo.id, productId), ""
             )
         )
     }
 
     @GetMapping("/user/me/dibs")
-    fun getAllDibsProducts(@AuthenticationPrincipal userInfo: UserInfo): ResponseEntity<CustomResponse<List<Product>>> {
+    fun getAllDibsProducts(@AuthenticationPrincipal userInfo: UserInfo,
+                           @RequestParam orderBy: String?,
+    ): ResponseEntity<CustomResponse<List<Product>>> {
         return ResponseEntity.ok(
             CustomResponse(
-                200, productService.getAllDibsProduct(userInfo.id), ""
+                GlobalResCode.OK.code, productService.getAllDibsProduct(userInfo.id, orderBy), ""
             )
         )
     }

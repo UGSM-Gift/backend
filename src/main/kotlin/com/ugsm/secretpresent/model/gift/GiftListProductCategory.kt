@@ -6,7 +6,7 @@ import com.ugsm.secretpresent.model.NaverShoppingCategory
 import jakarta.persistence.*
 
 @Entity
-class GiftListCategory(
+class GiftListProductCategory(
     @ManyToOne
     @JoinColumn(name="gift_list_id")
     var giftList: GiftList ?= null,
@@ -18,9 +18,6 @@ class GiftListCategory(
     @Column
     @Enumerated(EnumType.STRING)
     var receiptType: GiftCategoryReceiptType,
-
-    @OneToMany(mappedBy = "giftListCategory", cascade = [CascadeType.ALL], orphanRemoval = true)
-    var products: List<GiftListCategoryProduct> = emptyList(),
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -2,8 +2,9 @@ package com.ugsm.secretpresent.repository
 
 import com.ugsm.secretpresent.model.Notification
 import org.springframework.data.jpa.repository.JpaRepository
+import java.time.LocalDateTime
 
 interface NotificationRepository: JpaRepository<Notification, Long> {
-    fun findByUserId(userId: Long): List<Notification>
-    fun findFirstByUserIdAndReadFalseOrderByIdDesc(userId: Long): Notification?
+    fun findFirstByUserIdAndReadFalseAndReservedAtLessThanOrderByIdAsc(userId: Long, reservedAt: LocalDateTime): Notification?
+    fun findByUserIdAndReservedAtLessThanOrderByIdAsc(userId: Long, reservedAt: LocalDateTime): List<Notification>
 }

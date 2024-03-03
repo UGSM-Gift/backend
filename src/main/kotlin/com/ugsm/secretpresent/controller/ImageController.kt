@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.stereotype.Controller
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -21,15 +22,15 @@ class ImageController(
     @Autowired
     val s3Service: AwsS3Service,
 ) {
-    @PostMapping("")
+    @PostMapping("/{uploadType}")
     fun uploadImage(
         @AuthenticationPrincipal userInfo: UserInfo,
-        @RequestParam type: S3ImageUploadType,
+        @PathVariable uploadType: S3ImageUploadType,
         @RequestParam image: MultipartFile
     ): ResponseEntity<CustomResponse<ImageUploadResponseDto>> {
         return ResponseEntity.ok(
             CustomResponse(
-                GlobalResCode.OK.code, s3Service.upload(image, userInfo.id, type), ""
+                GlobalResCode.OK.code, s3Service.upload(image, userInfo.id, uploadType), ""
             )
         )
     }

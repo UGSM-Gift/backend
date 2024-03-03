@@ -10,4 +10,6 @@ interface UserAnniversaryRepository: JpaRepository<UserAnniversary, Int> {
 
     fun findByUserId(userId: Long): List<UserAnniversary>
     fun findByUserIdAndDateBetween(userId:Long, startDate: LocalDate, endDate:LocalDate):List<UserAnniversary>
+    fun findByDate(date:LocalDate):List<UserAnniversary>
+
 }

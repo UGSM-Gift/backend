@@ -38,4 +38,8 @@ class EmitterRepository {
     fun get(id: Long): SseEmitter? {
         return emitters[id]
     }
+
+    fun getAllIds(): MutableSet<Long> {
+        return emitters.keys
+    }
 }

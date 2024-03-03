@@ -50,8 +50,12 @@ class ProductService(
         )
     }
 
-    fun getAllDibsProduct(userId:Long): List<Product> {
-        val dibs = userDibsProductRepository.findByUserId(userId)
+    fun getAllDibsProduct(userId: Long, orderBy: String?): List<Product> {
+        val dibs = when(orderBy) {
+            "HIGHEST_PRICE" -> userDibsProductRepository.findByUserIdOrderByProductPriceDesc(userId)
+            "LOWEST_PRICE" -> userDibsProductRepository.findByUserIdOrderByProductPriceAsc(userId)
+            else -> userDibsProductRepository.findByUserIdOrderByCreatedAtDesc(userId)
+        }
         return dibs.map { it.product }
     }
 }

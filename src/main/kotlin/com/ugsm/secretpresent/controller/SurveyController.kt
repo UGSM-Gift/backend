@@ -102,7 +102,7 @@ class SurveyController(
 
         return ResponseEntity.ok(
             CustomResponse(
-                200, survey.id, ""
+                GlobalResCode.OK.code, survey.id, ""
             )
         )
     }
