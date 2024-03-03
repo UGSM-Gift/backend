@@ -58,7 +58,7 @@ class SurveyProductCategoryService(
     fun create(productCategoryIds: List<Int>, surveyId: Int) {
         val productCategories = naverShoppingCategoryRepository.findAllById(productCategoryIds)
         val survey = surveyRepository.findById(surveyId).get()
-        if(productCategories.count() != 15) throw CustomException(101, "카테고리 갯수가 15개가 아닙니다.")
+        if(productCategories.count() !in 1..15) throw CustomException(101, "카테고리 갯수가 1~15개가 아닙니다.")
         val surveyProductCategories = productCategories.map{SurveyProductCategory(productCategory = it, survey=survey)}
         surveyProductCategoryRepository.saveAll(surveyProductCategories)
     }
