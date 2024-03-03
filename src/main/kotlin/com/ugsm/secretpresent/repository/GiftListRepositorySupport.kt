@@ -10,6 +10,7 @@ import com.ugsm.secretpresent.model.gift.QGiftListLetter
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.springframework.stereotype.Repository
+import java.time.LocalDateTime
 
 @Repository
 class GiftListRepositorySupport(
@@ -31,12 +32,10 @@ class GiftListRepositorySupport(
                 giftListProductLetter.confirmedStatus.eq(GiftConfirmedStatus.CONFIRMED).count().`as`("receivedProductsNumber")
                 )
             )
-            .leftJoin(giftList.productLetters, giftListProductLetter)
             .where(
                 giftList.taker.id.eq(userId)
-//              giftList.expiredAt.after(LocalDateTime.now()).and(giftList.taker.id.eq(userId))
+                .and(giftList.expiredAt.after(LocalDateTime.now()))
             )
-            .groupBy(giftList.id, giftList.userAnniversary.name, giftList.userAnniversary.image.imageUrl)
             .fetch()
     }
 }

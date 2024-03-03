@@ -46,9 +46,15 @@ class GiftListController(
     @GetMapping("/user/me/gift-list")
     fun getMyList(
         @AuthenticationPrincipal user: UserInfo,
-        @RequestParam p: Int = 1,
-    ): List<GiftListDto> {
-        return giftListService.getUserGiftList(user.id, p)
+        @RequestParam page: Int = 1,
+    ): ResponseEntity<CustomResponse<List<GiftListDto>>> {
+        return ResponseEntity.ok(
+            CustomResponse(
+                GlobalResCode.OK.code,
+                giftListService.getUserGiftList(user.id, page),
+                ""
+            )
+        )
     }
 
     @GetMapping("/gift-list/{giftListId}")

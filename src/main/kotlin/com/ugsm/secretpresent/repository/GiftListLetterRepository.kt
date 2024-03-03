@@ -23,4 +23,6 @@ interface GiftListLetterRepository : JpaRepository<GiftListLetter, Int> {
         date1: LocalDateTime,
         date2: LocalDateTime
     ): List<GiftListLetter>
+
+    fun findByGiftListIdAndConfirmedStatusNot(id: Int?, confirmed: GiftConfirmedStatus): List<GiftListLetter>
 }
