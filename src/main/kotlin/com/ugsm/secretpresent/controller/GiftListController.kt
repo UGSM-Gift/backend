@@ -1,7 +1,7 @@
 package com.ugsm.secretpresent.controller
 
 import com.ugsm.secretpresent.dto.CreateLetterDto
-import com.ugsm.secretpresent.dto.GiftProductCategoryNotReceivedDto
+import com.ugsm.secretpresent.dto.GiftListInfoDto
 import com.ugsm.secretpresent.dto.giftlist.CreateGiftListDto
 import com.ugsm.secretpresent.dto.giftlist.GiftListDetailDto
 import com.ugsm.secretpresent.dto.giftlist.GiftListDto
@@ -68,12 +68,12 @@ class GiftListController(
         )
     }
 
-    @GetMapping("/gift-list/{giftListId}/gift/not-received")
-    fun getAllGiftsNotReceived(@PathVariable giftListId: Int): ResponseEntity<CustomResponse<GiftProductCategoryNotReceivedDto>> {
+    @GetMapping("/gift-list/{giftListId}/info")
+    fun getAllGiftsNotReceived(@PathVariable giftListId: Int): ResponseEntity<CustomResponse<GiftListInfoDto>> {
         return ResponseEntity.ok(
             CustomResponse(
                 GlobalResCode.OK.code,
-                giftListService.getAllGiftsNotReceived(giftListId),
+                giftListService.getInfoWithAllGiftsNotReceived(giftListId),
                 ""
             )
         )
