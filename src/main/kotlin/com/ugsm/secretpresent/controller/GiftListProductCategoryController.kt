@@ -11,7 +11,4 @@ import org.springframework.web.bind.annotation.RestController
 class GiftListProductCategoryController(
     @Autowired
     val giftListProductCategoryService: GiftListProductCategoryService
-) {
-
-
-}
+)

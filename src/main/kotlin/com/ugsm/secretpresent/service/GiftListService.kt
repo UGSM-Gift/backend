@@ -6,6 +6,7 @@ import com.ugsm.secretpresent.dto.GiftListProductDto
 import com.ugsm.secretpresent.dto.giftlist.*
 import com.ugsm.secretpresent.enums.GiftCategoryReceiptType
 import com.ugsm.secretpresent.enums.GiftConfirmedStatus
+import com.ugsm.secretpresent.enums.S3ImageUploadType
 import com.ugsm.secretpresent.model.gift.GiftList
 import com.ugsm.secretpresent.model.gift.GiftListProduct
 import com.ugsm.secretpresent.model.gift.GiftListProductCategory
@@ -14,7 +15,6 @@ import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
-import java.time.LocalDateTime
 import java.time.LocalTime
 
 @Service
@@ -45,15 +45,17 @@ class GiftListService(
         val anniversary = userAnniversaryRepository.findById(giftListDto.anniversaryId).get()
         val user = userRepository.findById(takerId).get()
 
-        val availableAt = giftListDto.availableAt.atStartOfDay()
-        val expiredAt = giftListDto.expiredAt.atTime(LocalTime.MAX)
+        val availableAt = giftListDto.availableAt.atTime(LocalTime.of(0, 0, 0))
+        val expiredAt = giftListDto.expiredAt.atTime(LocalTime.of(23, 59, 59))
+
+        val uploadedImageUrl = "${S3ImageUploadType.GIFT_LIST.getUrl(takerId)}/${giftListDto.imageFileName}"
 
         val giftList = GiftList(
             taker = user,
             userAnniversary = anniversary,
             availableAt = availableAt,
             expiredAt = expiredAt,
-            imgName = giftListDto.imgName,
+            imgName = uploadedImageUrl,
         )
         giftListRepository.save(giftList)
 
@@ -85,7 +87,6 @@ class GiftListService(
     fun getUserGiftList(userId: Long, page: Int): List<GiftListDto> {
         val numInPage = 10
         val pageRequest = PageRequest.of(page - 1, numInPage)
-        val now = LocalDateTime.now()
         val giftList = giftListRepository.findSliceByTakerId(userId, pageRequest)
         return giftList.map {
             val selectedProducts = giftListProductRepository.findByGiftListId(it.id!!)
@@ -94,6 +95,7 @@ class GiftListService(
             GiftListDto(
                 it.id,
                 it.createdAt,
+                it.availableAt,
                 it.expiredAt,
                 it.imgName,
                 it.userAnniversary.name,

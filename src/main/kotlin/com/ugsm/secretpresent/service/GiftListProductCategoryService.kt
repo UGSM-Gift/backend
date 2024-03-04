@@ -8,6 +8,4 @@ import org.springframework.stereotype.Service
 class GiftListProductCategoryService(
     @Autowired
     val giftListLetterService: GiftListLetterService
-) {
-
-}
+)

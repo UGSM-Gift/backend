@@ -115,7 +115,7 @@ class NotificationService(
         val now = LocalDateTime.now()
 
         val notification =
-            notificationRepository.findFirstByUserIdAndReadFalseAndReservedAtLessThanOrderByIdAsc(userId, now)
+            notificationRepository.findFirstByUserIdAndDeliveredFalseAndReservedAtLessThanOrderByIdAsc(userId, now)
         val dto = notification?.let {
             NotificationDto(
                 it.id,
@@ -126,6 +126,7 @@ class NotificationService(
             )
         }
         sendNotification(userId, dto)
+        notification?.delivered = true
     }
 
     fun getAllSent(userId: Long): List<NotificationDto> {

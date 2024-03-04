@@ -32,19 +32,22 @@ class ProductController(
     }
 
     @PostMapping("/product/{productId}/dibs")
-    fun makeProductDibs(@AuthenticationPrincipal userInfo: UserInfo, @PathVariable productId:Long): ResponseEntity<CustomResponse<Unit>> {
+    fun makeProductDibs(@AuthenticationPrincipal userInfo: UserInfo, @PathVariable productId:Long): ResponseEntity<CustomResponse<Nothing?>> {
+        productService.createDibs(userInfo.id, productId)
+
         return ResponseEntity.ok(
             CustomResponse(
-                GlobalResCode.OK.code, productService.createDibs(userInfo.id, productId), ""
+                GlobalResCode.OK.code, null, ""
             )
         )
     }
 
     @DeleteMapping("/product/{productId}/dibs")
-    fun deleteProductDibs(@AuthenticationPrincipal userInfo: UserInfo, @PathVariable productId:Long): ResponseEntity<CustomResponse<Unit>> {
+    fun deleteProductDibs(@AuthenticationPrincipal userInfo: UserInfo, @PathVariable productId:Long): ResponseEntity<CustomResponse<Nothing?>> {
+        productService.deleteDibs(userInfo.id, productId)
         return ResponseEntity.ok(
             CustomResponse(
-                GlobalResCode.OK.code, productService.deleteDibs(userInfo.id, productId), ""
+                GlobalResCode.OK.code, null, ""
             )
         )
     }

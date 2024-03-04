@@ -3,6 +3,14 @@ spring:
     activate:
       on-profile: prod
 
+  data:
+    mongodb:
+      host: www.ugsm.co.kr
+      database: production-activity-log
+      port: 27017
+      username: ENC(zBAy5y6s+y87fv4fn+2Rhg==)
+      password: ENC(4cFDhY93RfbdXZtaSgqEVggGEMGRiSDK)
+
   datasource:
     url: jdbc:postgresql://www.ugsm.co.kr:5432/secret_present
     username: postgres

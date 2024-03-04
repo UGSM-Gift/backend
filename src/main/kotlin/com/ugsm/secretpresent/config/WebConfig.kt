@@ -7,14 +7,27 @@ import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.ugsm.secretpresent.lib.StringToGiftConfirmedStatusConverter
 import com.ugsm.secretpresent.lib.StringToPersonalCategoryTypeConverter
 import com.ugsm.secretpresent.lib.StringToS3UploadTypeConverter
+import com.ugsm.secretpresent.lib.UserActivityInterceptor
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.format.FormatterRegistry
-import java.text.SimpleDateFormat
+import org.springframework.web.servlet.config.annotation.EnableWebMvc
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
+@EnableWebMvc
 @Configuration
-class WebConfig {
-    fun addFormatters(registry:FormatterRegistry){
+class WebConfig(
+    @Autowired val userActivityInterceptor: UserActivityInterceptor
+): WebMvcConfigurer {
+
+    override fun addInterceptors(registry: InterceptorRegistry) {
+        super.addInterceptors(registry)
+        registry.addInterceptor(userActivityInterceptor)
+    }
+
+    override fun addFormatters(registry:FormatterRegistry){
         registry.addConverter(StringToPersonalCategoryTypeConverter())
         registry.addConverter(StringToGiftConfirmedStatusConverter())
         registry.addConverter(StringToS3UploadTypeConverter())
@@ -24,7 +37,6 @@ class WebConfig {
     fun objectMapper(): ObjectMapper {
         val mapper = ObjectMapper()
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-        mapper.setDateFormat(SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
         mapper.registerModules(JavaTimeModule())
         mapper.registerKotlinModule()
         return mapper

@@ -2,7 +2,8 @@ package com.ugsm.secretpresent.repository
 
 import com.ugsm.secretpresent.model.UserAccountDeletionReason
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.stereotype.Repository
 
-interface UserAccountDeletionReasonRepository:JpaRepository<UserAccountDeletionReason, Long> {
 
-}
+@Repository
+interface UserAccountDeletionReasonRepository:JpaRepository<UserAccountDeletionReason, Long>

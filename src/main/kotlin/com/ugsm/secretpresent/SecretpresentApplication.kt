@@ -10,9 +10,7 @@ import org.springframework.scheduling.annotation.EnableScheduling
 @EnableEncryptableProperties
 @EnableJpaAuditing
 @EnableScheduling
-class SecretpresentApplication{
-
-}
+class SecretpresentApplication
 
 fun main(args: Array<String>) {
     runApplication<SecretpresentApplication>(*args)

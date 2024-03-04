@@ -6,5 +6,4 @@ import org.springframework.stereotype.Repository
 
 
 @Repository
-interface SurveyPersonalCategoryQuestionAnswerRepository:JpaRepository<SurveyPersonalCategoryQuestionAnswer, Long> {
-}
+interface SurveyPersonalCategoryQuestionAnswerRepository:JpaRepository<SurveyPersonalCategoryQuestionAnswer, Long>

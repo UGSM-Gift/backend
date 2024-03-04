@@ -22,6 +22,9 @@ class Notification(
     @Column
     var read: Boolean = false,
 
+    @Column
+    var delivered: Boolean = false,
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
