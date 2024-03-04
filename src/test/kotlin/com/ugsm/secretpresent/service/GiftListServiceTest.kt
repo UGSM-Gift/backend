@@ -36,6 +36,9 @@ class GiftListServiceTest {
     private lateinit var userRepository: UserRepository
 
     @Mock
+    private lateinit var giftListLetterRepository: GiftListLetterRepository
+
+    @Mock
     private lateinit var productRepository: ProductRepository
 
     @Mock
