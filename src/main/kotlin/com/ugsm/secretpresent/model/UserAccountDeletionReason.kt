@@ -19,5 +19,4 @@ class UserAccountDeletionReason(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
-):BaseTimeEntity() {
-}
+):BaseTimeEntity()

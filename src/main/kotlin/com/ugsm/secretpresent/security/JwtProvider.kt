@@ -4,7 +4,9 @@ import com.ugsm.secretpresent.enums.OAuth2Type
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
+import jakarta.servlet.http.HttpServletRequest
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.HttpHeaders
 import org.springframework.stereotype.Component
 import java.time.Duration
 import java.util.*
@@ -17,6 +19,17 @@ class JwtProvider(
 ) {
     private val accessTokenValidTime: Long = Duration.ofMinutes(30000000).toMillis() // 만료시간 30분
     private val refreshTokenValidTime: Long = Duration.ofMinutes(10).toMillis() // 만료시간 2주
+
+    fun getTokenFromRequest(request: HttpServletRequest): String? {
+        val authorization = request.getHeader(HttpHeaders.AUTHORIZATION)
+
+        if (authorization == null || !authorization.startsWith("Bearer ")) {
+            return null
+        }
+
+        // Token 꺼내기
+        return authorization.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1]
+    }
 
     // 회원 정보 조회
     fun getUserId(token: String?): Long {

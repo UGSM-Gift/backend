@@ -28,3 +28,14 @@ management:
       exposure:
         include: "health,info,metrics,env"
       base-path: /api/actuator
+
+spring:
+  data:
+    mongodb:
+      authentication-database: admin
+    jdbc:
+      repositories:
+        enabled: false
+
+
+

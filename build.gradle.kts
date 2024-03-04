@@ -41,6 +41,8 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	runtimeOnly("com.fasterxml.jackson.module:jackson-modules-java8:2.16.0")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")

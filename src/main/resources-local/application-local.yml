@@ -3,6 +3,14 @@ spring:
     activate:
       on-profile: local
 
+  data:
+    mongodb:
+      host: www.ugsm.co.kr
+      database: local-activity-log
+      port: 27017
+      username: ENC(M5eQFB0a9XlHb/hrAvQ/Lg==)
+      password: ENC(4cFDhY93RfbdXZtaSgqEVggGEMGRiSDK)
+
   datasource:
     url: jdbc:postgresql://www.ugsm.co.kr:5432/secret_present
     username: postgres
@@ -58,7 +66,6 @@ logging:
   level:
     org.hibernate.type: trace
     org.hibernate.sql: debug
-    org.hibernate.orm.jdbc: trace
 
 jwt:
   secret: ENC(Dnx6poJjIvCsOvlcqX6y5jac3+/pn9YMFHxQMrRk9a35euxjTnHlyQ==)
