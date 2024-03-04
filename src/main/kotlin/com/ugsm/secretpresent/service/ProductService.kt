@@ -33,14 +33,14 @@ class ProductService(
     }
 
     fun deleteDibs(userId: Long, productId: Long) {
-        val dibs = userDibsProductRepository.findByUserIdAndProductId(userId, productId) ?: throw EntityNotFoundException("User has not had dibs on this product yet.")
+        val dibs = userDibsProductRepository.findByUserIdAndProductId(userId, productId) ?: throw EntityNotFoundException("찜한 이력이 없습니다.")
         if (dibs.user.id != userId) throw UnauthorizedException()
         userDibsProductRepository.delete(dibs)
     }
 
     fun createDibs(userId: Long, productId: Long) {
         if(userDibsProductRepository.findByUserIdAndProductId(userId, productId) != null){
-            throw BadRequestException(message = "User has already had dibs on this product")
+            throw BadRequestException(101, message = "이미 찜한 상품입니다.")
         }
 
         val user = userRepository.findById(userId).get()
