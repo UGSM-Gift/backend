@@ -24,6 +24,7 @@ class PersonalCategoryService(
 
     fun getCategoryQuestionsWithChoices(categoryIds: List<Int>): List<PersonalCategoryWithQuestionsDto> {
         return personalCategoryRepository.findAllById(categoryIds)
+            .filter{it.questions.isNotEmpty()}
             .map {category->
                 val questionsDto = category.questions.map{
                     val choicesDto = it.choices.map{choice -> PersonalCategoryQuestionChoiceDto(choice.id, choice.content) }
