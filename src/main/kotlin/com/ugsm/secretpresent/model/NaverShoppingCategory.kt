@@ -16,6 +16,9 @@ class NaverShoppingCategory(
     var parentCategory: NaverShoppingCategory?= null,
 
     @Column
+    var imageUrl: String?,
+
+    @Column
     var isActive: Boolean,
 
     @OneToMany(mappedBy = "parentCategory")

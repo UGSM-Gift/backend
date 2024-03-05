@@ -57,8 +57,10 @@ class NaverShoppingCategoryRepositorySupport(
             ProductCategoryDto::class.java,
             category1.id,
             category1.name,
+            category1.imageUrl,
             category3.id.coalesce(category2.id).`as`("childId"),
-            category3.name.coalesce(category2.name).`as`("childName")
+            category3.name.coalesce(category2.name).`as`("childName"),
+            category3.imageUrl.coalesce(category2.imageUrl).`as`("childImageUrl")
         ))
         .from(category1)
             .leftJoin(category2).on(category1.id.eq(category2.parentCategory.id).and(category2.isActive.isTrue()))

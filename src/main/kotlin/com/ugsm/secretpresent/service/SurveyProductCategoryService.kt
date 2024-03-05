@@ -43,23 +43,28 @@ class SurveyProductCategoryService(
 
         val categories = naverShoppingCategoryRepository.findAllById(categoryIds)
         val survey = surveyRepository.findById(surveyId).get()
-        val gptCategories = categories.map {SurveyGPTProductCategory(productCategory = it, survey = survey)}
+        val gptCategories = categories.map { SurveyGPTProductCategory(productCategory = it, survey = survey) }
         surveyGPTProductCategoryRepository.saveAll(gptCategories)
 
-        return categories.map { RecommendedCategoryDto(it.id, it.name) }
+        return categories.map { RecommendedCategoryDto(it.id, it.name, it.imageUrl) }
     }
 
     fun getBySurveyId(surveyId: Int): List<RecommendedCategoryDto> {
         return surveyGPTProductCategoryRepository.findBySurveyId(surveyId).map {
-            RecommendedCategoryDto(it.productCategory.id, it.productCategory.name)
+            RecommendedCategoryDto(
+                it.productCategory.id,
+                it.productCategory.name,
+                it.productCategory.imageUrl
+            )
         }
     }
 
     fun create(productCategoryIds: List<Int>, surveyId: Int) {
         val productCategories = naverShoppingCategoryRepository.findAllById(productCategoryIds)
         val survey = surveyRepository.findById(surveyId).get()
-        if(productCategories.count() !in 1..15) throw CustomException(101, "카테고리 갯수가 1~15개가 아닙니다.")
-        val surveyProductCategories = productCategories.map{SurveyProductCategory(productCategory = it, survey=survey)}
+        if (productCategories.count() !in 1..15) throw CustomException(101, "카테고리 갯수가 1~15개가 아닙니다.")
+        val surveyProductCategories =
+            productCategories.map { SurveyProductCategory(productCategory = it, survey = survey) }
         surveyProductCategoryRepository.saveAll(surveyProductCategories)
     }
 }
