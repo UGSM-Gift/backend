@@ -1,5 +1,6 @@
 package com.ugsm.secretpresent.controller
 
+import com.ugsm.secretpresent.dto.ConfirmVerificationCodeDto
 import com.ugsm.secretpresent.dto.Message
 import com.ugsm.secretpresent.dto.user.UserInfo
 import com.ugsm.secretpresent.enums.GlobalResCode
@@ -40,13 +41,14 @@ class VerificationCodeController(
     @PutMapping("/verification-code/{code}")
     fun updateConfirmed(@AuthenticationPrincipal userInfo: UserInfo,
                         @PathVariable code: Int,
-                        @RequestParam receiverPhoneNumber: String): ResponseEntity<CustomResponse<Nothing?>> {
-        if(!verificationMessageService.isCodeValid(code, receiverPhoneNumber, userInfo.id)){
+                        @RequestBody dto: ConfirmVerificationCodeDto
+    ): ResponseEntity<CustomResponse<Nothing?>> {
+        if(!verificationMessageService.isCodeValid(code, dto.receiverPhoneNumber, userInfo.id)){
             return ResponseEntity
                 .badRequest()
                 .body(CustomResponse(HttpStatus.BAD_REQUEST.value(), null, "Not valid code"))
         }
-        verificationMessageService.confirmCode(code, receiverPhoneNumber, userInfo.id)
+        verificationMessageService.confirmCode(code, dto.receiverPhoneNumber, userInfo.id)
         return ResponseEntity
                 .ok(CustomResponse(GlobalResCode.OK.code, null, "verification success"))
     }
