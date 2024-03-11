@@ -10,7 +10,7 @@ class NaverShoppingCategory(
     var id: Int,
     @Column
     var name: String = "",
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="parent_category_id")
     @JsonManagedReference
     var parentCategory: NaverShoppingCategory?= null,
@@ -21,7 +21,7 @@ class NaverShoppingCategory(
     @Column
     var isActive: Boolean,
 
-    @OneToMany(mappedBy = "parentCategory")
+    @OneToMany(mappedBy = "parentCategory", fetch = FetchType.LAZY)
     @JsonBackReference
-    var childCategories: List<NaverShoppingCategory> = emptyList()
+    val childCategories: List<NaverShoppingCategory> = emptyList()
 )

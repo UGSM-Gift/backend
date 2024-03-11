@@ -40,7 +40,7 @@ class MessageService(
             .build()
         val res = client.newCall(req).execute()
         if (res.code != 200){
-            throw IllegalArgumentException("메세지 전송에 실패했습니다.")
+            throw IllegalArgumentException("메세지 전송에 실패했습니다. [${res.code}] - ${res.body.string()}")
         }
     }
 }

@@ -18,7 +18,7 @@ class PersonalCategory(
     var type: PersonalCategoryType,
 
     @OneToMany(mappedBy = "category")
-    var questions: List<PersonalCategoryQuestion>,
+    val questions: List<PersonalCategoryQuestion>,
 
     @Column
     var hasOtherName: Boolean,

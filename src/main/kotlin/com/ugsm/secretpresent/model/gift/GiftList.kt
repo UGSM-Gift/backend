@@ -26,10 +26,10 @@ class GiftList(
     var imgName: String,
 
     @OneToMany(mappedBy="giftList", cascade = [CascadeType.ALL], orphanRemoval = true)
-    var categories: List<GiftListProductCategory> = emptyList(),
+    val categories: List<GiftListProductCategory> = emptyList(),
 
     @OneToMany(mappedBy="giftList")
-    var productLetters: List<GiftListLetter> = emptyList(),
+    val productLetters: List<GiftListLetter> = emptyList(),
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -9,13 +9,13 @@ import jakarta.persistence.*
 class SurveyGPTProductCategory(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    var id: Long? = null,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="product_category_id")
-    val productCategory: NaverShoppingCategory,
+    var productCategory: NaverShoppingCategory,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="survey_id")
-    val survey: UserSurvey,
+    var survey: UserSurvey,
 ):BaseTimeEntity()

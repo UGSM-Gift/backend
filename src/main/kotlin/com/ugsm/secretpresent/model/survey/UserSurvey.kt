@@ -20,6 +20,6 @@ class UserSurvey(
     var anniversary: UserAnniversary,
 
     @OneToMany(mappedBy = "survey")
-    var answers: List<SurveyPersonalCategory> = emptyList(),
+    val answers: List<SurveyPersonalCategory> = emptyList(),
 
     ) : BaseTimeEntity()
