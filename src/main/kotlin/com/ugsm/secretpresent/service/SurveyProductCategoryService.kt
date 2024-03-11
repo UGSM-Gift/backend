@@ -6,10 +6,8 @@ import com.ugsm.secretpresent.Exception.CustomException
 import com.ugsm.secretpresent.dto.productcategory.RecommendedCategoryDto
 import com.ugsm.secretpresent.model.survey.SurveyGPTProductCategory
 import com.ugsm.secretpresent.model.survey.SurveyProductCategory
-import com.ugsm.secretpresent.repository.NaverShoppingCategoryRepository
-import com.ugsm.secretpresent.repository.SurveyGPTProductCategoryRepository
-import com.ugsm.secretpresent.repository.SurveyProductCategoryRepository
-import com.ugsm.secretpresent.repository.UserSurveyRepository
+import com.ugsm.secretpresent.repository.*
+import jakarta.transaction.Transactional
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,7 +20,8 @@ class SurveyProductCategoryService(
     @Autowired val surveyGPTProductCategoryRepository: SurveyGPTProductCategoryRepository,
     @Autowired val surveyRepository: UserSurveyRepository,
     @Autowired val surveyProductCategoryRepository: SurveyProductCategoryRepository,
-    @Autowired val objectMapper: ObjectMapper
+    @Autowired val objectMapper: ObjectMapper,
+    @Autowired val surveyGPTProductCategoryRepositorySupport: SurveyGPTProductCategoryRepositorySupport
 ) {
     val client: OkHttpClient = OkHttpClient
         .Builder()
@@ -30,7 +29,7 @@ class SurveyProductCategoryService(
         .build()
 
     companion object {
-        const val BASE_URL = "http://test.ugsm.co.kr:8000"
+        const val BASE_URL = "http://localhost:8000"
     }
 
     fun getRecommendedCategories(surveyId: Int): List<RecommendedCategoryDto>? {
@@ -49,14 +48,16 @@ class SurveyProductCategoryService(
         return categories.map { RecommendedCategoryDto(it.id, it.name, it.imageUrl) }
     }
 
+    @Transactional
     fun getBySurveyId(surveyId: Int): List<RecommendedCategoryDto> {
-        return surveyGPTProductCategoryRepository.findBySurveyId(surveyId).map {
-            RecommendedCategoryDto(
-                it.productCategory.id,
-                it.productCategory.name,
-                it.productCategory.imageUrl
-            )
-        }
+        return surveyGPTProductCategoryRepository.findBySurveyId(surveyId)
+            .map {
+                RecommendedCategoryDto(
+                    it.productCategory.id,
+                    it.productCategory.name,
+                    it.productCategory.imageUrl
+                )
+            }
     }
 
     fun create(productCategoryIds: List<Int>, surveyId: Int) {

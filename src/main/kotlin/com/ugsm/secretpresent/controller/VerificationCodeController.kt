@@ -8,6 +8,7 @@ import com.ugsm.secretpresent.response.CustomResponse
 import com.ugsm.secretpresent.service.MessageService
 import com.ugsm.secretpresent.service.VerificationMessageService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -21,6 +22,8 @@ class VerificationCodeController(
     private var verificationMessageService: VerificationMessageService,
     @Autowired
     private var messageService: MessageService,
+    @Value("\${coolsms.from_number}")
+    private var fromNumber:String,
 ) {
     @PostMapping("/verification-code")
     fun createMessageCode(@AuthenticationPrincipal userInfo: UserInfo,
@@ -28,7 +31,7 @@ class VerificationCodeController(
         val code = verificationMessageService.createCode(phoneNumber, userInfo.id)
         phoneNumber.replace("-", "")
         val message = Message(
-            from = "01089628547",
+            from = fromNumber,
             to = phoneNumber,
             text = "[은근슨물]인증번호를 입력해주세요. [$code]"
         )

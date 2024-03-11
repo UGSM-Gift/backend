@@ -16,7 +16,7 @@ aws:
 coolsms:
   access_key: ENC(9KgY1CFoD3euNIef/SM6Cd3/3lkokQRYQ1oSamoanZ8=)
   access_secret: ENC(Oz1vAW86gPVquEngwoPsXvWpxIX5WnHfNNO3zliq+4Apya+ZF7wbWVkJJCRcZyko)
-
+  from_number: ENC(gV2R53B2oUznNqYvdGFFYMAM/9KjJvWM)
 management:
   endpoint:
     env:
@@ -36,6 +36,8 @@ spring:
     jdbc:
       repositories:
         enabled: false
+  jpa:
+    open-in-view: false
 
 
 
