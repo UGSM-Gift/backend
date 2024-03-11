@@ -1,8 +1,8 @@
 jasypt:
   encryptor:
-  bean: jasyptStringEncryptor
-  algorithm: PBEWithMD5AndDES
-  iv-generator-classname: org.jasypt.iv.NoIvGenerator
+    bean: jasyptStringEncryptor
+    algorithm: PBEWithMD5AndDES
+    iv-generator-classname: org.jasypt.iv.NoIvGenerator
 
 
 jwt:
@@ -39,5 +39,6 @@ spring:
   jpa:
     open-in-view: false
 
-
+logging:
+  config: classpath:log4j2.xml
 
