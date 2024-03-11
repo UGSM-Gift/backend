@@ -6,6 +6,7 @@ import com.ugsm.secretpresent.dto.personalcategory.PersonalCategoryQuestionWithC
 import com.ugsm.secretpresent.dto.personalcategory.PersonalCategoryWithQuestionsDto
 import com.ugsm.secretpresent.enums.PersonalCategoryType
 import com.ugsm.secretpresent.repository.PersonalCategoryRepository
+import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -16,12 +17,14 @@ class PersonalCategoryService(
     val personalCategoryRepository: PersonalCategoryRepository
 ) {
 
+    @Transactional
     fun getType(type:PersonalCategoryType): List<PersonalCategoryDto> {
         return personalCategoryRepository
             .findByTypeOrderByViewOrderAsc(type)
             .map{ PersonalCategoryDto(it.id, it.name, it.hasOtherName) }
     }
 
+    @Transactional
     fun getCategoryQuestionsWithChoices(categoryIds: List<Int>): List<PersonalCategoryWithQuestionsDto> {
         return personalCategoryRepository.findAllById(categoryIds)
             .filter{it.questions.isNotEmpty()}

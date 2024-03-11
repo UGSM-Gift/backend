@@ -60,6 +60,7 @@ class SurveyProductCategoryService(
             }
     }
 
+    @Transactional
     fun create(productCategoryIds: List<Int>, surveyId: Int) {
         val productCategories = naverShoppingCategoryRepository.findAllById(productCategoryIds)
         val survey = surveyRepository.findById(surveyId).get()
