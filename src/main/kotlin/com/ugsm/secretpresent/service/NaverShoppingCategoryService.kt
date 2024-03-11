@@ -4,6 +4,7 @@ import com.ugsm.secretpresent.dto.productcategory.LeafCategoryDto
 import com.ugsm.secretpresent.dto.productcategory.NaverShoppingCategoryDto
 import com.ugsm.secretpresent.repository.NaverShoppingCategoryRepository
 import com.ugsm.secretpresent.repository.NaverShoppingCategoryRepositorySupport
+import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -14,6 +15,8 @@ class NaverShoppingCategoryService(
     @Autowired
     var support: NaverShoppingCategoryRepositorySupport
 ){
+
+    @Transactional
     fun getAll(): List<NaverShoppingCategoryDto> {
         val categories = support.getAll()
         val categoriesDto = categories.map { category ->
@@ -38,8 +41,10 @@ class NaverShoppingCategoryService(
         return categoriesDto
     }
 
+    @Transactional
     fun getAllLeaves():List<LeafCategoryDto> = support.getAllLeaves()
 
+    @Transactional
     fun getAllCategories(): List<NaverShoppingCategoryDto> {
         val result = support.getAllCategories()
         val parentCategories = result.map { NaverShoppingCategoryDto(it.id, it.name, it.imageUrl,null, null) }.toSet()

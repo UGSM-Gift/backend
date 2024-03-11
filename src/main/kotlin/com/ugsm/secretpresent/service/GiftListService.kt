@@ -84,6 +84,7 @@ class GiftListService(
         return giftList.id
     }
 
+    @Transactional
     fun getUserGiftList(userId: Long, page: Int): List<GiftListDto> {
         val numInPage = 10
         val pageRequest = PageRequest.of(page - 1, numInPage)
@@ -106,6 +107,7 @@ class GiftListService(
 
     }
 
+    @Transactional
     fun get(giftListId: Int): GiftListDetailDto {
         val giftList = giftListRepository.findById(giftListId).get()
         val anniversary = giftList.userAnniversary
@@ -135,6 +137,7 @@ class GiftListService(
         }
     }
 
+    @Transactional
     fun getInfoWithAllGiftsNotReceived(giftListId: Int): GiftListInfoDto {
         val giftListProductCategories = giftListProductCategoryRepository.findByGiftListId(giftListId).map {
             val products =

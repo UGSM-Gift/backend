@@ -4,6 +4,7 @@ import com.ugsm.secretpresent.model.VerificationMessage
 import com.ugsm.secretpresent.repository.UserRepository
 import com.ugsm.secretpresent.repository.VerificationMessageRepository
 import jakarta.persistence.EntityNotFoundException
+import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.time.Duration
@@ -28,6 +29,8 @@ class VerificationMessageService(
         return code
     }
 
+
+    @Transactional
     fun confirmCode(code: Int, receiverPhoneNumber: String, userId: Long) {
         val msg = verificationMsgRepository
                     .findFirstByCodeAndReceiverPhoneNumberAndIsConfirmedFalseOrderByIdDesc(code, receiverPhoneNumber)

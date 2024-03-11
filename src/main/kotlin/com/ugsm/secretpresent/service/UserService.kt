@@ -44,6 +44,7 @@ class UserService(
     @Autowired
     private val jwtProvider: JwtProvider,
 ) {
+    @Transactional
     fun updatePersonalInfo(userId: Long, changedUserInfo: ChangedUserInfo): UserInfo {
         val user = userRepository.findById(userId).getOrElse { throw EntityNotFoundException("User Not Found") }
         val uploadedImageUrl = "${S3ImageUploadType.PROFILE.getUrl(userId)}/${changedUserInfo.profileImageName}"
@@ -100,6 +101,7 @@ class UserService(
         return NicknameValidationDto(nickname, isValid, reason)
     }
 
+    @Transactional
     fun updateRefreshToken(prevRefreshToken: String): TokensDto {
         if(jwtProvider.isExpired(prevRefreshToken)){
             throw ExpiredJwtException(null, null, "Refresh token is Expired")

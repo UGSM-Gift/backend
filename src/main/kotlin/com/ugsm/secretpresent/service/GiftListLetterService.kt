@@ -32,6 +32,7 @@ class GiftListLetterService(
     val giftListProductRepository: GiftListProductRepository
 ) {
 
+    @Transactional
     fun getProductsByReceiverId(receiverId: Long): List<GiftListGivenProductDto> {
         return giftListLetterRepository.findByReceiverId(receiverId).map {
             GiftListGivenProductDto(
@@ -46,6 +47,7 @@ class GiftListLetterService(
         }
     }
 
+    @Transactional
     fun getProductsByGiverId(giverId: Long): List<GiftListGivenProductDto> {
         return giftListLetterRepository.findByGiverId(giverId).map {
             GiftListGivenProductDto(
@@ -60,6 +62,7 @@ class GiftListLetterService(
         }
     }
 
+    @Transactional
     fun getLettersByReceiverId(receiverId: Long, confirmedStatus: GiftConfirmedStatus?): List<GiftListLetterDto> {
         val result = if(confirmedStatus == null){
             giftListLetterRepository.findByReceiverId(receiverId)
@@ -78,6 +81,7 @@ class GiftListLetterService(
         }
     }
 
+    @Transactional
     fun getLetterDetailsById(id: Int){
         return giftListLetterRepository.findById(id).get().let {
             GiftListLetterDetailsDto(

@@ -7,6 +7,7 @@ import com.ugsm.secretpresent.repository.ProductRepository
 import com.ugsm.secretpresent.repository.UserDibsProductRepository
 import com.ugsm.secretpresent.repository.UserRepository
 import jakarta.persistence.EntityNotFoundException
+import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Slice
@@ -23,6 +24,7 @@ class ProductService(
     @Autowired
     val productRepository: ProductRepository
 ) {
+    @Transactional
     fun getListByCategoryId(id: Int, page: Int, numInPage: Int, priceBelow: Int?): Slice<Product> {
         val pageRequest = PageRequest.of(page - 1, numInPage)
         return if(priceBelow == null) {
@@ -32,12 +34,14 @@ class ProductService(
         }
     }
 
+    @Transactional
     fun deleteDibs(userId: Long, productId: Long) {
         val dibs = userDibsProductRepository.findByUserIdAndProductId(userId, productId) ?: throw EntityNotFoundException("찜한 이력이 없습니다.")
         if (dibs.user.id != userId) throw UnauthorizedException()
         userDibsProductRepository.delete(dibs)
     }
 
+    @Transactional
     fun createDibs(userId: Long, productId: Long) {
         if(userDibsProductRepository.findByUserIdAndProductId(userId, productId) != null){
             throw BadRequestException(101, message = "이미 찜한 상품입니다.")
@@ -50,6 +54,7 @@ class ProductService(
         )
     }
 
+    @Transactional
     fun getAllDibsProduct(userId: Long, orderBy: String?): List<Product> {
         val dibs = when(orderBy) {
             "HIGHEST_PRICE" -> userDibsProductRepository.findByUserIdOrderByProductPriceDesc(userId)
