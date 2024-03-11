@@ -38,6 +38,11 @@ allOpen {
 	annotation("jakarta.persistence.MappedSuperclass")
 }
 
+configurations.forEach {
+	it.exclude(group = "org.springframework.boot", module = "spring-boot-starter-logging")
+	it.exclude(group = "org.apache.logging.log4j", module = "log4j-to-slf4j")
+}
+
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -48,6 +53,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+	implementation("org.springframework.boot:spring-boot-starter-log4j2")
 
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	runtimeOnly("com.fasterxml.jackson.module:jackson-modules-java8:2.16.0")
