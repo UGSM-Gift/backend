@@ -80,8 +80,12 @@ class JwtFilter(
 
         // Token Expired 되었는지 여부
 
+        if(jwtProvider.isExpired(token)){
+            return jwtExceptionHandler(response, 40003, "Token given is expired")
+        }
+
         if (!jwtProvider.isAccessToken(token)) {
-            return jwtExceptionHandler(response, 40003, "Token given is not a valid access token")
+            return jwtExceptionHandler(response, 40004, "Token given is not a valid access token")
         }
 
         // UserId Token에서 꺼내기
