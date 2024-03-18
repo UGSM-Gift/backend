@@ -42,3 +42,7 @@ spring:
 logging:
   config: classpath:log4j2.xml
 
+twilio:
+  from-number: ENC(ypdw112yK+YMHmI2eGuetRV8pW0PNmIP)
+  account-sid: ENC(JKvY8Jv2KaQlEllgxlmhEjwAzQdKLidFcsaczqOJHvyrytwEQEKI3lSx8gAjYSY3)
+  auth-token: ENC(XYLN6Chc/8k91X4aBJqJzfsvTXAMoR5w6Eea4hFJ0Cufx8yafTwYAIhTGQYbDWwk)
