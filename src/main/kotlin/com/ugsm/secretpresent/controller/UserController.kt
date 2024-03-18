@@ -59,7 +59,9 @@ class UserController(
 
 
 
-        if (changedUserInfo.nickname != null && userService.findByNickname(changedUserInfo.nickname) != null) {
+        if (changedUserInfo.nickname != null
+            && changedUserInfo.nickname != userInfo.nickname
+            && userService.findByNickname(changedUserInfo.nickname) != null) {
             return@runBlocking ResponseEntity
                 .badRequest()
                 .body(
