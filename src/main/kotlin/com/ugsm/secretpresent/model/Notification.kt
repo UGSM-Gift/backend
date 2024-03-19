@@ -1,5 +1,6 @@
 package com.ugsm.secretpresent.model
 
+import com.ugsm.secretpresent.enums.NotificationType
 import jakarta.persistence.*
 import java.time.LocalDateTime
 
@@ -7,10 +8,14 @@ import java.time.LocalDateTime
 @Entity
 class Notification(
     @Column
-    var redirectUrl: String?,
+    @Enumerated(EnumType.STRING)
+    var type: NotificationType,
 
     @Column
     var content: String,
+
+    @Column
+    var referenceId: Int?,
 
     @ManyToOne
     @JoinColumn(name="user_id")
@@ -29,4 +34,4 @@ class Notification(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
 
-):BaseTimeEntity()
+    ):BaseTimeEntity()

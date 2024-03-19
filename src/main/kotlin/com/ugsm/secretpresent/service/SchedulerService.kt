@@ -1,6 +1,7 @@
 package com.ugsm.secretpresent.service
 
 import com.ugsm.secretpresent.enums.GiftConfirmedStatus
+import com.ugsm.secretpresent.enums.NotificationType
 import com.ugsm.secretpresent.model.Notification
 import com.ugsm.secretpresent.repository.GiftListLetterRepository
 import com.ugsm.secretpresent.repository.GiftListRepository
@@ -71,7 +72,8 @@ class SchedulerService(
         val giftList = giftListRepository.findByExpiredAtBetween(date1, date2)
         val notifications = giftList.map {
             Notification(
-                redirectUrl = redirectUrl,
+                type = NotificationType.GIFT_LIST,
+                referenceId = it.id,
                 content = template.format(it.userAnniversary.name),
                 reservedAt = LocalDateTime.now().withHour(23),
                 user = it.userAnniversary.user
@@ -89,7 +91,8 @@ class SchedulerService(
         val giftList = giftListRepository.findByExpiredAtBetween(date1, date2)
         val notifications = giftList.map {
             Notification(
-                redirectUrl = redirectUrl,
+                type = NotificationType.GIFT_LIST,
+                referenceId = it.id,
                 content = template,
                 reservedAt = LocalDateTime.now().withHour(23).withMinute(59).withSecond(0),
                 user = it.userAnniversary.user
@@ -111,7 +114,8 @@ class SchedulerService(
         )
         val notifications = letters.map {
             Notification(
-                redirectUrl = redirectUrl,
+                type = NotificationType.GIFT_LIST_LETTER,
+                referenceId = it.id,
                 content = template.format(it.productCategoryName),
                 reservedAt = date1.plusMinutes(1),
                 user = it.receiver
