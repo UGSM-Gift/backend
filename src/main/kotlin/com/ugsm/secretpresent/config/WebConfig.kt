@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.format.FormatterRegistry
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
+import java.text.SimpleDateFormat
 
 @Configuration
 class WebConfig(
@@ -36,6 +37,8 @@ class WebConfig(
         val mapper = ObjectMapper()
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
         mapper.registerModules(JavaTimeModule())
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        mapper.setDateFormat(dateFormat)
         mapper.registerKotlinModule()
         return mapper
     }

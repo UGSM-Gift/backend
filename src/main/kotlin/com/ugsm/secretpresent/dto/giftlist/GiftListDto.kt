@@ -11,7 +11,7 @@ class GiftListDto(
     var availableAt: LocalDateTime,
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     var expiredAt: LocalDateTime,
-    var imageUrl: String,
+    var anniversaryImageUrl: String,
     var anniversaryTitle: String,
     var selectedProductsNumber: Int,
     var receivedProductsNumber: Int,

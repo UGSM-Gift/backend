@@ -23,7 +23,7 @@ class GiftList(
     var expiredAt: LocalDateTime,
 
     @Column
-    var imgName: String,
+    var imageUrl: String,
 
     @OneToMany(mappedBy="giftList", cascade = [CascadeType.ALL], orphanRemoval = true)
     val categories: List<GiftListProductCategory> = emptyList(),

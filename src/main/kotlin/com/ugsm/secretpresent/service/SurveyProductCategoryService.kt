@@ -21,7 +21,6 @@ class SurveyProductCategoryService(
     @Autowired val surveyRepository: UserSurveyRepository,
     @Autowired val surveyProductCategoryRepository: SurveyProductCategoryRepository,
     @Autowired val objectMapper: ObjectMapper,
-    @Autowired val surveyGPTProductCategoryRepositorySupport: SurveyGPTProductCategoryRepositorySupport
 ) {
     val client: OkHttpClient = OkHttpClient
         .Builder()

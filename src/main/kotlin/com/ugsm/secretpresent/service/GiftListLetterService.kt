@@ -75,7 +75,7 @@ class GiftListLetterService(
                 it.id,
                 it.giver.id,
                 it.giver.nickname,
-                it.giftList.imgName,
+                it.giftList.imageUrl,
                 it.createdAt
             )
         }
@@ -88,7 +88,7 @@ class GiftListLetterService(
                 it.id!!,
                 it.giver.id,
                 it.giver.nickname,
-                it.giftList.imgName,
+                it.giftList.imageUrl,
                 it.productId,
                 it.productName,
                 it.productPrice,
@@ -120,7 +120,7 @@ class GiftListLetterService(
             ?: throw EntityNotFoundException()
 
         val alreadyGiftedProduct = giftListLetterRepository.findByGiftListIdAndProductIdAndConfirmedStatusNot(giftListId, product.id, GiftConfirmedStatus.DENIED)
-        if(alreadyGiftedProduct != null) throw CustomException(102, "해당 상품은 이미 다른 사람이 준 내역이 있습니다.")
+        if(alreadyGiftedProduct.isNotEmpty()) throw CustomException(102, "해당 상품은 이미 다른 사람이 준 내역이 있습니다.")
 
         val uploadedImageUrl = "${S3ImageUploadType.GIFT_LIST_LETTER.getUrl(giverId)}/${letterInfo.imageFileName}"
 

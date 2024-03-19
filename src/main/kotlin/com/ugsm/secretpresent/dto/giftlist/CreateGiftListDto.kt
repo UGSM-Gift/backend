@@ -5,7 +5,6 @@ import java.time.LocalDate
 
 data class CreateGiftListDto(
     val imageFileName: String,
-//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     val availableAt: LocalDate,
     val expiredAt: LocalDate,
     val anniversaryId: Int,
@@ -15,5 +14,5 @@ data class CreateGiftListDto(
 data class SelectedCategoryWithProducts(
     val categoryId: Int,
     val productIds: List<Long>,
-    val receiptType: GiftCategoryReceiptType
+    val receiptType: GiftCategoryReceiptType?
 )

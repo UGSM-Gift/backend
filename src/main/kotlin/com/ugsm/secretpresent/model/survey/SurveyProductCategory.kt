@@ -1,5 +1,6 @@
 package com.ugsm.secretpresent.model.survey
 
+import com.ugsm.secretpresent.enums.GiftCategoryReceiptType
 import com.ugsm.secretpresent.model.BaseTimeEntity
 import com.ugsm.secretpresent.model.NaverShoppingCategory
 import jakarta.persistence.*
