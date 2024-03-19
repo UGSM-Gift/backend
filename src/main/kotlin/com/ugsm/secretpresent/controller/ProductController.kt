@@ -1,5 +1,6 @@
 package com.ugsm.secretpresent.controller
 
+import com.ugsm.secretpresent.dto.ProductDto
 import com.ugsm.secretpresent.dto.user.UserInfo
 import com.ugsm.secretpresent.enums.GlobalResCode
 import com.ugsm.secretpresent.model.product.Product
@@ -23,10 +24,10 @@ class ProductController(
         @RequestParam page: Int = 1,
         @RequestParam numInPage: Int = 10,
         @RequestParam priceBelow: Int?,
-    ): ResponseEntity<CustomResponse<List<Product>>> {
+    ): ResponseEntity<CustomResponse<List<ProductDto>>> {
         return ResponseEntity.ok(
             CustomResponse(
-                GlobalResCode.OK.code, productService.getListByCategoryId(id, page, numInPage, priceBelow).content, ""
+                GlobalResCode.OK.code, productService.getListByCategoryId(id, page, numInPage, priceBelow), ""
             )
         )
     }
@@ -55,7 +56,7 @@ class ProductController(
     @GetMapping("/user/me/dibs")
     fun getAllDibsProducts(@AuthenticationPrincipal userInfo: UserInfo,
                            @RequestParam orderBy: String?,
-    ): ResponseEntity<CustomResponse<List<Product>>> {
+    ): ResponseEntity<CustomResponse<List<ProductDto>>> {
         return ResponseEntity.ok(
             CustomResponse(
                 GlobalResCode.OK.code, productService.getAllDibsProduct(userInfo.id, orderBy), ""

@@ -1,6 +1,7 @@
 package com.ugsm.secretpresent.service
 import com.ugsm.secretpresent.Exception.BadRequestException
 import com.ugsm.secretpresent.Exception.UnauthorizedException
+import com.ugsm.secretpresent.dto.ProductDto
 import com.ugsm.secretpresent.model.UserDibsProduct
 import com.ugsm.secretpresent.model.product.Product
 import com.ugsm.secretpresent.repository.ProductRepository
@@ -25,12 +26,25 @@ class ProductService(
     val productRepository: ProductRepository
 ) {
     @Transactional
-    fun getListByCategoryId(id: Int, page: Int, numInPage: Int, priceBelow: Int?): Slice<Product> {
+    fun getListByCategoryId(id: Int, page: Int, numInPage: Int, priceBelow: Int?): List<ProductDto> {
         val pageRequest = PageRequest.of(page - 1, numInPage)
-        return if(priceBelow == null) {
+        val result = if(priceBelow == null) {
             repository.findSliceByProductCategoriesShoppingCategoryId(id,pageRequest)
         } else {
             repository.findSliceByProductCategoriesShoppingCategoryIdAndPriceLessThan(id, pageRequest, priceBelow)
+        }
+
+        return result.toList().map{
+            ProductDto(
+                it.id,
+                it.name,
+                it.price,
+                it.thumbnailImgUrl,
+                it.brandName,
+                it.buyingUrl,
+                it.freeShipping,
+                it.isSoldOut
+            )
         }
     }
 
@@ -55,13 +69,22 @@ class ProductService(
     }
 
     @Transactional
-    fun getAllDibsProduct(userId: Long, orderBy: String?): List<Product> {
+    fun getAllDibsProduct(userId: Long, orderBy: String?): List<ProductDto> {
         val dibs = when(orderBy) {
             "HIGHEST_PRICE" -> userDibsProductRepository.findByUserIdOrderByProductPriceDesc(userId)
             "LOWEST_PRICE" -> userDibsProductRepository.findByUserIdOrderByProductPriceAsc(userId)
             else -> userDibsProductRepository.findByUserIdOrderByCreatedAtDesc(userId)
         }
-        return dibs.map { it.product }
+        return dibs.map { ProductDto(
+            it.product.id,
+            it.product.name,
+            it.product.price,
+            it.product.thumbnailImgUrl,
+            it.product.brandName,
+            it.product.buyingUrl,
+            it.product.freeShipping,
+            it.product.isSoldOut
+        ) }
     }
 }
 
