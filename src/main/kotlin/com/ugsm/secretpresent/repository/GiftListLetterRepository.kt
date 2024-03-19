@@ -17,7 +17,7 @@ interface GiftListLetterRepository : JpaRepository<GiftListLetter, Int> {
         confirmedStatus: GiftConfirmedStatus
     ): List<GiftListLetter>
 
-    fun findByGiftListProductCategoryIdAndConfirmedStatus(categoryId: Int, confirmedStatus: GiftConfirmedStatus)
+    fun findByGiftListProductCategoryIdAndConfirmedStatus(categoryId: Int, confirmedStatus: GiftConfirmedStatus): List<GiftListLetter>
     fun findByConfirmedStatusAndCreatedAtBetween(
         notConfirmed: GiftConfirmedStatus,
         date1: LocalDateTime,
@@ -25,5 +25,6 @@ interface GiftListLetterRepository : JpaRepository<GiftListLetter, Int> {
     ): List<GiftListLetter>
 
     fun findByGiftListIdAndConfirmedStatusNot(id: Int?, confirmed: GiftConfirmedStatus): List<GiftListLetter>
-    fun findByGiftListIdAndProductIdAndConfirmedStatusNot(giftListId: Int, id: Long, confirmedStatus: GiftConfirmedStatus): GiftListLetter?
+    fun findByGiftListIdAndProductIdAndConfirmedStatusNot(giftListId: Int, id: Long, confirmedStatus: GiftConfirmedStatus): List<GiftListLetter>
+    fun findByGiftListProductCategoryIdAndConfirmedStatusNot(giftListProductCategoryId: Int, confirmedStatus: GiftConfirmedStatus): List<GiftListLetter>
 }

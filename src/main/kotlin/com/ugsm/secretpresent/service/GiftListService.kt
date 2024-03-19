@@ -1,5 +1,7 @@
 package com.ugsm.secretpresent.service
 
+import com.ugsm.secretpresent.Exception.CustomException
+import com.ugsm.secretpresent.Exception.UnauthorizedException
 import com.ugsm.secretpresent.dto.GiftListInfoDto
 import com.ugsm.secretpresent.dto.GiftListProductCategoryDto
 import com.ugsm.secretpresent.dto.GiftListProductDto
@@ -11,6 +13,7 @@ import com.ugsm.secretpresent.model.gift.GiftList
 import com.ugsm.secretpresent.model.gift.GiftListProduct
 import com.ugsm.secretpresent.model.gift.GiftListProductCategory
 import com.ugsm.secretpresent.repository.*
+import jakarta.persistence.EntityNotFoundException
 import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
@@ -48,14 +51,14 @@ class GiftListService(
         val availableAt = giftListDto.availableAt.atTime(LocalTime.of(0, 0, 0))
         val expiredAt = giftListDto.expiredAt.atTime(LocalTime.of(23, 59, 59))
 
-        val uploadedImageUrl = "${S3ImageUploadType.GIFT_LIST.getUrl(takerId)}/${giftListDto.imageFileName}"
+        val uploadedImageUrl = getUploadedImageUrl(takerId, giftListDto.imageFileName)
 
         val giftList = GiftList(
             taker = user,
             userAnniversary = anniversary,
             availableAt = availableAt,
             expiredAt = expiredAt,
-            imgName = uploadedImageUrl,
+            imageUrl = uploadedImageUrl,
         )
         giftListRepository.save(giftList)
 
@@ -98,7 +101,7 @@ class GiftListService(
                 it.createdAt,
                 it.availableAt,
                 it.expiredAt,
-                it.imgName,
+                it.userAnniversary.image.imageUrl,
                 it.userAnniversary.name,
                 selectedProducts.count(),
                 receivedProducts.count()
@@ -115,6 +118,7 @@ class GiftListService(
             takerNickname = anniversary.user.nickname,
             anniversaryTitle = anniversary.name,
             createdAt = giftList.createdAt,
+            availableAt = giftList.availableAt,
             expiredAt = giftList.expiredAt
         ).apply {
             categories = giftList.categories.map {
@@ -139,17 +143,63 @@ class GiftListService(
 
     @Transactional
     fun getInfoWithAllGiftsNotReceived(giftListId: Int): GiftListInfoDto {
-        val giftListProductCategories = giftListProductCategoryRepository.findByGiftListId(giftListId).map {
+        val giftListProductCategories = giftListProductCategoryRepository.findByGiftListId(giftListId).filter {
+            if (it.receiptType == null || it.receiptType == GiftCategoryReceiptType.ALL) {
+                true
+            } else {
+                val notDeniedReceivedLetters =
+                    giftListLetterRepository.findByGiftListProductCategoryIdAndConfirmedStatusNot(
+                        it.id!!,
+                        GiftConfirmedStatus.DENIED
+                    )
+                notDeniedReceivedLetters.isEmpty()
+            }
+        }
+        val giftListProductCategoriesDto = giftListProductCategories.map {
             val products =
                 giftListProductRepositorySupport.getByGiftListIdAndProductCategoryIdNotGiven(
                     giftListId,
                     it.shoppingCategory.id
-                )
+                ).map { et -> GiftListProductDto(et.product.id, et.product.name, et.product.price, false) }
+            GiftListProductCategoryDto(
+                it.shoppingCategory.id,
+                it.shoppingCategory.name,
+                it.receiptType,
+                products
+            )
+        }.filter { it.products.isNotEmpty() }
+        val giftList = giftListRepository.findById(giftListId).get()
+        val categoriesHavingMultipleGifts = giftListProductCategoriesDto.filter { it.receiptType != null }
+
+        val categoriesHavingSingleGifts =
+            giftListProductCategoriesDto.filter { it.receiptType == null }
+
+        return GiftListInfoDto(
+            giftListId,
+            giftList.taker.id!!,
+            giftList.taker.nickname,
+            giftList.imageUrl,
+            giftList.userAnniversary.name,
+            giftList.userAnniversary.image.imageUrl,
+            giftList.availableAt,
+            giftList.expiredAt,
+            categoriesHavingMultipleGifts,
+            categoriesHavingSingleGifts
+        )
+    }
+
+    fun getInfo(giftListId: Int): GiftListInfoDto {
+        val giftListProductCategories = giftListProductCategoryRepository.findByGiftListId(giftListId)
+        val giftListProductCategoriesDto = giftListProductCategories.map {
+            val products =
+                giftListProductRepository.getByGiftListIdAndProductCategoryId(giftListId, it.shoppingCategory.id)
                     .map { et ->
-                        GiftListProductDto(et.id, et.product.id, et.product.name, et.product.price)
+                        val received = giftListLetterRepository.findByGiftListIdAndProductIdAndConfirmedStatusNot(
+                            giftListId, et.product.id, GiftConfirmedStatus.DENIED
+                        ).isNotEmpty();
+                        GiftListProductDto(et.product.id, et.product.name, et.product.price, received)
                     }
             GiftListProductCategoryDto(
-                it.id!!,
                 it.shoppingCategory.id,
                 it.shoppingCategory.name,
                 it.receiptType,
@@ -158,20 +208,98 @@ class GiftListService(
         }.filter { it.products.isNotEmpty() }
         val giftList = giftListRepository.findById(giftListId).get()
         val categoriesHavingMultipleGifts =
-            giftListProductCategories.filter { it.receiptType == GiftCategoryReceiptType.MULTIPLE }
+            giftListProductCategoriesDto.filter { it.receiptType != null }
         val categoriesHavingSingleGifts =
-            giftListProductCategories.filter { it.receiptType == GiftCategoryReceiptType.SINGLE }
+            giftListProductCategoriesDto.filter { it.receiptType == null }
 
         return GiftListInfoDto(
             giftListId,
             giftList.taker.id!!,
             giftList.taker.nickname,
+            giftList.imageUrl,
             giftList.userAnniversary.name,
             giftList.userAnniversary.image.imageUrl,
-            giftList.availableAt.toLocalDate(),
-            giftList.expiredAt.toLocalDate(),
+            giftList.availableAt,
+            giftList.expiredAt,
             categoriesHavingMultipleGifts,
             categoriesHavingSingleGifts
         )
+    }
+
+    @Transactional
+    fun update(userId: Long, giftListId: Int, dto: UpdateGiftListDto) {
+        val giftList = giftListRepository.findById(giftListId).get()
+        if (giftList.taker.id != userId) throw UnauthorizedException(message = "내 선물리스트가 아닙니다.")
+
+        val newUserAnniversary = if (dto.userAnniversaryId != null) {
+            userAnniversaryRepository.findById(dto.userAnniversaryId).get()
+        } else null
+
+        val newAvailableAt = dto.availableAt?.atTime(LocalTime.of(0, 0, 0))
+        val newExpiredAt = dto.expiredAt?.atTime(LocalTime.of(23, 59, 59))
+        val newImageUrl = if (dto.imageFileName != null) {
+            getUploadedImageUrl(userId, dto.imageFileName)
+        } else null
+
+        giftList.apply {
+            userAnniversary = newUserAnniversary ?: this.userAnniversary
+            availableAt = newAvailableAt ?: this.availableAt
+            expiredAt = newExpiredAt ?: this.expiredAt
+            imageUrl = newImageUrl ?: this.imageUrl
+        }
+    }
+
+    private fun getUploadedImageUrl(takerId: Long, fileName: String): String {
+        return "${S3ImageUploadType.GIFT_LIST.getUrl(takerId)}/$fileName"
+    }
+
+    fun deleteProduct(userId: Long, giftListId: Int, productCategoryId: Int, productId: Long) {
+        val giftList = giftListRepository.findById(giftListId).get()
+        if (giftList.taker.id != userId) throw UnauthorizedException(message = "내 선물리스트가 아닙니다.")
+
+        val giftListProduct: GiftListProduct
+        try {
+            giftListProduct =
+                giftListProductRepository.findByGiftListIdAndProductCategoryId(giftListId, productCategoryId)
+                    .last { it.product.id == productId }
+
+        } catch (_: NoSuchElementException) {
+            throw CustomException(code = 101, message = "해당 선물리스트의 카테고리에 상품이 존재하지 않습니다.")
+        }
+
+        val receivedLetters = giftListLetterRepository.findByGiftListIdAndProductIdAndConfirmedStatusNot(giftListId, productId, GiftConfirmedStatus.DENIED)
+        if(receivedLetters.isNotEmpty()) throw CustomException(code = 102, message = "이미 받은 이력이 있는 상품을 삭제할 수 없습니다.")
+
+        giftListProductRepository.delete(giftListProduct)
+
+
+    }
+
+    @Transactional
+    fun updateProductCategoryReceiptType(
+        userId: Long,
+        giftListId: Int,
+        productCategoryId: Int,
+        receiptType: GiftCategoryReceiptType
+    ) {
+        val giftList = giftListRepository.findById(giftListId).get()
+        if (giftList.taker.id != userId) throw UnauthorizedException(message = "내 선물리스트가 아닙니다.")
+
+        val giftListProductCategory =
+            giftListProductCategoryRepository.findByGiftListIdAndShoppingCategoryId(giftListId, productCategoryId)
+                ?: throw EntityNotFoundException("선물리스트에 해당 카테고리가 존재하지 않습니다.")
+
+        if (giftListProductCategory.receiptType == null) throw CustomException(
+            code = 101,
+            message = "복수상품을 포함한 카테고리가 아닙니다."
+        )
+
+        val giftListLetter = giftListLetterRepository.findByGiftListProductCategoryIdAndConfirmedStatus(
+            giftListProductCategory.id!!, GiftConfirmedStatus.DENIED
+        )
+
+        if (giftListLetter.isNotEmpty()) throw CustomException(code = 102, message = "이미 선물한 내역이 있는 경우 변경이 불가능합니다.")
+
+        giftListProductCategory.receiptType = receiptType
     }
 }

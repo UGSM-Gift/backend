@@ -33,10 +33,9 @@ class GiftListProductRepositorySupport(
             .leftJoin(giftListProduct.product)
             .fetchJoin()
             .where(
-                giftListProduct.productCategory.id.eq(shoppingCategoryId)
-                    .and(
-                        giftListProduct.product.id.notIn(subQuery)
-                    )
+                giftListProduct.giftList.id.eq(giftListId)
+                    .and(giftListProduct.productCategory.id.eq(shoppingCategoryId))
+                    .and(giftListProduct.product.id.notIn(subQuery))
             )
             .fetch()
     }

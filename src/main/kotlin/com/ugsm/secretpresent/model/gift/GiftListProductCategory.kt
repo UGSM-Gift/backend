@@ -17,7 +17,7 @@ class GiftListProductCategory(
 
     @Column
     @Enumerated(EnumType.STRING)
-    var receiptType: GiftCategoryReceiptType,
+    var receiptType: GiftCategoryReceiptType?,
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
