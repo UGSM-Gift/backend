@@ -32,11 +32,11 @@ class GiftListLetter(
     @Column
     var productPrice: Int,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="giver_id")
     var giver:User,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="receiver_id")
     var receiver: User,
 

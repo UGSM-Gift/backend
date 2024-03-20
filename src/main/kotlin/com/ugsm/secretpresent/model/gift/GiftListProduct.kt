@@ -7,15 +7,15 @@ import jakarta.persistence.*
 
 @Entity
 class GiftListProduct(
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="gift_list_id")
     var giftList: GiftList,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_category_id")
     var productCategory: NaverShoppingCategory?=null,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     var product: Product,
 

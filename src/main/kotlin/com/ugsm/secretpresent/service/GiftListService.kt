@@ -18,6 +18,7 @@ import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 import java.time.LocalTime
 
 @Service
@@ -91,11 +92,11 @@ class GiftListService(
     fun getUserGiftList(userId: Long, page: Int): List<GiftListDto> {
         val numInPage = 10
         val pageRequest = PageRequest.of(page - 1, numInPage)
-        val giftList = giftListRepository.findSliceByTakerId(userId, pageRequest)
+        val now = LocalDateTime.now()
+        val giftList = giftListRepository.findSliceByTakerIdAndAvailableAtLessThanAndExpiredAtGreaterThan(userId, pageRequest, now, now)
         return giftList.map {
-            val selectedProducts = giftListProductRepository.findByGiftListId(it.id!!)
-            val receivedProducts =
-                giftListLetterRepository.findByGiftListIdAndConfirmedStatusNot(it.id, GiftConfirmedStatus.DENIED)
+            val selectedProducts = it.giftListProducts
+            val receivedProducts = giftListLetterRepository.findByGiftListIdAndConfirmedStatusNot(it.id, GiftConfirmedStatus.DENIED)
             GiftListDto(
                 it.id,
                 it.createdAt,

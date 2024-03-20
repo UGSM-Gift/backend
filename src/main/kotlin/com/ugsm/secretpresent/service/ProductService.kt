@@ -2,8 +2,11 @@ package com.ugsm.secretpresent.service
 import com.ugsm.secretpresent.Exception.BadRequestException
 import com.ugsm.secretpresent.Exception.UnauthorizedException
 import com.ugsm.secretpresent.dto.ProductDto
+import com.ugsm.secretpresent.dto.RecommendedProductByAgeDto
+import com.ugsm.secretpresent.dto.RecommendedProductDto
+import com.ugsm.secretpresent.dto.user.UserInfo
+import com.ugsm.secretpresent.enums.ProductCategoryCodeByAge
 import com.ugsm.secretpresent.model.UserDibsProduct
-import com.ugsm.secretpresent.model.product.Product
 import com.ugsm.secretpresent.repository.ProductRepository
 import com.ugsm.secretpresent.repository.UserDibsProductRepository
 import com.ugsm.secretpresent.repository.UserRepository
@@ -11,7 +14,6 @@ import jakarta.persistence.EntityNotFoundException
 import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
-import org.springframework.data.domain.Slice
 import org.springframework.stereotype.Service
 
 @Service
@@ -85,6 +87,59 @@ class ProductService(
             it.product.freeShipping,
             it.product.isSoldOut
         ) }
+    }
+
+    fun getUserRecommendedProducts(userInfo: UserInfo): RecommendedProductByAgeDto {
+        val age = userInfo.getAge()
+        val categories = when(age){
+            10 -> listOf(ProductCategoryCodeByAge.TEENAGE_MALE, ProductCategoryCodeByAge.TEENAGE_FEMALE)
+            20, 30 -> listOf(ProductCategoryCodeByAge.TWEN_TO_THI_MALE, ProductCategoryCodeByAge.TWEN_TO_THI_FEMALE)
+            else -> listOf(ProductCategoryCodeByAge.FOUR_TO_FIFTH_MALE, ProductCategoryCodeByAge.FOUR_TO_FIFTH_FEMALE)
+        }.map{it.code}
+        val pageRequest = PageRequest.of(0, 20)
+        val productsPriceLowerThan10K = productRepository.findSliceByProductCategoriesShoppingCategoryIdInAndPriceBetween(
+            categories,pageRequest,0,9999
+        )
+        val productsPriceIn10KTo30K = productRepository.findSliceByProductCategoriesShoppingCategoryIdInAndPriceBetween(
+            categories,pageRequest,10000,29999
+        )
+        val productsPriceIn30KTo50K = productRepository.findSliceByProductCategoriesShoppingCategoryIdInAndPriceBetween(
+            categories,pageRequest,30000,49999
+        )
+        val productsPriceLargerThan50K = productRepository.findSliceByProductCategoriesShoppingCategoryIdInAndPriceBetween(
+            categories,pageRequest,50000,1000000000
+        )
+
+        val productIds = (productsPriceLowerThan10K + productsPriceIn10KTo30K + productsPriceIn30KTo50K + productsPriceLargerThan50K)
+            .map{it.id}
+        val dibbs = userDibsProductRepository.findByUserIdAndProductIdIn(userInfo.id, productIds)
+
+        val productsPriceLowerThan10KDto = productsPriceLowerThan10K.toList().map{product->
+            val dibbed = !dibbs.none { it.product.id == product.id }
+            RecommendedProductDto(product.id, product.name, product.thumbnailImgUrl, product.buyingUrl, product.price, dibbed)
+        }
+
+        val productsPriceIn10KTo30KDto = productsPriceIn10KTo30K.toList().map{product->
+            val dibbed = !dibbs.none { it.product.id == product.id }
+            RecommendedProductDto(product.id, product.name, product.thumbnailImgUrl, product.buyingUrl, product.price, dibbed)
+        }
+
+        val productsPriceIn30KTo50KDto = productsPriceIn30KTo50K.toList().map{product->
+            val dibbed = !dibbs.none { it.product.id == product.id }
+            RecommendedProductDto(product.id, product.name, product.thumbnailImgUrl, product.buyingUrl, product.price, dibbed)
+        }
+
+        val productsPriceLargerThan50KDto = productsPriceLargerThan50K.toList().map{product->
+            val dibbed = !dibbs.none { it.product.id == product.id }
+            RecommendedProductDto(product.id, product.name, product.thumbnailImgUrl, product.buyingUrl, product.price, dibbed)
+        }
+
+        return RecommendedProductByAgeDto(
+            productsPriceLowerThan10KDto,
+            productsPriceIn10KTo30KDto,
+            productsPriceIn30KTo50KDto,
+            productsPriceLargerThan50KDto
+        )
     }
 }
 

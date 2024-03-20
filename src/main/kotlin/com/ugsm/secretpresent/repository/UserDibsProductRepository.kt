@@ -11,4 +11,5 @@ interface UserDibsProductRepository: JpaRepository<UserDibsProduct, Int> {
     fun findByUserIdOrderByProductPriceAsc(userId:Long): List<UserDibsProduct>
     fun findByUserIdAndProductId(userId: Long, productId: Long): UserDibsProduct?
 
+    fun findByUserIdAndProductIdIn(userId: Long, productIds: List<Long>): List<UserDibsProduct>
 }
