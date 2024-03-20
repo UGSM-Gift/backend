@@ -11,6 +11,6 @@ import java.time.LocalDateTime
 interface GiftListRepository:JpaRepository<GiftList, Int> {
     fun findByTakerId(userId: Long): List<GiftList>
     fun findByExpiredAtBetween(date1: LocalDateTime, date2: LocalDateTime): List<GiftList>
-    fun findSliceByTakerId(takerId: Long, pageRequest: PageRequest): List<GiftList>
+    fun findSliceByTakerIdAndAvailableAtLessThanAndExpiredAtGreaterThan(takerId: Long, pageRequest: PageRequest, date1: LocalDateTime, date2: LocalDateTime): List<GiftList>
 
 }

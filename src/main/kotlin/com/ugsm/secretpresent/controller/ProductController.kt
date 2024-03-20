@@ -1,9 +1,9 @@
 package com.ugsm.secretpresent.controller
 
 import com.ugsm.secretpresent.dto.ProductDto
+import com.ugsm.secretpresent.dto.RecommendedProductByAgeDto
 import com.ugsm.secretpresent.dto.user.UserInfo
 import com.ugsm.secretpresent.enums.GlobalResCode
-import com.ugsm.secretpresent.model.product.Product
 import com.ugsm.secretpresent.response.CustomResponse
 import com.ugsm.secretpresent.service.ProductService
 import org.springframework.beans.factory.annotation.Autowired
@@ -60,6 +60,16 @@ class ProductController(
         return ResponseEntity.ok(
             CustomResponse(
                 GlobalResCode.OK.code, productService.getAllDibsProduct(userInfo.id, orderBy), ""
+            )
+        )
+    }
+    @GetMapping("/product/recommended")
+    fun getRecommendedProducts(@AuthenticationPrincipal userInfo: UserInfo): ResponseEntity<CustomResponse<RecommendedProductByAgeDto>> {
+        val result = productService.getUserRecommendedProducts(userInfo)
+
+        return ResponseEntity.ok(
+            CustomResponse(
+                GlobalResCode.OK.code, result, ""
             )
         )
     }

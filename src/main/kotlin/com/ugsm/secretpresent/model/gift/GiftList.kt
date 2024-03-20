@@ -28,6 +28,9 @@ class GiftList(
     @OneToMany(mappedBy="giftList", cascade = [CascadeType.ALL], orphanRemoval = true)
     val categories: List<GiftListProductCategory> = emptyList(),
 
+    @OneToMany(mappedBy="giftList", cascade = [CascadeType.ALL], orphanRemoval = true)
+    val giftListProducts: List<GiftListProduct> = emptyList(),
+
     @OneToMany(mappedBy="giftList")
     val productLetters: List<GiftListLetter> = emptyList(),
 

@@ -10,4 +10,7 @@ import org.springframework.stereotype.Repository
 interface ProductRepository:JpaRepository<Product, Long> {
     fun findSliceByProductCategoriesShoppingCategoryIdAndPriceLessThan(id: Int, pageable: Pageable, price: Int):Slice<Product>
     fun findSliceByProductCategoriesShoppingCategoryId(id: Int, pageable: Pageable):Slice<Product>
+
+    fun findSliceByProductCategoriesShoppingCategoryIdInAndPriceBetween(ids: List<Int>, pageable: Pageable, minPrice: Int, maxPrice: Int):Slice<Product>
+
 }
