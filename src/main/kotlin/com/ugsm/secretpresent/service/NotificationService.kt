@@ -120,7 +120,8 @@ class NotificationService(
             NotificationDto(
                 it.id,
                 it.content,
-                it.redirectUrl,
+                it.type,
+                it.referenceId,
                 it.read,
                 it.reservedAt
             )
@@ -135,7 +136,8 @@ class NotificationService(
             NotificationDto(
                 it.id,
                 it.content,
-                it.redirectUrl,
+                it.type,
+                it.referenceId,
                 it.read,
                 it.reservedAt
             )

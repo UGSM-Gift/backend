@@ -34,8 +34,10 @@ class SurveyProductCategoryService(
     fun getRecommendedCategories(surveyId: Int): List<RecommendedCategoryDto>? {
         val req = Request.Builder().url("${BASE_URL}/gpt/recommendation/${surveyId}").get().build()
         val res = client.newCall(req).execute()
-        if (res.code != 200) {
-            throw IllegalArgumentException("메세지 전송에 실패했습니다.")
+        res.use{
+            if (res.code != 200) {
+                throw IllegalArgumentException("메세지 전송에 실패했습니다.")
+            }
         }
         val categoryIds = objectMapper.readValue(res.body.string(), object : TypeReference<List<Int>>() {})
 

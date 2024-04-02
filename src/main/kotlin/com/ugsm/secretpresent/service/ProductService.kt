@@ -31,9 +31,9 @@ class ProductService(
     fun getListByCategoryId(id: Int, page: Int, numInPage: Int, priceBelow: Int?): List<ProductDto> {
         val pageRequest = PageRequest.of(page - 1, numInPage)
         val result = if(priceBelow == null) {
-            repository.findSliceByProductCategoriesShoppingCategoryId(id,pageRequest)
+            repository.findSliceByProductCategoriesShoppingCategoryIdOrderByTimestampDesc(id,pageRequest)
         } else {
-            repository.findSliceByProductCategoriesShoppingCategoryIdAndPriceLessThan(id, pageRequest, priceBelow)
+            repository.findSliceByProductCategoriesShoppingCategoryIdAndPriceLessThanOrderByTimestampDesc(id, pageRequest, priceBelow)
         }
 
         return result.toList().map{
@@ -97,16 +97,16 @@ class ProductService(
             else -> listOf(ProductCategoryCodeByAge.FOUR_TO_FIFTH_MALE, ProductCategoryCodeByAge.FOUR_TO_FIFTH_FEMALE)
         }.map{it.code}
         val pageRequest = PageRequest.of(0, 20)
-        val productsPriceLowerThan10K = productRepository.findSliceByProductCategoriesShoppingCategoryIdInAndPriceBetween(
+        val productsPriceLowerThan10K = productRepository.findSliceByProductCategoriesShoppingCategoryIdInAndPriceBetweenOrderByTimestampDesc(
             categories,pageRequest,0,9999
         )
-        val productsPriceIn10KTo30K = productRepository.findSliceByProductCategoriesShoppingCategoryIdInAndPriceBetween(
+        val productsPriceIn10KTo30K = productRepository.findSliceByProductCategoriesShoppingCategoryIdInAndPriceBetweenOrderByTimestampDesc(
             categories,pageRequest,10000,29999
         )
-        val productsPriceIn30KTo50K = productRepository.findSliceByProductCategoriesShoppingCategoryIdInAndPriceBetween(
+        val productsPriceIn30KTo50K = productRepository.findSliceByProductCategoriesShoppingCategoryIdInAndPriceBetweenOrderByTimestampDesc(
             categories,pageRequest,30000,49999
         )
-        val productsPriceLargerThan50K = productRepository.findSliceByProductCategoriesShoppingCategoryIdInAndPriceBetween(
+        val productsPriceLargerThan50K = productRepository.findSliceByProductCategoriesShoppingCategoryIdInAndPriceBetweenOrderByTimestampDesc(
             categories,pageRequest,50000,1000000000
         )
 

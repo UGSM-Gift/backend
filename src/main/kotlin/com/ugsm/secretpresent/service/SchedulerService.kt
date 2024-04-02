@@ -36,7 +36,8 @@ class SchedulerService(
         val targetAnniversaries = anniversaryRepository.findByDate(date)
         val notifications = targetAnniversaries.map {
             Notification(
-                redirectUrl = redirectUrl,
+                type=NotificationType.SURVEY,
+                referenceId = null,
                 content = template.format(it.name),
                 reservedAt = LocalDateTime.now().withHour(18),
                 user = it.user
@@ -54,7 +55,8 @@ class SchedulerService(
         val targetAnniversaries = anniversaryRepository.findByDate(date)
         val notifications = targetAnniversaries.map {
             Notification(
-                redirectUrl = redirectUrl,
+                type=NotificationType.SURVEY,
+                referenceId = null,
                 content = template.format(it.name, it.user.nickname),
                 reservedAt = LocalDateTime.now().withHour(8),
                 user = it.user
