@@ -44,11 +44,11 @@ class TwilioMessageService(
             .post(formBody)
             .build()
         val res = client.newCall(req).execute()
-        if (res.code != 201){
-            res.close()
-            throw IllegalArgumentException("메세지 전송에 실패했습니다. [${res.code}] - ${res.body.string()}")
-        }
 
-        res.close()
+        res.use {
+            if (it.code != 201){
+                throw IllegalArgumentException("메세지 전송에 실패했습니다. [${it.code}] - ${it.body.string()}")
+            }
+        }
     }
 }
