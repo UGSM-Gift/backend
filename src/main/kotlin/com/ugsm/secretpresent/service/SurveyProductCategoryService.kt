@@ -34,10 +34,12 @@ class SurveyProductCategoryService(
     fun getRecommendedCategories(surveyId: Int): List<RecommendedCategoryDto>? {
         val req = Request.Builder().url("${BASE_URL}/gpt/recommendation/${surveyId}").get().build()
         val res = client.newCall(req).execute()
+        val resBody = res.body.string()
+        res.close()
         if (res.code != 200) {
             throw IllegalArgumentException("메세지 전송에 실패했습니다.")
         }
-        val categoryIds = objectMapper.readValue(res.body.string(), object : TypeReference<List<Int>>() {})
+        val categoryIds = objectMapper.readValue(resBody, object : TypeReference<List<Int>>() {})
 
         val categories = naverShoppingCategoryRepository.findAllById(categoryIds)
         val survey = surveyRepository.findById(surveyId).get()

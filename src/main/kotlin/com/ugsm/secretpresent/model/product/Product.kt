@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference
 import com.ugsm.secretpresent.enums.Marketplace
 import com.ugsm.secretpresent.model.BaseTimeEntity
 import jakarta.persistence.*
+import java.time.LocalDateTime
 
 @Entity
 class Product(
@@ -36,4 +37,6 @@ class Product(
     @Column var freeShipping: Boolean,
 
     @Column var isSoldOut: Boolean = false,
+
+    @Column var timestamp: LocalDateTime
 ) : BaseTimeEntity()
