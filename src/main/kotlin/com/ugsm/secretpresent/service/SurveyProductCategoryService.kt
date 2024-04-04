@@ -28,18 +28,20 @@ class SurveyProductCategoryService(
         .build()
 
     companion object {
-        const val BASE_URL = "http://host.docker.internal:8000"
+        const val BASE_URL = "https://host.docker.internal:8000"
     }
 
     fun getRecommendedCategories(surveyId: Int): List<RecommendedCategoryDto>? {
         val req = Request.Builder().url("${BASE_URL}/gpt/recommendation/${surveyId}").get().build()
         val res = client.newCall(req).execute()
+        val content: String
         res.use{
             if (res.code != 200) {
                 throw IllegalArgumentException("메세지 전송에 실패했습니다.")
             }
+            content = it.body.string()
         }
-        val categoryIds = objectMapper.readValue(res.body.string(), object : TypeReference<List<Int>>() {})
+        val categoryIds = objectMapper.readValue(content, object : TypeReference<List<Int>>() {})
 
         val categories = naverShoppingCategoryRepository.findAllById(categoryIds)
         val survey = surveyRepository.findById(surveyId).get()
