@@ -28,7 +28,7 @@ class SurveyProductCategoryService(
         .build()
 
     companion object {
-        const val BASE_URL = "https://host.docker.internal:8000"
+        const val BASE_URL = "http://host.docker.internal:8000"
     }
 
     fun getRecommendedCategories(surveyId: Int): List<RecommendedCategoryDto>? {
