@@ -28,11 +28,11 @@ class Product(
 
     @Column var marketplaceProductId: Long,
 
-    @Column var reviewCount: Int,
+    @Column var reviewCount: Int?,
 
     @Column var likeCount: Int,
 
-    @Column var overallRate: Int,
+    @Column var overallRate: Int?,
 
     @Column var freeShipping: Boolean,
 
