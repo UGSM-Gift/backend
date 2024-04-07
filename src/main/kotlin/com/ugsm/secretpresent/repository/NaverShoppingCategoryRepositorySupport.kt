@@ -2,7 +2,7 @@ package com.ugsm.secretpresent.repository
 
 import com.querydsl.core.types.Projections
 import com.querydsl.jpa.impl.JPAQueryFactory
-import com.ugsm.secretpresent.dto.productcategory.LeafCategoryDto
+import com.ugsm.secretpresent.dto.productcategory.BaseProductCategoryDto
 import com.ugsm.secretpresent.dto.productcategory.ProductCategoryDto
 import com.ugsm.secretpresent.model.NaverShoppingCategory
 import com.ugsm.secretpresent.model.QNaverShoppingCategory
@@ -22,7 +22,7 @@ class NaverShoppingCategoryRepositorySupport(
             .fetch()
     }
 
-    fun getAllLeaves():List<LeafCategoryDto>{
+    fun getAllLeaves():List<BaseProductCategoryDto>{
         val category = QNaverShoppingCategory.naverShoppingCategory
 
         val subQuery = queryFactory.select(category.parentCategory.id)
@@ -32,7 +32,7 @@ class NaverShoppingCategoryRepositorySupport(
         return queryFactory
             .select(
                 Projections.fields(
-                    LeafCategoryDto::class.java,
+                    BaseProductCategoryDto::class.java,
                     category.id,
                     category.parentCategory.name.concat(" > ").concat(category.name).`as`("name")
                 )

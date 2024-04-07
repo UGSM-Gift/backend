@@ -1,25 +1,20 @@
 package com.ugsm.secretpresent.controller
 
-import com.ugsm.secretpresent.Exception.UnauthorizedException
 import com.ugsm.secretpresent.dto.DtoWithExceptionReason
+import com.ugsm.secretpresent.dto.productcategory.BaseProductCategoryDto
 import com.ugsm.secretpresent.dto.productcategory.RecommendedCategoryDto
 import com.ugsm.secretpresent.dto.survey.CreateSurveyDto
 import com.ugsm.secretpresent.dto.user.UserInfo
 import com.ugsm.secretpresent.enums.GlobalResCode
-import com.ugsm.secretpresent.model.survey.SurveyPersonalCategory
-import com.ugsm.secretpresent.model.survey.SurveyPersonalCategoryQuestionAnswer
-import com.ugsm.secretpresent.model.survey.UserSurvey
-import com.ugsm.secretpresent.repository.*
+import com.ugsm.secretpresent.repository.UserRepository
 import com.ugsm.secretpresent.response.CustomResponse
 import com.ugsm.secretpresent.service.SurveyProductCategoryService
 import com.ugsm.secretpresent.service.SurveyService
-import jakarta.persistence.EntityNotFoundException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
-import kotlin.jvm.optionals.getOrElse
 
 @RestController
 @RequestMapping("/api/survey")
@@ -84,14 +79,14 @@ class SurveyController(
     fun createSurveyProductCategories(
         @PathVariable surveyId: Int,
         @RequestBody productCategoryIds: List<Int>
-    ): ResponseEntity<CustomResponse<List<RecommendedCategoryDto>?>> {
+    ): ResponseEntity<CustomResponse<List<BaseProductCategoryDto>>> {
 
-        surveyProductCategoryService.create(productCategoryIds, surveyId)
+        val result = surveyProductCategoryService.create(productCategoryIds, surveyId)
 
         return ResponseEntity.ok(
             CustomResponse(
                 code = GlobalResCode.OK.code,
-                data = null,
+                data = result,
                 message = ""
             )
         )
