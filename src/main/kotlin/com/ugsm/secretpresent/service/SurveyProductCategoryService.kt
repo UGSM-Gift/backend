@@ -3,10 +3,14 @@ package com.ugsm.secretpresent.service
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.ugsm.secretpresent.Exception.CustomException
+import com.ugsm.secretpresent.dto.productcategory.BaseProductCategoryDto
 import com.ugsm.secretpresent.dto.productcategory.RecommendedCategoryDto
 import com.ugsm.secretpresent.model.survey.SurveyGPTProductCategory
 import com.ugsm.secretpresent.model.survey.SurveyProductCategory
-import com.ugsm.secretpresent.repository.*
+import com.ugsm.secretpresent.repository.NaverShoppingCategoryRepository
+import com.ugsm.secretpresent.repository.SurveyGPTProductCategoryRepository
+import com.ugsm.secretpresent.repository.SurveyProductCategoryRepository
+import com.ugsm.secretpresent.repository.UserSurveyRepository
 import jakarta.transaction.Transactional
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -64,12 +68,17 @@ class SurveyProductCategoryService(
     }
 
     @Transactional
-    fun create(productCategoryIds: List<Int>, surveyId: Int) {
+    fun create(productCategoryIds: List<Int>, surveyId: Int): List<BaseProductCategoryDto> {
         val productCategories = naverShoppingCategoryRepository.findAllById(productCategoryIds)
         val survey = surveyRepository.findById(surveyId).get()
         if (productCategories.count() !in 1..15) throw CustomException(101, "카테고리 갯수가 1~15개가 아닙니다.")
         val surveyProductCategories =
             productCategories.map { SurveyProductCategory(productCategory = it, survey = survey) }
         surveyProductCategoryRepository.saveAll(surveyProductCategories)
+
+        return surveyProductCategories.map{
+            val productCategory = it.productCategory
+            BaseProductCategoryDto(productCategory.id, productCategory.name)
+        }
     }
 }

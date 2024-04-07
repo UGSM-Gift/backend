@@ -1,6 +1,6 @@
 package com.ugsm.secretpresent.service
 
-import com.ugsm.secretpresent.dto.productcategory.LeafCategoryDto
+import com.ugsm.secretpresent.dto.productcategory.BaseProductCategoryDto
 import com.ugsm.secretpresent.dto.productcategory.NaverShoppingCategoryDto
 import com.ugsm.secretpresent.repository.NaverShoppingCategoryRepository
 import com.ugsm.secretpresent.repository.NaverShoppingCategoryRepositorySupport
@@ -42,7 +42,7 @@ class NaverShoppingCategoryService(
     }
 
     @Transactional
-    fun getAllLeaves():List<LeafCategoryDto> = support.getAllLeaves()
+    fun getAllLeaves():List<BaseProductCategoryDto> = support.getAllLeaves()
 
     @Transactional
     fun getAllCategories(): List<NaverShoppingCategoryDto> {
