@@ -189,6 +189,7 @@ class GiftListService(
         )
     }
 
+    @Transactional
     fun getInfo(giftListId: Int): GiftListInfoDto {
         val giftListProductCategories = giftListProductCategoryRepository.findByGiftListId(giftListId)
         val giftListProductCategoriesDto = giftListProductCategories.map {
