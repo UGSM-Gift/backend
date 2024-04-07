@@ -91,9 +91,10 @@ class ProductService(
 
     fun getUserRecommendedProducts(userInfo: UserInfo): RecommendedProductByAgeDto {
         val age = userInfo.getAge()
-        val categories = when(age){
-            10 -> listOf(ProductCategoryCodeByAge.TEENAGE_MALE, ProductCategoryCodeByAge.TEENAGE_FEMALE)
-            20, 30 -> listOf(ProductCategoryCodeByAge.TWEN_TO_THI_MALE, ProductCategoryCodeByAge.TWEN_TO_THI_FEMALE)
+
+        val categories = when (age) {
+            in 10..19 -> listOf(ProductCategoryCodeByAge.TEENAGE_MALE, ProductCategoryCodeByAge.TEENAGE_FEMALE)
+            in 20..39 -> listOf(ProductCategoryCodeByAge.TWEN_TO_THI_MALE, ProductCategoryCodeByAge.TWEN_TO_THI_FEMALE)
             else -> listOf(ProductCategoryCodeByAge.FOUR_TO_FIFTH_MALE, ProductCategoryCodeByAge.FOUR_TO_FIFTH_FEMALE)
         }.map{it.code}
         val pageRequest = PageRequest.of(0, 20)
