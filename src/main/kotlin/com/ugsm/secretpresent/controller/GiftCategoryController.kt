@@ -1,6 +1,6 @@
 package com.ugsm.secretpresent.controller
 
-import com.ugsm.secretpresent.dto.productcategory.LeafCategoryDto
+import com.ugsm.secretpresent.dto.productcategory.BaseProductCategoryDto
 import com.ugsm.secretpresent.dto.productcategory.NaverShoppingCategoryDto
 import com.ugsm.secretpresent.enums.GlobalResCode
 import com.ugsm.secretpresent.response.CustomResponse
@@ -27,7 +27,7 @@ class GiftCategoryController(
     }
 
     @GetMapping("/naver/leaves")
-    fun getNaverShoppingLeafCategories(): ResponseEntity<CustomResponse<List<LeafCategoryDto>>> {
+    fun getNaverShoppingLeafCategories(): ResponseEntity<CustomResponse<List<BaseProductCategoryDto>>> {
         val result = naverShoppingCategoryService.getAllLeaves()
 
         return ResponseEntity.ok(CustomResponse(
