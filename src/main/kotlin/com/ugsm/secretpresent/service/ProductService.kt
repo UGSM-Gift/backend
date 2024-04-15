@@ -40,6 +40,7 @@ class ProductService(
             ProductDto(
                 it.id,
                 it.name,
+                id,
                 it.price,
                 it.thumbnailImgUrl,
                 it.brandName,
@@ -80,6 +81,7 @@ class ProductService(
         return dibs.map { ProductDto(
             it.product.id,
             it.product.name,
+            null,
             it.product.price,
             it.product.thumbnailImgUrl,
             it.product.brandName,

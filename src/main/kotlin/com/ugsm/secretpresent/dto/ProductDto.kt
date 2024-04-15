@@ -10,6 +10,8 @@ data class ProductDto(
 
     var name: String = "",
 
+    var categoryId: Int?,
+
     var price: Int = 0,
 
     var thumbnailImgUrl: String? = null,
