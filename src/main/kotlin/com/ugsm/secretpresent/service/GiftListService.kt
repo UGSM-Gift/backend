@@ -1,10 +1,9 @@
 package com.ugsm.secretpresent.service
 
+import aws.smithy.kotlin.runtime.util.length
 import com.ugsm.secretpresent.Exception.CustomException
 import com.ugsm.secretpresent.Exception.UnauthorizedException
-import com.ugsm.secretpresent.dto.GiftListInfoDto
-import com.ugsm.secretpresent.dto.GiftListProductCategoryDto
-import com.ugsm.secretpresent.dto.GiftListProductDto
+import com.ugsm.secretpresent.dto.*
 import com.ugsm.secretpresent.dto.giftlist.*
 import com.ugsm.secretpresent.enums.GiftCategoryReceiptType
 import com.ugsm.secretpresent.enums.GiftConfirmedStatus
@@ -31,6 +30,8 @@ class GiftListService(
     var userRepository: UserRepository,
     @Autowired
     var productRepository: ProductRepository,
+    @Autowired
+    var productCategoryRepository: NaverShoppingCategoryRepository,
     @Autowired
     val naverShoppingCategoryRepository: NaverShoppingCategoryRepository,
     @Autowired
@@ -93,10 +94,16 @@ class GiftListService(
         val numInPage = 10
         val pageRequest = PageRequest.of(page - 1, numInPage)
         val now = LocalDateTime.now()
-        val giftList = giftListRepository.findSliceByTakerIdAndAvailableAtLessThanAndExpiredAtGreaterThan(userId, pageRequest, now, now)
+        val giftList = giftListRepository.findSliceByTakerIdAndAvailableAtLessThanAndExpiredAtGreaterThan(
+            userId,
+            pageRequest,
+            now,
+            now
+        )
         return giftList.map {
             val selectedProducts = it.giftListProducts
-            val receivedProducts = giftListLetterRepository.findByGiftListIdAndConfirmedStatusNot(it.id, GiftConfirmedStatus.DENIED)
+            val receivedProducts =
+                giftListLetterRepository.findByGiftListIdAndConfirmedStatusNot(it.id, GiftConfirmedStatus.DENIED)
             GiftListDto(
                 it.id,
                 it.createdAt,
@@ -268,8 +275,12 @@ class GiftListService(
             throw CustomException(code = 101, message = "해당 선물리스트의 카테고리에 상품이 존재하지 않습니다.")
         }
 
-        val receivedLetters = giftListLetterRepository.findByGiftListIdAndProductIdAndConfirmedStatusNot(giftListId, productId, GiftConfirmedStatus.DENIED)
-        if(receivedLetters.isNotEmpty()) throw CustomException(code = 102, message = "이미 받은 이력이 있는 상품을 삭제할 수 없습니다.")
+        val receivedLetters = giftListLetterRepository.findByGiftListIdAndProductIdAndConfirmedStatusNot(
+            giftListId,
+            productId,
+            GiftConfirmedStatus.DENIED
+        )
+        if (receivedLetters.isNotEmpty()) throw CustomException(code = 102, message = "이미 받은 이력이 있는 상품을 삭제할 수 없습니다.")
 
         giftListProductRepository.delete(giftListProduct)
 
@@ -302,5 +313,42 @@ class GiftListService(
         if (giftListLetter.isNotEmpty()) throw CustomException(code = 102, message = "이미 선물한 내역이 있는 경우 변경이 불가능합니다.")
 
         giftListProductCategory.receiptType = receiptType
+    }
+
+    fun getFinalGiftListBeforeSubmit(dto: List<FinalGiftListBeforeSubmitRequestDto>): FinalGiftListBeforeSubmitResponseDto {
+        val grouped = dto.groupBy { it.categoryId }
+        val single = arrayListOf<CategoryWithProductsDto>()
+        val multiple = arrayListOf<CategoryWithProductsDto>()
+        grouped.forEach {
+            val productIds = it.value.map { b -> b.productId }
+            val products = productRepository.findAllByIdIn(productIds)
+            val category = productCategoryRepository.findById(it.key).get()
+            val categoryWithProductDto = CategoryWithProductsDto(
+                categoryId = category.id,
+                categoryName = category.name,
+                products = products.map { p ->
+                    ProductDto(
+                        p.id,
+                        p.name,
+                        category.id,
+                        p.price,
+                        p.thumbnailImgUrl,
+                        p.brandName,
+                        p.buyingUrl,
+                        p.freeShipping,
+                        p.isSoldOut
+                    )
+                }
+            )
+
+            if (products.size >= 2) {
+                multiple.add(categoryWithProductDto)
+            } else {
+                single.add(categoryWithProductDto)
+            }
+        }
+        return FinalGiftListBeforeSubmitResponseDto(
+            single, multiple
+        )
     }
 }
