@@ -1,7 +1,5 @@
 package com.ugsm.secretpresent.enums
 
-import com.ugsm.secretpresent.service.AwsS3Service
-
 enum class S3ImageUploadType(
     val dir: String,
 ) {
@@ -10,7 +8,7 @@ enum class S3ImageUploadType(
     GIFT_LIST_LETTER("gift-list-letter");
 
     fun getUrl(userId: Long): String {
-        val baseUrl = AwsS3Service.BASE_URL
+        val baseUrl = "http://cloudfront.ugsm.co.kr"
         return "${baseUrl}/${this.getFullDir(userId)}"
     }
 

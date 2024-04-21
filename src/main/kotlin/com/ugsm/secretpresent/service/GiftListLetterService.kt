@@ -13,6 +13,7 @@ import com.ugsm.secretpresent.repository.*
 import jakarta.persistence.EntityNotFoundException
 import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
 
@@ -29,12 +30,19 @@ class GiftListLetterService(
     @Autowired
     val userRepository: UserRepository,
     @Autowired
-    val giftListProductRepository: GiftListProductRepository
+    val giftListProductRepository: GiftListProductRepository,
+    @Autowired
+    val userDibsProductRepository: UserDibsProductRepository,
+    @Value("\${aws.cloudfront-url}")
+    val cloudfrontUrl: String,
+
 ) {
 
     @Transactional
     fun getProductsByReceiverId(receiverId: Long): List<GiftListGivenProductDto> {
-        return giftListLetterRepository.findByReceiverId(receiverId).map {
+        return giftListLetterRepository.findByReceiverIdOrderByCreatedAtDesc(receiverId).map {
+            val dibbed = userDibsProductRepository.findByUserIdAndProductIdIn(userInfo.id, productIds)
+
             GiftListGivenProductDto(
                 productId = it.productId,
                 productName = it.productName,
@@ -42,7 +50,8 @@ class GiftListLetterService(
                 confirmedStatus = it.confirmedStatus,
                 giverId = it.giver.id,
                 giverNickname = it.giver.nickname,
-                sentAt = it.createdAt
+                sentAt = it.createdAt,
+                dibbed = dibbed
             )
         }
     }
@@ -65,17 +74,18 @@ class GiftListLetterService(
     @Transactional
     fun getLettersByReceiverId(receiverId: Long, confirmedStatus: GiftConfirmedStatus?): List<GiftListLetterDto> {
         val result = if(confirmedStatus == null){
-            giftListLetterRepository.findByReceiverId(receiverId)
+            giftListLetterRepository.findByReceiverIdOrderByCreatedAtDesc(receiverId)
         } else {
-            giftListLetterRepository.findByReceiverIdAndConfirmedStatusIs(receiverId, confirmedStatus)
+            giftListLetterRepository.findByReceiverIdAndConfirmedStatusIsOrderByCreatedAtDesc(receiverId, confirmedStatus)
         }
 
         return result.map{
+            val url = "${cloudfrontUrl}/${it.giftList.imageUrl}"
             GiftListLetterDto(
                 it.id,
                 it.giver.id,
                 it.giver.nickname,
-                it.giftList.imageUrl,
+                url,
                 it.createdAt
             )
         }

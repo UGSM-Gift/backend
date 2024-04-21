@@ -10,9 +10,9 @@ import java.time.LocalDateTime
 @Repository
 interface GiftListLetterRepository : JpaRepository<GiftListLetter, Int> {
     fun findByGiverId(giverId: Long): List<GiftListLetter>
-    fun findByReceiverId(receiverId: Long): List<GiftListLetter>
+    fun findByReceiverIdOrderByCreatedAtDesc(receiverId: Long): List<GiftListLetter>
 
-    fun findByReceiverIdAndConfirmedStatusIs(
+    fun findByReceiverIdAndConfirmedStatusIsOrderByCreatedAtDesc(
         receiverId: Long,
         confirmedStatus: GiftConfirmedStatus
     ): List<GiftListLetter>
