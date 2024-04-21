@@ -8,6 +8,7 @@ import com.ugsm.secretpresent.dto.ImageUploadResponseDto
 import com.ugsm.secretpresent.enums.S3ImageUploadType
 import kotlinx.coroutines.runBlocking
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import java.awt.image.BufferedImage
@@ -19,11 +20,10 @@ import javax.imageio.ImageIO
 class AwsS3Service(
     @Autowired
     private val s3Client: S3Client,
-) {
 
-    companion object {
-        const val BASE_URL = "https://cloudfront.ugsm.co.kr"
-    }
+    @Value("\${aws.cloudfront-url}")
+    private val baseUrl: String
+) {
 
     fun upload(
         file: MultipartFile, userId: Long, type: S3ImageUploadType, croppedParams: CropDto?
@@ -67,7 +67,7 @@ class AwsS3Service(
 
         return@runBlocking ImageUploadResponseDto(
             fileName = fileName,
-            imageUrl = "${BASE_URL}/${s3Key}"
+            imageUrl = "${baseUrl}/${s3Key}"
         )
     }
 
