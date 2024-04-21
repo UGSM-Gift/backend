@@ -12,5 +12,5 @@ interface ProductRepository:JpaRepository<Product, Long> {
     fun findSliceByProductCategoriesShoppingCategoryIdOrderByTimestampDesc(id: Int, pageable: Pageable):Slice<Product>
 
     fun findSliceByProductCategoriesShoppingCategoryIdInAndPriceBetweenOrderByTimestampDesc(ids: List<Int>, pageable: Pageable, minPrice: Int, maxPrice: Int):Slice<Product>
-
+    fun findAllByIdIn(ids: List<Long>): List<Product>
 }

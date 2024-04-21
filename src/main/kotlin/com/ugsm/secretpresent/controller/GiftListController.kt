@@ -9,6 +9,8 @@ import com.ugsm.secretpresent.dto.giftlist.UpdateGiftListDto
 import com.ugsm.secretpresent.dto.user.UserInfo
 import com.ugsm.secretpresent.enums.GiftCategoryReceiptType
 import com.ugsm.secretpresent.enums.GlobalResCode
+import com.ugsm.secretpresent.dto.FinalGiftListBeforeSubmitRequestDto
+import com.ugsm.secretpresent.dto.FinalGiftListBeforeSubmitResponseDto
 import com.ugsm.secretpresent.response.CustomResponse
 import com.ugsm.secretpresent.service.GiftListLetterService
 import com.ugsm.secretpresent.service.GiftListService
@@ -54,6 +56,19 @@ class GiftListController(
             CustomResponse(
                 GlobalResCode.OK.code,
                 giftListService.getUserGiftList(user.id, page),
+                ""
+            )
+        )
+    }
+
+    @PostMapping("/gift-list/final-before-submit")
+    fun getFinalGiftListBeforeSubmit(
+        @RequestBody dto: List<FinalGiftListBeforeSubmitRequestDto>
+    ): ResponseEntity<CustomResponse<FinalGiftListBeforeSubmitResponseDto>> {
+        return ResponseEntity.ok(
+            CustomResponse(
+                GlobalResCode.OK.code,
+                giftListService.getFinalGiftListBeforeSubmit(dto),
                 ""
             )
         )
@@ -131,7 +146,7 @@ class GiftListController(
     @DeleteMapping("/gift-list/{giftListId}/category/{productCategoryId}/product/{productId}")
     fun deleteProduct(
         @AuthenticationPrincipal userInfo: UserInfo,
-        @PathVariable giftListId:Int,
+        @PathVariable giftListId: Int,
         @PathVariable productCategoryId: Int,
         @PathVariable productId: Long
     ): ResponseEntity<CustomResponse<Nothing?>> {
@@ -149,7 +164,7 @@ class GiftListController(
     @PutMapping("/gift-list/{giftListId}/category/{productCategoryId}")
     fun updateProductCategoryReceiptType(
         @AuthenticationPrincipal userInfo: UserInfo,
-        @PathVariable giftListId:Int,
+        @PathVariable giftListId: Int,
         @PathVariable productCategoryId: Int,
         @RequestParam receiptType: GiftCategoryReceiptType
     ): ResponseEntity<CustomResponse<Nothing?>> {
