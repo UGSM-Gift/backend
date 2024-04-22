@@ -13,5 +13,5 @@ data class GiftListGivenProductDto(
     val giverNickname: String,
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     val sentAt: LocalDateTime?,
-    val dibbed: Boolean
+    val dibbed: Boolean?
 )

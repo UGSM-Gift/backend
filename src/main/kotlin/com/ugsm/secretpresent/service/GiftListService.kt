@@ -182,6 +182,10 @@ class GiftListService(
         val categoriesHavingSingleGifts =
             giftListProductCategoriesDto.filter { it.receiptType == null }
 
+        val selectedProducts = giftList.giftListProducts
+        val receivedProducts = giftListLetterRepository.findByGiftListIdAndConfirmedStatusNot(giftListId, GiftConfirmedStatus.DENIED)
+
+
         return GiftListInfoDto(
             giftListId,
             giftList.taker.id!!,
@@ -192,7 +196,9 @@ class GiftListService(
             giftList.availableAt,
             giftList.expiredAt,
             categoriesHavingMultipleGifts,
-            categoriesHavingSingleGifts
+            categoriesHavingSingleGifts,
+            selectedProducts.count(),
+            receivedProducts.count()
         )
     }
 
@@ -221,6 +227,9 @@ class GiftListService(
         val categoriesHavingSingleGifts =
             giftListProductCategoriesDto.filter { it.receiptType == null }
 
+        val selectedProducts = giftList.giftListProducts
+        val receivedProducts = giftListLetterRepository.findByGiftListIdAndConfirmedStatusNot(giftListId, GiftConfirmedStatus.DENIED)
+
         return GiftListInfoDto(
             giftListId,
             giftList.taker.id!!,
@@ -231,7 +240,9 @@ class GiftListService(
             giftList.availableAt,
             giftList.expiredAt,
             categoriesHavingMultipleGifts,
-            categoriesHavingSingleGifts
+            categoriesHavingSingleGifts,
+            selectedProducts.count(),
+            receivedProducts.count()
         )
     }
 
