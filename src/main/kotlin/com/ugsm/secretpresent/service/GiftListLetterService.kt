@@ -40,8 +40,28 @@ class GiftListLetterService(
 
     @Transactional
     fun getProductsByReceiverId(receiverId: Long): List<GiftListGivenProductDto> {
-        return giftListLetterRepository.findByReceiverIdOrderByCreatedAtDesc(receiverId).map {
-            val dibbed = userDibsProductRepository.findByUserIdAndProductIdIn(userInfo.id, productIds)
+        val giftListLetters = giftListLetterRepository.findByReceiverIdOrderByCreatedAtDesc(receiverId)
+        return giftListLetters.map {
+            GiftListGivenProductDto(
+                productId = it.productId,
+                productName = it.productName,
+                productPrice = it.productPrice,
+                confirmedStatus = it.confirmedStatus,
+                giverId = it.giver.id,
+                giverNickname = it.giver.nickname,
+                sentAt = it.createdAt,
+                dibbed = null
+            )
+        }
+    }
+
+    @Transactional
+    fun getProductsByGiverId(giverId: Long): List<GiftListGivenProductDto> {
+        val giftListLetters = giftListLetterRepository.findByGiverId(giverId)
+        val giftedProductIds = giftListLetters.map { it.productId }
+        val dibbedProducts = userDibsProductRepository.findByUserIdAndProductIdIn(giverId, giftedProductIds)
+        return giftListLetters.map {
+            val dibbed = !dibbedProducts.none { dib -> dib.product.id == it.productId }
 
             GiftListGivenProductDto(
                 productId = it.productId,
@@ -52,21 +72,6 @@ class GiftListLetterService(
                 giverNickname = it.giver.nickname,
                 sentAt = it.createdAt,
                 dibbed = dibbed
-            )
-        }
-    }
-
-    @Transactional
-    fun getProductsByGiverId(giverId: Long): List<GiftListGivenProductDto> {
-        return giftListLetterRepository.findByGiverId(giverId).map {
-            GiftListGivenProductDto(
-                productId = it.productId,
-                productName = it.productName,
-                productPrice = it.productPrice,
-                confirmedStatus = it.confirmedStatus,
-                giverId = it.giver.id,
-                giverNickname = it.giver.nickname,
-                sentAt = it.createdAt
             )
         }
     }
