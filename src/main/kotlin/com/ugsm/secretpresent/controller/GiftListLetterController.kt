@@ -1,6 +1,7 @@
 package com.ugsm.secretpresent.controller
 
 import com.ugsm.secretpresent.dto.GiftListGivenProductDto
+import com.ugsm.secretpresent.dto.GiftListLetterDetailsDto
 import com.ugsm.secretpresent.dto.GiftListLetterDto
 import com.ugsm.secretpresent.dto.user.UserInfo
 import com.ugsm.secretpresent.enums.GiftConfirmedStatus
@@ -52,6 +53,22 @@ class GiftListLetterController(
             CustomResponse(
                 GlobalResCode.OK.code,
                 giftListLetterService.getProductsByGiverId(userInfo.id),
+                ""
+            )
+        )
+    }
+
+    @GetMapping("/{letterId}")
+    fun getGiftListLetterInfo(
+        @AuthenticationPrincipal userInfo: UserInfo,
+        @PathVariable letterId: Int
+    ): ResponseEntity<CustomResponse<GiftListLetterDetailsDto>> {
+
+        val giftListLetterInfo = giftListLetterService.getLetterDetailsById(letterId)
+        return ResponseEntity.ok(
+            CustomResponse(
+                GlobalResCode.OK.code,
+                giftListLetterInfo,
                 ""
             )
         )
