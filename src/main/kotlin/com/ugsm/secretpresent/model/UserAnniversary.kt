@@ -19,7 +19,11 @@ class UserAnniversary(
     @Column
     var date: LocalDate,
 
+    @Column
+    var deleted: Boolean = false,
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long? = null
+    var id: Long? = null,
+
 ) :BaseTimeEntity()

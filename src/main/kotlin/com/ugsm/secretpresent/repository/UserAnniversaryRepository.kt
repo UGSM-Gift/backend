@@ -8,8 +8,8 @@ import java.time.LocalDate
 @Repository
 interface UserAnniversaryRepository: JpaRepository<UserAnniversary, Int> {
 
-    fun findByUserId(userId: Long): List<UserAnniversary>
-    fun findByUserIdAndDateBetween(userId:Long, startDate: LocalDate, endDate:LocalDate):List<UserAnniversary>
-    fun findByDate(date:LocalDate):List<UserAnniversary>
+    fun findByUserIdAndDeletedFalse(userId: Long): List<UserAnniversary>
+    fun findByUserIdAndDateBetweenAndDeletedFalse(userId:Long, startDate: LocalDate, endDate:LocalDate):List<UserAnniversary>
+    fun findByDateAndDeletedFalse(date:LocalDate):List<UserAnniversary>
 
 }

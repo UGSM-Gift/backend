@@ -30,9 +30,9 @@ class UserAnniversaryService(
         val userAnniversaries = if(yearMonth != null){
             val startDate = yearMonth.atDay(1)
             val endDate = yearMonth.atEndOfMonth()
-            userAnniversaryRepository.findByUserIdAndDateBetween(userId, startDate, endDate)
+            userAnniversaryRepository.findByUserIdAndDateBetweenAndDeletedFalse(userId, startDate, endDate)
         } else {
-            userAnniversaryRepository.findByUserId(userId)
+            userAnniversaryRepository.findByUserIdAndDeletedFalse(userId)
         }
 
         return userAnniversaries.map { UserAnniversaryDto(
@@ -60,6 +60,8 @@ class UserAnniversaryService(
             throw UnauthorizedException(message = "You are not allowed to do this action.")
         }
 
-        userAnniversaryRepository.delete(anniversary)
+        anniversary.deleted = true
+
+        userAnniversaryRepository.save(anniversary)
     }
 }

@@ -97,13 +97,16 @@ class GiftListLetterService(
     }
 
     @Transactional
-    fun getLetterDetailsById(id: Int){
-        return giftListLetterRepository.findById(id).get().let {
+    fun getLetterDetailsById(id: Int): GiftListLetterDetailsDto {
+        val letter = giftListLetterRepository.findById(id).get()
+        val result = letter.let {
+            val url = "${cloudfrontUrl}/${it.giftList.imageUrl}"
+
             GiftListLetterDetailsDto(
                 it.id!!,
                 it.giver.id,
                 it.giver.nickname,
-                it.giftList.imageUrl,
+                url,
                 it.productId,
                 it.productName,
                 it.productPrice,
@@ -111,6 +114,8 @@ class GiftListLetterService(
                 it.createdAt
             )
         }
+
+        return result
     }
 
     @Transactional
