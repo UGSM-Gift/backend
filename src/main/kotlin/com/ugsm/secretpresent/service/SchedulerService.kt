@@ -33,7 +33,7 @@ class SchedulerService(
                 "선물 고르기 어렵다면?  추천 받아보자!"
         val redirectUrl = "https://www.ugsm.co.kr/test"
         val date = LocalDate.now().plusWeeks(1)
-        val targetAnniversaries = anniversaryRepository.findByDate(date)
+        val targetAnniversaries = anniversaryRepository.findByDateAndDeletedFalse(date)
         val notifications = targetAnniversaries.map {
             Notification(
                 type=NotificationType.SURVEY,
@@ -52,7 +52,7 @@ class SchedulerService(
                 "아직 못 골랐다면? %s님 마음에 딱! 드는 선물 찾아봐요"
         val redirectUrl = "https://www.ugsm.co.kr/test"
         val date = LocalDate.now()
-        val targetAnniversaries = anniversaryRepository.findByDate(date)
+        val targetAnniversaries = anniversaryRepository.findByDateAndDeletedFalse(date)
         val notifications = targetAnniversaries.map {
             Notification(
                 type=NotificationType.SURVEY,
