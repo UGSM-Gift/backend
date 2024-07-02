@@ -5,16 +5,16 @@ spring:
 
   data:
     mongodb:
-      host: www.ugsm.co.kr
+      host: kterry0002.iptime.org
       database: production-activity-log
       port: 27017
-      username: ENC(zBAy5y6s+y87fv4fn+2Rhg==)
-      password: ENC(4cFDhY93RfbdXZtaSgqEVggGEMGRiSDK)
+      username: ENC(6/4BcLlpi7drxgqXNn6OAw==)
+      password: ENC(kfHGv42WmmdUPmEXRobsRYANGWyEl1tn)
 
   datasource:
-    url: jdbc:postgresql://www.ugsm.co.kr:5432/secret_present
-    username: postgres
-    password: ENC(MKujzeycyhKMvNQmUygv0e4ltif+Vw0+)
+    url: jdbc:postgresql://kterry0002.iptime.org:5432/postgres
+    username: kkh147173
+    password: ENC(kfHGv42WmmdUPmEXRobsRYANGWyEl1tn)
     driverClassName: org.postgresql.Driver
   jpa:
     generate-ddl: true
