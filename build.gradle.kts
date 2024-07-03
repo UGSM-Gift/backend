@@ -89,6 +89,8 @@ dependencies {
 	implementation ("com.github.ulisesbocchio:jasypt-spring-boot:3.0.4")
 
 	implementation("com.fasterxml.jackson.datatype:jackson-datatype-hibernate5-jakarta:2.16.0")
+	testImplementation("org.mockito.kotlin:mockito-kotlin:3.2.0")
+	testImplementation(kotlin("test"))
 
 }
 

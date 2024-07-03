@@ -1,7 +1,6 @@
 package com.ugsm.secretpresent.controller
 
-import com.ugsm.secretpresent.dto.CreateLetterDto
-import com.ugsm.secretpresent.dto.GiftListInfoDto
+import com.ugsm.secretpresent.dto.*
 import com.ugsm.secretpresent.dto.giftlist.CreateGiftListDto
 import com.ugsm.secretpresent.dto.giftlist.GiftListDetailDto
 import com.ugsm.secretpresent.dto.giftlist.GiftListDto
@@ -9,8 +8,6 @@ import com.ugsm.secretpresent.dto.giftlist.UpdateGiftListDto
 import com.ugsm.secretpresent.dto.user.UserInfo
 import com.ugsm.secretpresent.enums.GiftCategoryReceiptType
 import com.ugsm.secretpresent.enums.GlobalResCode
-import com.ugsm.secretpresent.dto.FinalGiftListBeforeSubmitRequestDto
-import com.ugsm.secretpresent.dto.FinalGiftListBeforeSubmitResponseDto
 import com.ugsm.secretpresent.response.CustomResponse
 import com.ugsm.secretpresent.service.GiftListLetterService
 import com.ugsm.secretpresent.service.GiftListService
@@ -35,7 +32,7 @@ class GiftListController(
     fun createList(
         @AuthenticationPrincipal user: UserInfo,
         @RequestBody createGiftListDto: CreateGiftListDto,
-    ): ResponseEntity<CustomResponse<Int?>> {
+    ): ResponseEntity<CustomResponse<GiftListDto>> {
         val giftListId = giftListService.create(user.id, createGiftListDto)
 
         return ResponseEntity.ok(
@@ -112,7 +109,7 @@ class GiftListController(
         @AuthenticationPrincipal userInfo: UserInfo,
         @PathVariable id: Int,
         @RequestBody letterInfo: CreateLetterDto
-    ): ResponseEntity<CustomResponse<Int?>> {
+    ): ResponseEntity<CustomResponse<GiftListLetterDto>> {
 
         val letterId = giftListLetterService.create(userInfo.id, id, letterInfo)
         return ResponseEntity.ok(

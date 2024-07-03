@@ -128,7 +128,7 @@ class GiftListLetterService(
     }
 
     @Transactional
-    fun create(giverId: Long, giftListId: Int, letterInfo: CreateLetterDto): Int? {
+    fun create(giverId: Long, giftListId: Int, letterInfo: CreateLetterDto): GiftListLetterDto {
         val giftList = giftListRepository.findById(giftListId).get()
         val giver = userRepository.findById(giverId).get()
         if(giftList.taker.id == giverId) throw CustomException(101, "자기 자신에게 선물을 줄 수 없습니다.")
@@ -161,6 +161,12 @@ class GiftListLetterService(
 
         giftListLetterRepository.save(letter)
 
-        return letter.id
+        return GiftListLetterDto(
+            id = letter.id,
+            giverId = letter.giver.id,
+            giverNickname = letter.giver.nickname,
+            giftListPackageImgUrl = letter.giftList.imageUrl,
+            writtenAt = letter.createdAt
+        )
     }
 }

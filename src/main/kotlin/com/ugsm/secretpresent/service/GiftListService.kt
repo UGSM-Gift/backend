@@ -1,6 +1,5 @@
 package com.ugsm.secretpresent.service
 
-import aws.smithy.kotlin.runtime.util.length
 import com.ugsm.secretpresent.Exception.CustomException
 import com.ugsm.secretpresent.Exception.UnauthorizedException
 import com.ugsm.secretpresent.dto.*
@@ -46,7 +45,7 @@ class GiftListService(
 
 
     @Transactional
-    fun create(takerId: Long, giftListDto: CreateGiftListDto): Int? {
+    fun create(takerId: Long, giftListDto: CreateGiftListDto): GiftListDto {
         val anniversary = userAnniversaryRepository.findById(giftListDto.anniversaryId).get()
         val user = userRepository.findById(takerId).get()
 
@@ -86,7 +85,16 @@ class GiftListService(
 
         giftListProductCategoryRepository.saveAll(giftListCategories)
 
-        return giftList.id
+        return GiftListDto(
+            giftList.id,
+            giftList.createdAt,
+            giftList.expiredAt,
+            giftList.availableAt,
+            giftList.userAnniversary.image.imageUrl,
+            giftList.userAnniversary.name,
+            0,
+            0
+        )
     }
 
     @Transactional
@@ -211,7 +219,7 @@ class GiftListService(
                     .map { et ->
                         val received = giftListLetterRepository.findByGiftListIdAndProductIdAndConfirmedStatusNot(
                             giftListId, et.product.id, GiftConfirmedStatus.DENIED
-                        ).isNotEmpty();
+                        ).isNotEmpty()
                         GiftListProductDto(et.product.id, et.product.name, et.product.price, received)
                     }
             GiftListProductCategoryDto(

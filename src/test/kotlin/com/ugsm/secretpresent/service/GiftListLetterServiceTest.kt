@@ -1,6 +1,9 @@
 import com.ugsm.secretpresent.dto.CreateLetterDto
+import com.ugsm.secretpresent.enums.GiftCategoryReceiptType
 import com.ugsm.secretpresent.enums.GiftConfirmedStatus
+import com.ugsm.secretpresent.enums.Marketplace
 import com.ugsm.secretpresent.enums.OAuth2Type
+import com.ugsm.secretpresent.model.AnniversaryImage
 import com.ugsm.secretpresent.model.gift.GiftList
 import com.ugsm.secretpresent.model.gift.GiftListLetter
 import com.ugsm.secretpresent.model.gift.GiftListProduct
@@ -8,15 +11,17 @@ import com.ugsm.secretpresent.model.gift.GiftListProductCategory
 import com.ugsm.secretpresent.model.product.Product
 import com.ugsm.secretpresent.model.NaverShoppingCategory
 import com.ugsm.secretpresent.model.User
+import com.ugsm.secretpresent.model.UserAnniversary
+import com.ugsm.secretpresent.model.product.ProductCategory
 import com.ugsm.secretpresent.repository.*
 import com.ugsm.secretpresent.service.GiftListLetterService
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.mockito.Mockito.*
 import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 class GiftListLetterServiceTest {
@@ -48,28 +53,80 @@ class GiftListLetterServiceTest {
             userRepository,
             giftListProductRepository,
             userDibsProductRepository,
-            "https://example.cloudfront.net"
+            "https://example.cloudfront.net" // @Value 로 인해서 constructor injection 으로 변경
         )
     }
 
     @Test
     fun `getProductsByReceiverId should return correct list`() {
         val receiverId = 1L
+        val taker = User(id = receiverId, oauth2Type = OAuth2Type.KAKAO, oauth2Id = "1234")
+        val giftList = GiftList(
+            availableAt = LocalDateTime.now(),
+            expiredAt = LocalDateTime.now(),
+            imageUrl = "test",
+            taker = taker,
+            userAnniversary = UserAnniversary(
+                user = taker,
+                date = LocalDate.now(),
+                image = AnniversaryImage(
+                    "123",
+                    1
+                ),
+                name = "test-anniversary"
+            )
+        )
+        val shoppingCategory = NaverShoppingCategory(
+            id = 1,
+            name = "123",
+            parentCategory = null,
+            imageUrl = "123",
+            isActive = true,
+        )
+
+        val product = Product(
+            id = 1L,
+            name = "Test Product",
+            price = 100,
+            buyingUrl = "test",
+            marketplace = Marketplace.NAVER,
+            freeShipping = true,
+            timestamp = LocalDateTime.now(),
+            likeCount = 0,
+            overallRate = 0,
+            reviewCount = 0,
+            marketplaceProductId = 123,
+            productCategories = mutableListOf()
+        )
+
+        val productCategory = ProductCategory(
+            id = 1,
+            product = product,
+            shoppingCategory = shoppingCategory
+        )
+        product.productCategories.add(productCategory)
+
         val letter = GiftListLetter(
             id = 1,
-            giftList = GiftList(),
-            giftListProductCategory = GiftListProductCategory(),
-            giftListProduct = GiftListProduct(),
+            giftList = giftList,
+            giftListProductCategory = GiftListProductCategory(
+                receiptType = GiftCategoryReceiptType.ONLY_ONE, shoppingCategory = shoppingCategory
+            ),
+            giftListProduct = GiftListProduct(
+                id = 1,
+                giftList = giftList,
+                productCategory = shoppingCategory,
+                product = product
+            ),
             message = "Test",
             confirmedStatus = GiftConfirmedStatus.NOT_CONFIRMED,
-            giver = User(id = 2L, nickname = "Giver"),
+            giver = User(id = 2L, nickname = "Giver", oauth2Type = OAuth2Type.KAKAO, oauth2Id = "123"),
             productId = 1L,
             productName = "Test Product",
             productPrice = 100,
             productCategoryName = "Test Category",
-            receiver = User(id = receiverId, oauth2Type = OAuth2Type.KAKAO, oauth2Id = "1234"),
+            receiver = taker,
             imageUrl = "test.jpg",
-            createdAt = LocalDateTime.now()
         )
 
         whenever(giftListLetterRepository.findByReceiverIdOrderByCreatedAtDesc(receiverId))
@@ -91,20 +148,73 @@ class GiftListLetterServiceTest {
     fun `changeConfirmedStatus should update status correctly`() {
         val receiverId = 1L
         val letterId = 1
+        val taker = User(id = receiverId, oauth2Type = OAuth2Type.KAKAO, oauth2Id = "1234")
+        val giftList = GiftList(
+            availableAt = LocalDateTime.now(),
+            expiredAt = LocalDateTime.now(),
+            imageUrl = "test",
+            taker = taker,
+            userAnniversary = UserAnniversary(
+                user = taker,
+                date = LocalDate.now(),
+                image = AnniversaryImage(
+                    "123",
+                    1
+                ),
+                name = "test-anniversary"
+            )
+        )
+        val shoppingCategory = NaverShoppingCategory(
+            id = 1,
+            name = "123",
+            parentCategory = null,
+            imageUrl = "123",
+            isActive = true,
+        )
+
+        val product = Product(
+            id = 1L,
+            name = "Test Product",
+            price = 100,
+            buyingUrl = "test",
+            marketplace = Marketplace.NAVER,
+            freeShipping = true,
+            timestamp = LocalDateTime.now(),
+            likeCount = 0,
+            overallRate = 0,
+            reviewCount = 0,
+            marketplaceProductId = 123,
+            productCategories = mutableListOf()
+        )
+
+        val productCategory = ProductCategory(
+            id = 1,
+            product = product,
+            shoppingCategory = shoppingCategory
+        )
+        product.productCategories.add(productCategory)
+
         val letter = GiftListLetter(
-            id = letterId,
-            giftList = GiftList(),
-            giftListProductCategory = GiftListProductCategory(),
-            giftListProduct = GiftListProduct(),
+            id = 1,
+            giftList = giftList,
+            giftListProductCategory = GiftListProductCategory(
+                receiptType = GiftCategoryReceiptType.ONLY_ONE, shoppingCategory = shoppingCategory
+            ),
+            giftListProduct = GiftListProduct(
+                id = 1,
+                giftList = giftList,
+                productCategory = shoppingCategory,
+                product = product
+            ),
             message = "Test",
             confirmedStatus = GiftConfirmedStatus.NOT_CONFIRMED,
-            giver = User(),
+            giver = User(id = 2L, nickname = "Giver", oauth2Type = OAuth2Type.KAKAO, oauth2Id = "123"),
             productId = 1L,
             productName = "Test Product",
             productPrice = 100,
             productCategoryName = "Test Category",
-            receiver = User(id = receiverId),
-            imageUrl = "test.jpg"
+            receiver = taker,
+            imageUrl = "test.jpg",
         )
 
         whenever(giftListLetterRepository.findById(letterId)).thenReturn(java.util.Optional.of(letter))
@@ -116,33 +226,100 @@ class GiftListLetterServiceTest {
 
     @Test
     fun `create should create new letter successfully`() {
-        val giverId = 1L
+        val giverId = 2L
         val giftListId = 1
+        val receiverId = 1L
         val letterInfo = CreateLetterDto(
             productId = 1L,
             productCategoryId = 1,
             message = "Test message",
             imageFileName = "test.jpg"
         )
+        val giver = User(id = 2L, nickname = "Giver", oauth2Type = OAuth2Type.KAKAO, oauth2Id = "123")
 
-        val giftList = GiftList(id = giftListId, taker = User(id = 2L))
-        val giver = User(id = giverId)
-        val product = Product(id = 1L, name = "Test Product", price = 100)
-        val giftListProductCategory = GiftListProductCategory(shoppingCategory = ShoppingCategory(name = "Test Category"))
-        val giftListProduct = GiftListProduct()
+
+        val taker = User(id = receiverId, oauth2Type = OAuth2Type.KAKAO, oauth2Id = "1234")
+        val giftList = GiftList(
+            availableAt = LocalDateTime.now(),
+            expiredAt = LocalDateTime.now(),
+            imageUrl = "test",
+            taker = taker,
+            userAnniversary = UserAnniversary(
+                user = taker,
+                date = LocalDate.now(),
+                image = AnniversaryImage(
+                    "123",
+                    1
+                ),
+                name = "test-anniversary"
+            )
+        )
+        val shoppingCategory = NaverShoppingCategory(
+            id = 1,
+            name = "123",
+            parentCategory = null,
+            imageUrl = "123",
+            isActive = true,
+        )
+
+        val product = Product(
+            id = 1L,
+            name = "Test Product",
+            price = 100,
+            buyingUrl = "test",
+            marketplace = Marketplace.NAVER,
+            freeShipping = true,
+            timestamp = LocalDateTime.now(),
+            likeCount = 0,
+            overallRate = 0,
+            reviewCount = 0,
+            marketplaceProductId = 123,
+            productCategories = mutableListOf()
+        )
+
+        val productCategory = ProductCategory(
+            id = 1,
+            product = product,
+            shoppingCategory = shoppingCategory
+        )
+
+        val giftListProductCategory = GiftListProductCategory(
+            receiptType = GiftCategoryReceiptType.ONLY_ONE, shoppingCategory = shoppingCategory
+        )
+        val giftListProduct = GiftListProduct(
+            id = 1,
+            giftList = giftList,
+            productCategory = shoppingCategory,
+            product = product
+        )
+
+        product.productCategories.add(productCategory)
+
 
         whenever(giftListRepository.findById(giftListId)).thenReturn(java.util.Optional.of(giftList))
         whenever(userRepository.findById(giverId)).thenReturn(java.util.Optional.of(giver))
-        whenever(giftListProductCategoryRepository.findByGiftListIdAndShoppingCategoryId(giftListId, letterInfo.productCategoryId))
+        whenever(
+            giftListProductCategoryRepository.findByGiftListIdAndShoppingCategoryId(
+                giftListId,
+                letterInfo.productCategoryId
+            )
+        )
             .thenReturn(giftListProductCategory)
         whenever(productRepository.findById(letterInfo.productId)).thenReturn(java.util.Optional.of(product))
-        whenever(giftListProductRepository.findByGiftListIdAndProductId(giftListId, product.id)).thenReturn(giftListProduct)
-        whenever(giftListLetterRepository.findByGiftListIdAndProductIdAndConfirmedStatusNot(giftListId, product.id, GiftConfirmedStatus.DENIED))
+        whenever(giftListProductRepository.findByGiftListIdAndProductId(giftListId, product.id)).thenReturn(
+            giftListProduct
+        )
+        whenever(
+            giftListLetterRepository.findByGiftListIdAndProductIdAndConfirmedStatusNot(
+                giftListId,
+                product.id,
+                GiftConfirmedStatus.DENIED
+            )
+        )
             .thenReturn(emptyList())
-        whenever(giftListLetterRepository.save(any())).thenAnswer { invocation -> invocation.arguments[0] }
+        whenever(giftListLetterRepository.save(any<GiftListLetter>())).thenAnswer { invocation -> invocation.arguments[0] }
 
         val result = service.create(giverId, giftListId, letterInfo)
-
         assertNotNull(result)
         verify(giftListLetterRepository).save(any())
     }
