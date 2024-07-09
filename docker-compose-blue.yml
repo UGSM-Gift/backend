@@ -1,0 +1,18 @@
+version: "3.9"
+services:
+  ugsm-spring-blue:
+    build: .
+    container_name: ugsm-blue
+    networks:
+      - blue
+    ports:
+      - "8081:8080"
+    pull_policy: always
+    environment:
+      JASYPT_ENCRYPTOR_PASSWORD: jasypt-key
+      DEPLOYMENT_FLAG: blue
+      TZ: "Asia/Seoul"
+    extra_hosts:
+      - host.docker.internal:host-gateway
+networks:
+  blue:

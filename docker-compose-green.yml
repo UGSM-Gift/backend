@@ -1,0 +1,18 @@
+version: "3.9"
+services:
+  ugsm-spring-green:
+    build: .
+    container_name: ugsm-green
+    networks:
+      - green
+    ports:
+      - "8080:8080"
+    pull_policy: always
+    environment:
+      JASYPT_ENCRYPTOR_PASSWORD: jasypt-key
+      DEPLOYMENT_FLAG: green
+      TZ: "Asia/Seoul"
+    extra_hosts:
+      - host.docker.internal:host-gateway
+networks:
+  green:

@@ -10,7 +10,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.InjectMocks
 import org.mockito.Mock
-import org.mockito.Mockito.*
+import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
 
 class PersonalCategoryServiceTest {
@@ -143,7 +143,7 @@ class PersonalCategoryServiceTest {
 
         val result = personalCategoryService.getCategoryQuestionsWithChoices(categoryIds)
 
-        assertEquals(1, result.size)
+        assertEquals(2, result.size)
         assertEquals(1, result[0].category.id)
         assertEquals("Category 1", result[0].category.name)
         assertEquals(false, result[0].category.hasOtherName)

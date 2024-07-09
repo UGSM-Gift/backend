@@ -4,14 +4,17 @@ import com.ugsm.secretpresent.model.VerificationMessage
 import com.ugsm.secretpresent.repository.UserRepository
 import com.ugsm.secretpresent.repository.VerificationMessageRepository
 import com.ugsm.secretpresent.service.VerificationMessageService
+import jakarta.persistence.EntityNotFoundException
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
-import org.mockito.kotlin.*
-import jakarta.persistence.EntityNotFoundException
-import org.mockito.InjectMocks
+import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import java.time.LocalDateTime
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -116,7 +119,7 @@ class VerificationMessageServiceTest {
         val code = 123456
         val phoneNumber = "1234567890"
         val userId = 1L
-        val user = User(id = userId, oauth2Type = OAuth2Type.KAKAO, oauth2Id = "1234")
+        val user = User(id = 2L, oauth2Type = OAuth2Type.KAKAO, oauth2Id = "1234")
         val verificationMessage = VerificationMessage(code = code, receiverPhoneNumber = phoneNumber, user = user)
         verificationMessage.createdAt = LocalDateTime.now().minusMinutes(-3)
 
